@@ -43,6 +43,9 @@ public static class Networking
     // Send -> SendCallback
     // SendAndClose -> SendAndCloseCallback
     // unsure of StartServer, StopServer, ReceiveCallback
+    
+    // accessing TcpListener comes down to understanding nomadic states. Check Hint #4 for more details.
+    // Remember to keep these notes up to date with new findings.
 
     /// <summary>
     /// Starts a TcpListener on the specified port and starts an event-loop to accept new clients.
@@ -52,8 +55,25 @@ public static class Networking
     /// <param name="toCall">The method to call when a new connection is made</param>
     /// <param name="port">The the port to listen on</param>
     public static TcpListener StartServer(Action<SocketState> toCall, int port)
-    {        
-        throw new NotImplementedException();
+    {
+        TcpListener listener = new(IPAddress.Any, port);    // listener is nomadic so this is only returned between things
+        try
+        {
+            // start listener
+            listener.Start();
+
+            // begin accepting clients
+            listener.BeginAcceptSocket(AcceptNewClient, (listener, toCall));  // calls AcceptNewClient and starts accept loop
+
+            // begin receiving data
+            
+        }
+        catch 
+        { 
+            // nothing to do as nothing has happened
+        }
+
+        return listener;
     }
 
     /// <summary>
@@ -76,7 +96,26 @@ public static class Networking
     /// 1) a delegate so the user can take action (a SocketState Action), and 2) the TcpListener</param>
     private static void AcceptNewClient(IAsyncResult ar)
     {
-        throw new NotImplementedException();
+        // we need to somehow get the TcpListener in this method
+        TcpListener listener;
+        Action<SocketState> toCall;
+        (listener, toCall) = (Tuple<TcpListener,Action<SocketState>>)ar.AsyncState!;
+        SocketState state;
+        Socket socket;
+        try
+        {
+            socket = listener.EndAcceptSocket(ar);
+            socket.NoDelay = true;                                              // disables Nagle algorithm for ease of use in our game
+            state = new(toCall, socket);                                        // current socket works with the socketstate
+            listener.BeginAcceptSocket(AcceptNewClient, (listener, toCall));    // resume loop
+        }
+        catch
+        {
+            // disconnect the socket and handle the error
+            state = new(toCall, "Something happened when accepting a new client.");
+            state.OnNetworkAction(state);
+            return;
+        }
     }
 
     /// <summary>
@@ -84,7 +123,14 @@ public static class Networking
     /// </summary>
     public static void StopServer(TcpListener listener)
     {
-        throw new NotImplementedException();
+        try
+        {
+            listener.Stop();
+        }
+        catch
+        {
+            // means server crashes and there is nothing to do
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////
