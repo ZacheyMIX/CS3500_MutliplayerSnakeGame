@@ -1,4 +1,18 @@
-﻿using System;
+﻿// WRITTEN BY ZACH BLOMQUIST AND ASHTON HUNT AS PART OF PS7, CS3500 FALL 2022
+//Guidelines:
+// Do not modify any namespaces or provided helper classes.
+// In the networking class, you may add any PRIVATE STATIC helper methods you see fit.
+// Do not add any PUBLIC methods.
+// Do not add any members or fields of any kind.
+// Do not modify SocketState.
+// None of the public methods in your networking library should ever throw an exception
+// (directly or indirectly by not catching one thrown from another method)
+// See the handout documentation and Errors section in PS7 instructions for more information on handling errors.
+// Fill in the implementations of the methods in the Networking class according to the provided comments in the handout code.
+
+// for now, I need to add pseudocode comments for all other methods aside from the ConnectToServer method
+
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -11,6 +25,25 @@ public static class Networking
     // Server-Side Code
     /////////////////////////////////////////////////////////////////////////////////////////
 
+    // public methods: StartServer, StopServer, ConnectToServer, GetData, Send, SendAndClose
+    // private methods: AcceptNewClient, ConnectedCallback, ReceiveCallback, SendCallback, SendAndCloseCallback
+    // recall from slideshow:
+    //GetData(state)
+    //{
+    //    BeginReceive(…, callback, state);
+    //}
+    //callback(state)
+    //{
+    //    EndReceive(…);
+    //    state.Action()  // delegate
+    //}
+    // consider how to apply this design to each public method and its corresponding private method.
+    // public method -> private callback
+    // ConnectToServer -> ConnectedCallback
+    // Send -> SendCallback
+    // SendAndClose -> SendAndCloseCallback
+    // unsure of StartServer, StopServer, ReceiveCallback
+
     /// <summary>
     /// Starts a TcpListener on the specified port and starts an event-loop to accept new clients.
     /// The event-loop is started with BeginAcceptSocket and uses AcceptNewClient as the callback.
@@ -19,7 +52,7 @@ public static class Networking
     /// <param name="toCall">The method to call when a new connection is made</param>
     /// <param name="port">The the port to listen on</param>
     public static TcpListener StartServer(Action<SocketState> toCall, int port)
-    {
+    {        
         throw new NotImplementedException();
     }
 
@@ -139,7 +172,7 @@ public static class Networking
     /// </summary>
     /// <param name="ar">The object asynchronously passed via BeginConnect</param>
     private static void ConnectedCallback(IAsyncResult ar)
-    {
+    {        
         throw new NotImplementedException();
     }
 
