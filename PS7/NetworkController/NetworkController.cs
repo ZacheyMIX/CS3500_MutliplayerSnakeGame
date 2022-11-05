@@ -56,7 +56,9 @@ public static class Networking
     /// <param name="port">The the port to listen on</param>
     public static TcpListener StartServer(Action<SocketState> toCall, int port)
     {
-        TcpListener listener = new(IPAddress.Any, port);    // listener is nomadic so this is only returned between things
+        TcpListener listener = new(IPAddress.Any, port);    
+        // listener is nomadic so this is only returned between things
+        // not to be treated as a field ever.
         try
         {
             // start listener
@@ -109,12 +111,10 @@ public static class Networking
             state.OnNetworkAction(state);                                       // acts on socketstate after connection
             listener.BeginAcceptSocket(AcceptNewClient, (listener, toCall));    // resume loop
         }
-        catch
+        catch (Exception e)
         {
-            // disconnect the socket and handle the error
-            state = new(toCall, "Something happened when accepting a new client.");
-            state.OnNetworkAction(state);
-            return;
+            ErrorOccurred(toCall, "Something happened in the client acceptance loop\n"+e.ToString());
+            return; // end loop
         }
     }
 
@@ -178,6 +178,8 @@ public static class Networking
             if (!foundIPV4)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
+                ErrorOccurred(toCall, "Could not find applicable IPV4 address.");
+                return;
             }
         }
         catch (Exception)
@@ -187,9 +189,10 @@ public static class Networking
             {
                 ipAddress = IPAddress.Parse(hostName);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
+                ErrorOccurred(toCall, "Host name is not a valid IP address.\n"+e.ToString());
             }
         }
 
@@ -329,5 +332,20 @@ public static class Networking
     private static void SendAndCloseCallback(IAsyncResult ar)
     {
         throw new NotImplementedException();
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // private static helper methods by Ash and Zach
+    /////////////////////////////////////////////////////////////////////////////////////////
+    
+    /// <summary>
+    /// Method to be invoked whenever an error occurs and the SocketState in question needs to be altered to its error form.
+    /// </summary>
+    private static void ErrorOccurred(Action<SocketState> toCall, string errorMsg)
+    {
+        SocketState state = new(toCall, errorMsg);
+        state.ErrorOccurred = true;
+        state.OnNetworkAction(state);
     }
 }
