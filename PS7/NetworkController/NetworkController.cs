@@ -43,7 +43,7 @@ public static class Networking
     // Send -> SendCallback
     // SendAndClose -> SendAndCloseCallback
     // unsure of StartServer, StopServer, ReceiveCallback
-    
+
     // accessing TcpListener comes down to understanding nomadic states. Check Hint #4 for more details.
     // Remember to keep these notes up to date with new findings.
 
@@ -56,7 +56,7 @@ public static class Networking
     /// <param name="port">The the port to listen on</param>
     public static TcpListener StartServer(Action<SocketState> toCall, int port)
     {
-        TcpListener listener = new(IPAddress.Any, port);    
+        TcpListener listener = new(IPAddress.Any, port);
         // listener is nomadic so this is only returned between things
         // not to be treated as a field ever.
         try
@@ -69,8 +69,8 @@ public static class Networking
 
             // begin receiving data
         }
-        catch 
-        { 
+        catch
+        {
             // nothing to do as nothing has happened
         }
 
@@ -100,7 +100,7 @@ public static class Networking
         // we need to somehow get the TcpListener in this method
         TcpListener listener;
         Action<SocketState> toCall;
-        (listener, toCall) = (Tuple<TcpListener,Action<SocketState>>)ar.AsyncState!;
+        (listener, toCall) = (Tuple<TcpListener, Action<SocketState>>)ar.AsyncState!;
         SocketState state;
         Socket socket;
         try
@@ -113,7 +113,7 @@ public static class Networking
         }
         catch (Exception e)
         {
-            ErrorOccurred(toCall, "Something happened in the client acceptance loop\n"+e.ToString());
+            ErrorOccurred(toCall, "Something happened in the client acceptance loop\n" + e.ToString(), null);
             return; // end loop
         }
     }
@@ -178,7 +178,7 @@ public static class Networking
             if (!foundIPV4)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
-                ErrorOccurred(toCall, "Could not find applicable IPV4 address.");
+                ErrorOccurred(toCall, "Could not find applicable IPV4 address.", null);
                 return;
             }
         }
@@ -192,7 +192,7 @@ public static class Networking
             catch (Exception e)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
-                ErrorOccurred(toCall, "Host name is not a valid IP address.\n"+e.ToString());
+                ErrorOccurred(toCall, "Host name is not a valid IP address.\n" + e.ToString(), null);
             }
         }
 
@@ -203,8 +203,19 @@ public static class Networking
         // Nagle's algorithm can cause problems for a latency-sensitive 
         // game like ours will be 
         socket.NoDelay = true;
-
-        // TODO: Finish the remainder of the connection process as specified.
+        // Finish the remainder of the connection process as specified.
+        SocketState connectingState = new(toCall, socket);
+        try
+        {   // TODO: accomodate for timeouts. Google it!
+            // connection starts from the client. need to consider IP address and port
+            connectingState.TheSocket.BeginConnect(ipAddress, port, ConnectedCallback, connectingState);
+        }
+        catch (Exception e)
+        {
+            // need to catch for timeouts.
+            // timeout will most likely throw an error in the try statement, so this should work
+            ErrorOccurred(toCall, "Error occurred when connecting:\n" + e.ToString(), connectingState);
+        }
     }
 
     /// <summary>
@@ -221,7 +232,7 @@ public static class Networking
     /// </summary>
     /// <param name="ar">The object asynchronously passed via BeginConnect</param>
     private static void ConnectedCallback(IAsyncResult ar)
-    {        
+    {
         throw new NotImplementedException();
     }
 
@@ -338,13 +349,20 @@ public static class Networking
     /////////////////////////////////////////////////////////////////////////////////////////
     // private static helper methods by Ash and Zach
     /////////////////////////////////////////////////////////////////////////////////////////
-    
+
     /// <summary>
     /// Method to be invoked whenever an error occurs and the SocketState in question needs to be altered to its error form.
     /// </summary>
-    private static void ErrorOccurred(Action<SocketState> toCall, string errorMsg)
+    private static void ErrorOccurred(Action<SocketState> toCall, string errorMsg, SocketState? state)
     {
-        SocketState state = new(toCall, errorMsg);
+        if (state is null)
+        {
+            state = new(toCall, errorMsg);
+        }
+        else
+        {
+            state.ErrorMessage = errorMsg;
+        }
         state.ErrorOccurred = true;
         state.OnNetworkAction(state);
     }
