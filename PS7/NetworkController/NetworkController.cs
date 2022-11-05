@@ -66,7 +66,6 @@ public static class Networking
             listener.BeginAcceptSocket(AcceptNewClient, (listener, toCall));  // calls AcceptNewClient and starts accept loop
 
             // begin receiving data
-            
         }
         catch 
         { 
@@ -107,6 +106,7 @@ public static class Networking
             socket = listener.EndAcceptSocket(ar);
             socket.NoDelay = true;                                              // disables Nagle algorithm for ease of use in our game
             state = new(toCall, socket);                                        // current socket works with the socketstate
+            state.OnNetworkAction(state);                                       // acts on socketstate after connection
             listener.BeginAcceptSocket(AcceptNewClient, (listener, toCall));    // resume loop
         }
         catch
