@@ -113,7 +113,7 @@ public static class Networking
         }
         catch (Exception e)
         {
-            ErrorOccurred(toCall, "Something happened in the client acceptance loop\n" + e.ToString(), null);
+            NetworkErrorOccurred(toCall, "Something happened in the client acceptance loop\n" + e.ToString(), null);
             return; // end loop
         }
     }
@@ -178,7 +178,7 @@ public static class Networking
             if (!foundIPV4)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
-                ErrorOccurred(toCall, "Could not find applicable IPV4 address.", null);
+                NetworkErrorOccurred(toCall, "Could not find applicable IPV4 address.", null);
                 return;
             }
         }
@@ -192,7 +192,7 @@ public static class Networking
             catch (Exception e)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
-                ErrorOccurred(toCall, "Host name is not a valid IP address.\n" + e.ToString(), null);
+                NetworkErrorOccurred(toCall, "Host name is not a valid IP address.\n" + e.ToString(), null);
             }
         }
 
@@ -214,7 +214,7 @@ public static class Networking
         {
             // need to catch for timeouts.
             // timeout will most likely throw an error in the try statement, so this should work
-            ErrorOccurred(toCall, "Error occurred when connecting:\n" + e.ToString(), connectingState);
+            NetworkErrorOccurred(toCall, "Error occurred when connecting:\n" + e.ToString(), connectingState);
         }
     }
 
@@ -351,9 +351,10 @@ public static class Networking
     /////////////////////////////////////////////////////////////////////////////////////////
 
     /// <summary>
-    /// Method to be invoked whenever an error occurs and the SocketState in question needs to be altered to its error form.
+    /// Method to be invoked whenever an error occurs over the network
+    /// and the SocketState in question needs to be altered to its error form.
     /// </summary>
-    private static void ErrorOccurred(Action<SocketState> toCall, string errorMsg, SocketState? state)
+    private static void NetworkErrorOccurred(Action<SocketState> toCall, string errorMsg, SocketState? state)
     {
         if (state is null)
         {
