@@ -381,7 +381,16 @@ public static class Networking
     /// </param>
     private static void SendCallback(IAsyncResult ar)
     {
-        throw new NotImplementedException();
+        SocketState state = (SocketState)ar.AsyncState!;
+        try
+        {
+            state.TheSocket.EndSend(ar); // finalizes the connection
+        }
+        catch (Exception)
+        {
+
+        }
+
     }
 
 
@@ -433,7 +442,16 @@ public static class Networking
     /// </param>
     private static void SendAndCloseCallback(IAsyncResult ar)
     {
-        throw new NotImplementedException();
+        SocketState state = (SocketState)ar.AsyncState!;
+        try
+        {
+            state.TheSocket.EndSend(ar); // finalizes the connection
+            state.TheSocket.Close();
+        }
+        catch (Exception)
+        {
+
+        }
     }
 
 
