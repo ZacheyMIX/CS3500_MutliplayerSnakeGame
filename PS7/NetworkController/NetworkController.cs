@@ -322,7 +322,21 @@ public static class Networking
     /// </param>
     private static void ReceiveCallback(IAsyncResult ar)
     {
-        throw new NotImplementedException();
+        SocketState state;
+        state = (SocketState)ar.AsyncState!;
+        try
+        {
+            state.TheSocket.EndReceive(ar); // finalizes the connection
+            state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
+            state.GetData();
+            state.TheSocket.BeginReceive(state.buffer, 0, 4096, SocketFlags.None, ReceiveCallback, state);
+        }
+        catch (Exception e)
+        {
+            NetworkErrorOccurred(state.OnNetworkAction,
+                "Something happened in the client acceptance loop\n" + e.ToString(), state);
+            return; // end loop
+        }
     }
 
     /// <summary>
