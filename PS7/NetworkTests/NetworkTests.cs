@@ -20,6 +20,11 @@ namespace NetworkUtil
         private TcpListener? testListener;
         private SocketState? testLocalSocketState, testRemoteSocketState;
 
+        /// <summary>
+        /// added by Ash for randomized tests.
+        /// </summary>
+        private static Random random = new Random();
+
 
         [TestInitialize]
         public void Init()
@@ -187,6 +192,55 @@ namespace NetworkUtil
 
             // No assertions, but the following should not result in an unhandled exception
             Networking.Send(testLocalSocketState.TheSocket, "a");
+        }
+
+        /// <summary>
+        /// Method for which the other randomized invalid hostname tests stem.
+        /// </summary>
+        private void ConnectWithInvalidHostName(string invalidHostname)
+        {
+            // modeled after timeout test
+            bool isCalled = false;
+
+            void saveClientState(SocketState x)
+            {
+                isCalled = true;
+                testLocalSocketState = x;
+            }
+
+            Networking.ConnectToServer(saveClientState, invalidHostname, 2112);
+
+            Assert.IsTrue(isCalled);
+            Assert.IsTrue(testLocalSocketState?.ErrorOccurred);
+        }
+
+        /// <summary>
+        /// Generates a random string of length chars and returns it.
+        /// </summary>
+        private string GenerateInvalidHostname(int length)
+        {
+            // taken from stack overflow user Wai Ha Lee, question 134221
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        [TestMethod]
+        public void TestRandomHostname1()
+        {
+            ConnectWithInvalidHostName(GenerateInvalidHostname(12));
+        }
+
+        [TestMethod]
+        public void TestRandomHostname2()
+        {
+            ConnectWithInvalidHostName(GenerateInvalidHostname(13));
+        }
+
+        [TestMethod]
+        public void TestRandomHostname3()
+        {
+            ConnectWithInvalidHostName(GenerateInvalidHostname(14));
         }
 
         /*** End Basic Connectivity Tests ***/
