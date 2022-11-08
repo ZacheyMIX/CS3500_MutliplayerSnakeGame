@@ -329,7 +329,7 @@ public static class Networking
             state.TheSocket.EndReceive(ar); // finalizes the connection
             state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
             state.GetData();
-            state.TheSocket.BeginReceive(state.buffer, 0, 4096, SocketFlags.None, ReceiveCallback, state);
+            state.TheSocket.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None, ReceiveCallback, state);
         }
         catch (Exception e)
         {
