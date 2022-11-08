@@ -250,14 +250,12 @@ public static class Networking
     private static void ConnectedCallback(IAsyncResult ar)
     {
         SocketState state;
-        Socket socket;
         state = (SocketState)ar.AsyncState!;
         try
         {
-            socket = state.TheSocket;       // creates socket from current TCPListener
-            socket.EndConnect(ar);          // finalizes the connection
-            socket.NoDelay = true;          // disables Nagle algorithm for ease of use in our game
-            state.OnNetworkAction(state);   // invokes the toCall Action for a new connection        
+            state.TheSocket.EndConnect(ar); // finalizes the connection
+            state.TheSocket.NoDelay = true; // disables Nagle algorithm for ease of use in our game
+            state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
         }
         catch (Exception e)
         {
@@ -294,7 +292,7 @@ public static class Networking
             // socketFlags: send and receive behaviors, never specified so we use none;
             // callback: async method to be called, with parameter object that should be a state, ReceiveCallback in this method;
             // state: object passed into callback when called asynchronously, "state" in this method;
-            state.TheSocket.BeginReceive(state.buffer, 0, 4096, SocketFlags.None, ReceiveCallback, state);
+            state.TheSocket.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None, ReceiveCallback, state);
         }
         catch (Exception e)
         {
@@ -337,7 +335,23 @@ public static class Networking
     /// <returns>True if the send process was started, false if an error occurs or the socket is already closed</returns>
     public static bool Send(Socket socket, string data)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (socket.Connected)   // if socket is closed, Send operation is not attempted
+                return false;
+            // create a new state to start BeginSocket
+            // according to SendCallback, the state parameter should be the socket parameter specified here.
+            // change string data to a byte array
+            byte[] toSend = Encoding.UTF8.GetBytes(data);   // may need to switch between UTF8 and ASCII
+            socket.BeginSend(toSend, 0, SocketState.BufferSize, SocketFlags.None, SendCallback, socket);
+            // should be at the end of try block and executed if no other issues arise
+            return true;    // SendCallback successfully began
+        }
+        catch
+        {
+            socket.Close(); // ensure socket is closed if send fails for some reason
+            return false;
+        }
     }
 
     /// <summary>
@@ -370,7 +384,24 @@ public static class Networking
     /// <returns>True if the send process was started, false if an error occurs or the socket is already closed</returns>
     public static bool SendAndClose(Socket socket, string data)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (socket.Connected)   // if socket is closed, Send operation is not attempted
+                return false;
+            // create a new state to start BeginSocket
+            // according to SendCallback, the state parameter should be the socket parameter specified here.
+            // change string data to a byte array
+            byte[] toSend = Encoding.UTF8.GetBytes(data);   // may need to switch between UTF8 and ASCII
+            IAsyncResult ar = socket.BeginSend(toSend, 0, SocketState.BufferSize, SocketFlags.None, SendAndCloseCallback, socket);
+            // should be at the end of try block and executed if no other issues arise
+            socket.EndSend(ar);
+            return true;    // SendCallback successfully began
+        }
+        catch
+        {
+            socket.Close(); // ensure socket is closed if send fails for some reason
+            return false;
+        }
     }
 
     /// <summary>
