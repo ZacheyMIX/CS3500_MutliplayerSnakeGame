@@ -206,7 +206,7 @@ public static class Networking
 
         // This disables Nagle's algorithm (google if curious!)
         // Nagle's algorithm can cause problems for a latency-sensitive 
-        // game like ours will be 
+        // game like ours will be
         socket.NoDelay = true;
         // Finish the remainder of the connection process as specified.
         SocketState connectingState = new(toCall, socket);
@@ -408,7 +408,6 @@ public static class Networking
             byte[] toSend = Encoding.UTF8.GetBytes(data);   // may need to switch between UTF8 and ASCII
             IAsyncResult ar = socket.BeginSend(toSend, 0, SocketState.BufferSize, SocketFlags.None, SendAndCloseCallback, socket);
             // should be at the end of try block and executed if no other issues arise
-            socket.EndSend(ar);
             return true;    // SendCallback successfully began
         }
         catch
