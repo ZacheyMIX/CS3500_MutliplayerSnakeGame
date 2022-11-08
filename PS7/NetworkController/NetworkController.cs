@@ -63,7 +63,7 @@ public static class Networking
         {
             // start listener
             listener.Start();
-            Tuple<TcpListener, Action<SocketState>> passed = new Tuple<TcpListener, Action<SocketState>>(listener, toCall);
+            Tuple<TcpListener, Action<SocketState>> passed = new(listener, toCall);
             // begin accepting clients
             listener.BeginAcceptSocket(AcceptNewClient, passed);  // calls AcceptNewClient and starts accept loop
 
@@ -99,11 +99,6 @@ public static class Networking
     {
         TcpListener listener;
         Action<SocketState> toCall;
-        // DEBUGGING STARTS HERE
-        //
-        //System.Diagnostics.Debug.WriteLine("\n\nar is" + ar.AsyncState!.ToString()+"\n\n");
-        //
-        // DEBUGGING ENDS HERE
         Tuple<TcpListener, Action<SocketState>> passed = (Tuple<TcpListener, Action<SocketState>>)ar.AsyncState!;
         listener = passed.Item1;
         toCall = passed.Item2;
@@ -115,7 +110,7 @@ public static class Networking
             socket.NoDelay = true;                                              // disables Nagle algorithm for ease of use in our game
             state = new(toCall, socket);                                        // current socket works with the socketstate
             state.OnNetworkAction(state);                                       // acts on socketstate after connection
-            listener.BeginAcceptSocket(AcceptNewClient, (listener, toCall));    // resume loop
+            listener.BeginAcceptSocket(AcceptNewClient, passed);                // resume loop
         }
         catch (Exception e)
         {
