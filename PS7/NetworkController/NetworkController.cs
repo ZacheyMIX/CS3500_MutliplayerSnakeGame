@@ -285,7 +285,22 @@ public static class Networking
     /// <param name="state">The SocketState to begin receiving</param>
     public static void GetData(SocketState state)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // BeginReceive parameters:
+            // buffer, preallocated memory for information over network, included in SocketState class;
+            // offset: index to start storing data in buffer, we start at zero as we can use the whole buffer;
+            // size: number of bytes to receive at a time, size of SocketState object buffers (4096 after looking at SocketState);
+            // socketFlags: send and receive behaviors, never specified so we use none;
+            // callback: async method to be called, with parameter object that should be a state, ReceiveCallback in this method;
+            // state: object passed into callback when called asynchronously, "state" in this method;
+            state.TheSocket.BeginReceive(state.buffer, 0, 4096, SocketFlags.None, ReceiveCallback, state);
+        }
+        catch (Exception e)
+        {
+            NetworkErrorOccurred(state.OnNetworkAction, "Error when receiving data from the other socket:\n"+e.ToString(), state);
+            return; // end loop
+        }
     }
 
     /// <summary>
