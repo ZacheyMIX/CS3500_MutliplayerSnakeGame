@@ -114,7 +114,8 @@ public static class Networking
         }
         catch (Exception e)
         {
-            NetworkErrorOccurred(toCall, "Something happened in the client acceptance loop\n" + e.ToString(), null);
+            NetworkErrorOccurred(toCall, 
+                "Something happened in the client acceptance loop\n" + e.ToString(), null);
             return; // end loop
         }
     }
@@ -179,8 +180,9 @@ public static class Networking
             if (!foundIPV4)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
-                NetworkErrorOccurred(toCall, "Could not find applicable IPV4 address.", null);
-                return;
+                NetworkErrorOccurred(toCall, 
+                    "Could not find applicable IPV4 address.", null);
+                return; // end loop
             }
         }
         catch (Exception)
@@ -193,7 +195,9 @@ public static class Networking
             catch (Exception e)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
-                NetworkErrorOccurred(toCall, "Host name is not a valid IP address.\n" + e.ToString(), null);
+                NetworkErrorOccurred(toCall,
+                    "Host name is not a valid IP address.\n" + e.ToString(), null);
+                return; // end loop
             }
         }
 
@@ -207,15 +211,23 @@ public static class Networking
         // Finish the remainder of the connection process as specified.
         SocketState connectingState = new(toCall, socket);
         try
-        {   // TODO: accomodate for timeouts. Google it!
+        {
             // connection starts from the client. need to consider IP address and port
-            connectingState.TheSocket.BeginConnect(ipAddress, port, ConnectedCallback, connectingState);
+            IAsyncResult waiter = connectingState.TheSocket.BeginConnect(ipAddress, port, ConnectedCallback, connectingState);
+            // servers and waiters. It's official, we're in a diner.
+
+            if (!waiter.AsyncWaitHandle.WaitOne(10000)) // returns true if async method takes less than 10000 ms to finish
+                // 10000 is an arbitrary choice and can be changed if need be.
+                // this is kind of confusing so refer to IAsyncResult.AsyncWaitHandle documentation if need be
+                throw new TimeoutException("Timed out while trying to connect to the server.");
         }
         catch (Exception e)
         {
             // need to catch for timeouts.
             // timeout will most likely throw an error in the try statement, so this should work
-            NetworkErrorOccurred(toCall, "Error occurred when connecting:\n" + e.ToString(), connectingState);
+            NetworkErrorOccurred(toCall,
+                "Error occurred when connecting:\n" + e.ToString(), connectingState);
+            return; // end loop
         }
     }
 
@@ -242,14 +254,15 @@ public static class Networking
         state = (SocketState)ar.AsyncState!;
         try
         {
-            socket = state.TheSocket;                                           // creates socket from current TCPListener
-            socket.EndConnect(ar);                                              // finalizes the connection
-            socket.NoDelay = true;                                              // disables Nagle algorithm for ease of use in our game
-            state.OnNetworkAction(state);                                       // invokes the toCall Action for a new connection        
+            socket = state.TheSocket;       // creates socket from current TCPListener
+            socket.EndConnect(ar);          // finalizes the connection
+            socket.NoDelay = true;          // disables Nagle algorithm for ease of use in our game
+            state.OnNetworkAction(state);   // invokes the toCall Action for a new connection        
         }
         catch (Exception e)
         {
-            NetworkErrorOccurred(state.OnNetworkAction, "Something happened in the client acceptance loop\n" + e.ToString(), state);
+            NetworkErrorOccurred(state.OnNetworkAction,
+                "Something happened in the client acceptance loop\n" + e.ToString(), state);
             return; // end loop
         }
     }
