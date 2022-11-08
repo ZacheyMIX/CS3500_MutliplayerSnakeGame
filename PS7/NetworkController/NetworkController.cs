@@ -63,9 +63,9 @@ public static class Networking
         {
             // start listener
             listener.Start();
-
+            Tuple<TcpListener, Action<SocketState>> passed = new Tuple<TcpListener, Action<SocketState>>(listener, toCall);
             // begin accepting clients
-            listener.BeginAcceptSocket(AcceptNewClient, (listener, toCall));  // calls AcceptNewClient and starts accept loop
+            listener.BeginAcceptSocket(AcceptNewClient, passed);  // calls AcceptNewClient and starts accept loop
 
             // begin receiving data
         }
@@ -99,7 +99,14 @@ public static class Networking
     {
         TcpListener listener;
         Action<SocketState> toCall;
-        (listener, toCall) = (Tuple<TcpListener, Action<SocketState>>)ar.AsyncState!;
+        // DEBUGGING STARTS HERE
+        //
+        //System.Diagnostics.Debug.WriteLine("\n\nar is" + ar.AsyncState!.ToString()+"\n\n");
+        //
+        // DEBUGGING ENDS HERE
+        Tuple<TcpListener, Action<SocketState>> passed = (Tuple<TcpListener, Action<SocketState>>)ar.AsyncState!;
+        listener = passed.Item1;
+        toCall = passed.Item2;
         SocketState state;
         Socket socket;
         try
@@ -229,25 +236,25 @@ public static class Networking
     /// with a new SocketState representing the new connection.
     /// 
     /// </summary>
-    /// <param name="ar">The object asynchronously passed via BeginConnect</param>
+    /// <param name="ar">
+    /// The object asynchronously passed via BeginConnect.
+    /// This should always have an AsyncState field of a valid SocketState.
+    /// </param>
     private static void ConnectedCallback(IAsyncResult ar)
     {
-        TcpListener listener;
-        Action<SocketState> toCall;
-        (listener, toCall) = (Tuple<TcpListener, Action<SocketState>>)ar.AsyncState!;
         SocketState state;
         Socket socket;
+        state = (SocketState)ar.AsyncState!;
         try
         {
-            socket = listener.EndAcceptSocket(ar);                              // creates socket from current TCPListener
-            socket.NoDelay = true;                                              // disables Nagle algorithm for ease of use in our game
+            socket = state.TheSocket;                                           // creates socket from current TCPListener
             socket.EndConnect(ar);                                              // finalizes the connection
-            state = new(toCall, socket);                                        // creates new state from the toCall and the socket
-            toCall.Invoke(state);                                               // invokes the toCall Action for a new connection        
+            socket.NoDelay = true;                                              // disables Nagle algorithm for ease of use in our game
+            state.OnNetworkAction(state);                                       // invokes the toCall Action for a new connection        
         }
         catch (Exception e)
         {
-            NetworkErrorOccurred(toCall, "Something happened in the client acceptance loop\n" + e.ToString(), null);
+            NetworkErrorOccurred(state.OnNetworkAction, "Something happened in the client acceptance loop\n" + e.ToString(), state);
             return; // end loop
         }
     }
