@@ -338,7 +338,7 @@ public static class Networking
                 state.data.Append(Encoding.UTF8.GetString(state.buffer, 0, bytesReceived));
 
             state.OnNetworkAction(state);
-            state.RemoveData(0, bytesReceived - 1);
+            state.RemoveData(0, bytesReceived-1);
             //state.GetData();    // not sure why this is here but I'll keep it for testing just in case
             state.TheSocket.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None, ReceiveCallback, state);
         }
@@ -369,7 +369,7 @@ public static class Networking
             // create a new state to start BeginSocket
             // according to SendCallback, the state parameter should be the socket parameter specified here.
             // change string data to a byte array
-            byte[] toSend = Encoding.UTF8.GetBytes(data);   // may need to switch between UTF8 and ASCII
+            byte[] toSend = Encoding.UTF8.GetBytes(data);   // we are using UTF8 and not ASCII in this project
             socket.BeginSend(toSend, 0, toSend.Length, SocketFlags.None, SendCallback, socket);
             // should be at the end of try block and executed if no other issues arise
             return true;    // SendCallback successfully began
@@ -378,6 +378,7 @@ public static class Networking
         {
             try
             {   // closing the socket is itself a network action and can be weird with errors
+                socket.Shutdown(SocketShutdown.Both);   //option .Both was recommended by autocomplete. subject to change.
                 socket.Close(); // ensure socket is closed if send fails for some reason
             }
             catch
@@ -441,6 +442,7 @@ public static class Networking
         {
             try
             {   // closing the socket is itself a network action and can be weird with errors
+                socket.Shutdown(SocketShutdown.Both);   //option .Both was recommended by autocomplete. subject to change.
                 socket.Close(); // ensure socket is closed if send fails for some reason
             }
             catch
@@ -471,7 +473,7 @@ public static class Networking
             socket.EndSend(ar); // finalizes the connection
             socket.Close();
         }
-        catch (Exception)
+        catch
         {
         }
     }
