@@ -324,9 +324,22 @@ public static class Networking
         state = (SocketState)ar.AsyncState!;
         try
         {
-            state.TheSocket.EndReceive(ar); // finalizes the connection
+            // determine if anything went through
+            int bytesReceived = state.TheSocket.EndReceive(ar);
+            if (bytesReceived <= 0)         // finalizes the connection
+                // EndReceive returns the number of bytes received.
+                // if this is 0 or less an error occurred.
+                // 0 if nothing went through,
+                // negative stuff if something seriously weird happened.
+                throw new Exception("Socket was closed during receiving.");
+
+            // put new data in buffer
+            lock (state.data)
+                // compiler didn't give me an error when trying to access the data field. happy little surprises!
+                state.data.Append(Encoding.UTF8.GetString(state.buffer, 0, bytesReceived));
+
             state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
-            state.GetData();
+            //state.GetData();    // not sure why this is here but I'll keep it for testing just in case
             state.TheSocket.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None, ReceiveCallback, state);
         }
         catch (Exception e)
@@ -351,7 +364,7 @@ public static class Networking
     {
         try
         {
-            if (socket.Connected)   // if socket is closed, Send operation is not attempted
+            if (!socket.Connected)   // if socket is closed, Send operation is not attempted
                 return false;
             // create a new state to start BeginSocket
             // according to SendCallback, the state parameter should be the socket parameter specified here.
@@ -363,7 +376,13 @@ public static class Networking
         }
         catch
         {
-            socket.Close(); // ensure socket is closed if send fails for some reason
+            try
+            {   // closing the socket is itself a network action and can be weird with errors
+                socket.Close(); // ensure socket is closed if send fails for some reason
+            }
+            catch
+            {
+            }
             return false;
         }
     }
@@ -381,14 +400,13 @@ public static class Networking
     /// </param>
     private static void SendCallback(IAsyncResult ar)
     {
-        SocketState state = (SocketState)ar.AsyncState!;
+        Socket socket = (Socket)ar.AsyncState!;
         try
         {
-            state.TheSocket.EndSend(ar); // finalizes the connection
+            socket.EndSend(ar); // finalizes the connection
         }
-        catch (Exception)
+        catch
         {
-
         }
 
     }
@@ -421,7 +439,13 @@ public static class Networking
         }
         catch
         {
-            socket.Close(); // ensure socket is closed if send fails for some reason
+            try
+            {   // closing the socket is itself a network action and can be weird with errors
+                socket.Close(); // ensure socket is closed if send fails for some reason
+            }
+            catch
+            {
+            }
             return false;
         }
     }
@@ -441,15 +465,14 @@ public static class Networking
     /// </param>
     private static void SendAndCloseCallback(IAsyncResult ar)
     {
-        SocketState state = (SocketState)ar.AsyncState!;
+        Socket socket = (Socket)ar.AsyncState!;
         try
         {
-            state.TheSocket.EndSend(ar); // finalizes the connection
-            state.TheSocket.Close();
+            socket.EndSend(ar); // finalizes the connection
+            socket.Close();
         }
         catch (Exception)
         {
-
         }
     }
 
