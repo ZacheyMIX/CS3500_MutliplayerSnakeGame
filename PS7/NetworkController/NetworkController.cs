@@ -320,8 +320,7 @@ public static class Networking
     /// </param>
     private static void ReceiveCallback(IAsyncResult ar)
     {
-        SocketState state;
-        state = (SocketState)ar.AsyncState!;
+        SocketState state = (SocketState)ar.AsyncState!;
         try
         {
             // determine if anything went through
@@ -338,7 +337,8 @@ public static class Networking
                 // compiler didn't give me an error when trying to access the data field. happy little surprises!
                 state.data.Append(Encoding.UTF8.GetString(state.buffer, 0, bytesReceived));
 
-            state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
+            state.OnNetworkAction(state);
+            state.RemoveData(0, bytesReceived - 1);
             //state.GetData();    // not sure why this is here but I'll keep it for testing just in case
             state.TheSocket.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None, ReceiveCallback, state);
         }
@@ -370,7 +370,7 @@ public static class Networking
             // according to SendCallback, the state parameter should be the socket parameter specified here.
             // change string data to a byte array
             byte[] toSend = Encoding.UTF8.GetBytes(data);   // may need to switch between UTF8 and ASCII
-            socket.BeginSend(toSend, 0, SocketState.BufferSize, SocketFlags.None, SendCallback, socket);
+            socket.BeginSend(toSend, 0, toSend.Length, SocketFlags.None, SendCallback, socket);
             // should be at the end of try block and executed if no other issues arise
             return true;    // SendCallback successfully began
         }
@@ -427,13 +427,13 @@ public static class Networking
     {
         try
         {
-            if (socket.Connected)   // if socket is closed, Send operation is not attempted
+            if (!socket.Connected)   // if socket is closed, Send operation is not attempted
                 return false;
             // create a new state to start BeginSocket
             // according to SendCallback, the state parameter should be the socket parameter specified here.
             // change string data to a byte array
             byte[] toSend = Encoding.UTF8.GetBytes(data);   // may need to switch between UTF8 and ASCII
-            IAsyncResult ar = socket.BeginSend(toSend, 0, SocketState.BufferSize, SocketFlags.None, SendAndCloseCallback, socket);
+            IAsyncResult ar = socket.BeginSend(toSend, 0, toSend.Length, SocketFlags.None, SendAndCloseCallback, socket);
             // should be at the end of try block and executed if no other issues arise
             return true;    // SendCallback successfully began
         }
