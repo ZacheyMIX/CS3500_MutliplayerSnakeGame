@@ -401,7 +401,8 @@ public static class Networking
         Socket socket = (Socket)ar.AsyncState!;
         try
         {
-            socket.EndSend(ar); // finalizes the connection
+            if(socket.Connected) //If socket is connected, finalizes the connection
+                socket.EndSend(ar); // finalizes the connection
         }
         catch
         {
@@ -467,8 +468,11 @@ public static class Networking
         Socket socket = (Socket)ar.AsyncState!;
         try
         {
-            socket.EndSend(ar); // finalizes the connection
-            socket.Close();
+            if (socket.Connected) //If socket is connected finalizes the connection
+            {
+                socket.EndSend(ar); // finalizes the connection
+                socket.Close(); //Closes connection
+            }   
         }
         catch
         {
