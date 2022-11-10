@@ -338,8 +338,6 @@ public static class Networking
                 state.data.Append(Encoding.UTF8.GetString(state.buffer, 0, bytesReceived));
 
             state.OnNetworkAction(state);
-            //state.GetData();    // not sure why this is here but I'll keep it for testing just in case
-            state.TheSocket.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None, ReceiveCallback, state);
         }
         catch (Exception e)
         {
