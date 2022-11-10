@@ -585,5 +585,65 @@ namespace NetworkUtil
         {
             ConnectWithInvalidHostName(GenerateInvalidHostname(14));
         }
+
+        /// <summary>
+        /// test sends messages, sleeps this thread, and then ensures that the messages are received in order.
+        /// </summary>
+        /// <param name="clientSide">true if local is the client, false if local is the server</param>
+        [DataRow(true)]
+        [DataRow(false)]
+        [DataTestMethod]
+        public void TestSendSleepReceive(bool clientSide)
+        {
+            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+            Networking.Send(testLocalSocketState.TheSocket, "b");
+            Networking.Send(testLocalSocketState.TheSocket, "c");
+            Networking.Send(testLocalSocketState.TheSocket, "d");
+            Networking.Send(testLocalSocketState.TheSocket, "e");
+            Networking.Send(testLocalSocketState.TheSocket, "f");
+            // some time passes over the network
+            Thread.Sleep(10000);
+            // message is received
+            Networking.GetData(testRemoteSocketState);
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 5, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("abcdef", testRemoteSocketState.GetData());
+        }
+
+        /// <summary>
+        /// test sends messages, sleeps this thread, and then ensures that the messages are received in order.
+        /// </summary>
+        /// <param name="clientSide">true if local is the client, false if local is the server</param>
+        [DataRow(true)]
+        [DataRow(false)]
+        [DataTestMethod]
+        public void TestSleepSendReceive(bool clientSide)
+        {
+            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+            // some time passes over the network
+            Thread.Sleep(10000);
+            // actions take place
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+            Networking.Send(testLocalSocketState.TheSocket, "b");
+            Networking.Send(testLocalSocketState.TheSocket, "c");
+            Networking.Send(testLocalSocketState.TheSocket, "d");
+            Networking.Send(testLocalSocketState.TheSocket, "e");
+            Networking.Send(testLocalSocketState.TheSocket, "f");
+
+            Networking.GetData(testRemoteSocketState);
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 5, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("abcdef", testRemoteSocketState.GetData());
+        }
     }
 }
