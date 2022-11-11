@@ -114,7 +114,7 @@ public static class Networking
         }
         catch (Exception e)
         {
-            NetworkErrorOccurred(toCall, 
+            NetworkErrorOccurred(toCall,
                 "Something happened in the client acceptance loop\n" + e.ToString(), null);
             return; // end loop
         }
@@ -180,7 +180,7 @@ public static class Networking
             if (!foundIPV4)
             {
                 // TODO: Indicate an error to the user, as specified in the documentation
-                NetworkErrorOccurred(toCall, 
+                NetworkErrorOccurred(toCall,
                     "Could not find applicable IPV4 address.", null);
                 return; // end loop
             }
@@ -252,13 +252,9 @@ public static class Networking
         state = (SocketState)ar.AsyncState!;
         try
         {
-            if (state.TheSocket.Connected)
-            {
-                state.TheSocket.EndConnect(ar); // finalizes the connection
-                state.TheSocket.NoDelay = true; // disables Nagle algorithm for ease of use in our game
-                state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
-            }
-                
+            state.TheSocket.EndConnect(ar); // finalizes the connection
+            state.TheSocket.NoDelay = true; // disables Nagle algorithm for ease of use in our game
+            state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
         }
         catch (Exception e)
         {
@@ -299,7 +295,7 @@ public static class Networking
         }
         catch (Exception e)
         {
-            NetworkErrorOccurred(state.OnNetworkAction, "Error when receiving data from the other socket:\n"+e.ToString(), state);
+            NetworkErrorOccurred(state.OnNetworkAction, "Error when receiving data from the other socket:\n" + e.ToString(), state);
             return; // end loop
         }
     }
@@ -475,7 +471,7 @@ public static class Networking
             {
                 socket.EndSend(ar); // finalizes the connection
                 socket.Close(); //Closes connection
-            }   
+            }
         }
         catch
         {
