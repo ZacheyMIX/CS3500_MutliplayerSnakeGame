@@ -216,8 +216,7 @@ public static class Networking
             IAsyncResult waiter = connectingState.TheSocket.BeginConnect(ipAddress, port, ConnectedCallback, connectingState);
             // servers and waiters. It's official, we're in a diner.
 
-            if (!waiter.AsyncWaitHandle.WaitOne(10000)) // returns true if async method takes less than 10000 ms to finish
-                // 10000 is an arbitrary choice and can be changed if need be.
+            if (!waiter.AsyncWaitHandle.WaitOne(3000)) // returns true if async method takes less than 3 s to finish
                 // this is kind of confusing so refer to IAsyncResult.AsyncWaitHandle documentation if need be
                 throw new TimeoutException("Timed out while trying to connect to the server.");
         }
@@ -402,10 +401,10 @@ public static class Networking
     /// </param>
     private static void SendCallback(IAsyncResult ar)
     {
-        Socket socket = (Socket)ar.AsyncState!;
         try
         {
-            if(socket.Connected) //If socket is connected, finalizes the connection
+            Socket socket = (Socket)ar.AsyncState!;
+            if (socket.Connected) //If socket is connected, finalizes the connection
                 socket.EndSend(ar); // finalizes the connection
         }
         catch
@@ -469,9 +468,9 @@ public static class Networking
     /// </param>
     private static void SendAndCloseCallback(IAsyncResult ar)
     {
-        Socket socket = (Socket)ar.AsyncState!;
         try
         {
+            Socket socket = (Socket)ar.AsyncState!;
             if (socket.Connected) //If socket is connected finalizes the connection
             {
                 socket.EndSend(ar); // finalizes the connection

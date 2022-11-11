@@ -229,27 +229,6 @@ namespace NetworkUtil
             Assert.AreEqual("a", testRemoteSocketState.GetData());
         }
 
-        //
-        public void TestSendTinyMessageTwoClients(bool clientSide)
-        {
-            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
-
-            // Set the action to do nothing
-            testLocalSocketState.OnNetworkAction = x => { };
-            testRemoteSocketState.OnNetworkAction = x => { };
-
-            Networking.Send(testLocalSocketState.TheSocket, "a");
-
-            Networking.GetData(testRemoteSocketState);
-
-            // Note that waiting for data like this is *NOT* how the networking library is 
-            // intended to be used. This is only for testing purposes.
-            // Normally, you would provide an OnNetworkAction that handles the data.
-            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 0, NetworkTestHelper.timeout);
-
-            Assert.AreEqual("a", testRemoteSocketState.GetData());
-        }
-
         [DataRow(true)]
         [DataRow(false)]
         [DataTestMethod]
@@ -628,8 +607,8 @@ namespace NetworkUtil
                 NetworkTestHelper.SetupMultiConnectionTest(
                   out listener,
                   out tempRemote,   // remote becomes client
-                  out tempLocal,    //local stays the same    
-                  out tempLocal2);   // local2 becomes server
+                  out tempLocal2,    //local stays the same    
+                  out tempLocal);   // local2 becomes server
             }
 
             Assert.IsNotNull(tempLocal);
@@ -671,6 +650,221 @@ namespace NetworkUtil
 
             Assert.AreEqual("127.0.0.1:2112", testLocalSocketState.TheSocket.RemoteEndPoint?.ToString());
             Assert.AreEqual("127.0.0.1:2112", testLocalSocketState2.TheSocket.RemoteEndPoint?.ToString());
+        }
+
+        /// <summary>
+        /// test sends messages, sleeps this thread, and then ensures that the messages are received in order.
+        /// </summary>
+        /// <param name="clientSide">true if local is the client, false if local is the server</param>
+        [DataRow(true)]
+        [DataRow(false)]
+        [DataTestMethod]
+        public void TestSendSleepReceive(bool clientSide)
+        {
+            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+            Networking.Send(testLocalSocketState.TheSocket, "b");
+            Networking.Send(testLocalSocketState.TheSocket, "c");
+            Networking.Send(testLocalSocketState.TheSocket, "d");
+            Networking.Send(testLocalSocketState.TheSocket, "e");
+            Networking.Send(testLocalSocketState.TheSocket, "f");
+            // some time passes over the network
+            Thread.Sleep(5000);
+            // message is received
+            Networking.GetData(testRemoteSocketState);
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 5, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("abcdef", testRemoteSocketState.GetData());
+        }
+
+        /// <summary>
+        /// test sends messages, sleeps this thread, and then ensures that the messages are received in order.
+        /// </summary>
+        /// <param name="clientSide">true if local is the client, false if local is the server</param>
+        [DataRow(true)]
+        [DataRow(false)]
+        [DataTestMethod]
+        public void TestSleepSendReceive(bool clientSide)
+        {
+            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+            // some time passes over the network
+            Thread.Sleep(5000);
+            // actions take place
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+            Networking.Send(testLocalSocketState.TheSocket, "b");
+            Networking.Send(testLocalSocketState.TheSocket, "c");
+            Networking.Send(testLocalSocketState.TheSocket, "d");
+            Networking.Send(testLocalSocketState.TheSocket, "e");
+            Networking.Send(testLocalSocketState.TheSocket, "f");
+
+            Networking.GetData(testRemoteSocketState);
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 5, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("abcdef", testRemoteSocketState.GetData());
+        }
+
+        /// <summary>
+        /// simulates multiple clients on a connection and collects send data
+        /// </summary>
+        /// <param name="clientSide">true if local is a client, false if local is the server</param>
+        [DataRow(true)]
+        [DataTestMethod]
+        public void TestSendTinyMessageMultipleClientsA(bool clientSide)
+        {
+
+            SetupTestMultiConnections(clientSide, out testListener, out testLocalSocketState, out testLocalSocketState2, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testLocalSocketState2.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+            Networking.Send(testLocalSocketState2.TheSocket, "b");
+
+            Networking.GetData(testRemoteSocketState);
+
+            // Note that waiting for data like this is *NOT* how the networking library is 
+            // intended to be used. This is only for testing purposes.
+            // Normally, you would provide an OnNetworkAction that handles the data.
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 0, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("b", testRemoteSocketState.GetData());
+        }
+
+        /// <summary>
+        /// simulates multiple clients on a connection and collects send data
+        /// </summary>
+        /// <param name="clientSide">true if local is a client, false if local is the server</param>
+        [DataRow(true)]
+        [DataTestMethod]
+        public void TestSendTinyMessageMultipleClientsB(bool clientSide)
+        {
+
+            SetupTestMultiConnections(clientSide, out testListener, out testLocalSocketState, out testLocalSocketState2, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testLocalSocketState2.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState2.TheSocket, "b");
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+
+            Networking.GetData(testRemoteSocketState);
+
+            // Note that waiting for data like this is *NOT* how the networking library is 
+            // intended to be used. This is only for testing purposes.
+            // Normally, you would provide an OnNetworkAction that handles the data.
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 0, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("a", testRemoteSocketState.GetData());
+        }
+
+        /// <summary>
+        /// Connects multiple clients and collects send data from client 1
+        /// </summary>
+        /// <param name="clientSide"></param>
+        [DataRow(true)]
+        [DataTestMethod]
+        public void TestSendTinyMessageMultipleClientsC(bool clientSide)
+        {
+            SetupTestMultiConnections(clientSide, out testListener, out testLocalSocketState, out testLocalSocketState2, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testLocalSocketState2.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+            Networking.GetData(testRemoteSocketState);
+
+
+
+            // Note that waiting for data like this is *NOT* how the networking library is 
+            // intended to be used. This is only for testing purposes.
+            // Normally, you would provide an OnNetworkAction that handles the data.
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 0, NetworkTestHelper.timeout);
+            Assert.AreEqual("a", testRemoteSocketState.GetData());
+
+        }
+
+        /// <summary>
+        /// Connects multiple clients and collects send data from client 2
+        /// </summary>
+        /// <param name="clientSide"></param>
+        [DataRow(true)]
+        [DataTestMethod]
+        public void TestSendTinyMessageMultipleClientsD(bool clientSide)
+        {
+            SetupTestMultiConnections(clientSide, out testListener, out testLocalSocketState, out testLocalSocketState2, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testLocalSocketState2.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState2.TheSocket, "b");
+            Networking.GetData(testRemoteSocketState);
+
+
+
+            // Note that waiting for data like this is *NOT* how the networking library is 
+            // intended to be used. This is only for testing purposes.
+            // Normally, you would provide an OnNetworkAction that handles the data.
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 0, NetworkTestHelper.timeout);
+            Assert.AreEqual("b", testRemoteSocketState.GetData());
+
+        }
+
+
+        /// <summary>
+        /// simulates multiple clients on a connection NEED TO FINISH
+        /// </summary>
+        /// <param name="clientSide">true if local is a client, false if local is the server</param>
+        [DataRow(true)]
+        [DataTestMethod]
+        public void TestReceiveHugeMessageMultipleClients(bool clientSide)
+        {
+
+            SetupTestMultiConnections(clientSide, out testListener, out testLocalSocketState, out testLocalSocketState2, out testRemoteSocketState);
+
+            testLocalSocketState.OnNetworkAction = (x) =>
+            {
+                if (x.ErrorOccurred)
+                    return;
+                Networking.GetData(x);
+            };
+
+            testLocalSocketState2.OnNetworkAction = (x) =>
+            {
+                if (x.ErrorOccurred)
+                    return;
+                Networking.GetData(x);
+            };
+
+            Networking.GetData(testLocalSocketState);
+            Networking.GetData(testLocalSocketState2);
+
+            StringBuilder message = new StringBuilder();
+            message.Append('a', (int)(SocketState.BufferSize * 7.5));   // originally multiplied by 7.5
+
+            Networking.Send(testRemoteSocketState.TheSocket, message.ToString());
+
+            NetworkTestHelper.WaitForOrTimeout(() => testLocalSocketState2.GetData().Length == message.Length, NetworkTestHelper.timeout);
+            // times out after 5000 ms to evaluate if the socket's data length is equal to the length of the message sent
+
+            Assert.AreEqual(message.ToString(), testLocalSocketState2.GetData());
+            // asserts if the message is the same as the one stored in the socket state's data buffer
         }
     }
 }
