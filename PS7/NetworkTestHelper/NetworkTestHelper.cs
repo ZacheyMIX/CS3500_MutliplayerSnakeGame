@@ -55,37 +55,6 @@ namespace NetworkUtil
             server = serverResult;
         }
 
-        public static void SetupMultiConnectionTest(out TcpListener listener, out SocketState? client, out SocketState? client2, out SocketState? server)
-        {
-            SocketState? clientResult = null;
-            SocketState? client2Result = null;
-            SocketState? serverResult = null;
-
-            void saveClientState(SocketState x)
-            {
-                clientResult = x;
-            }
-
-            void saveClient2State(SocketState x)
-            {
-                client2Result = x;
-            }
-
-            void saveServerState(SocketState x)
-            {
-                serverResult = x;
-            }
-
-            listener = Networking.StartServer(saveServerState, 2112);
-            Networking.ConnectToServer(saveClientState, "localhost", 2112);
-            Networking.ConnectToServer(saveClient2State, "localhost", 2112);
-
-            WaitForOrTimeout(() => (clientResult != null) && (client2Result != null) && (serverResult != null), timeout);
-            client = clientResult;
-            client2 = client2Result;
-            server = serverResult;
-        }
-
     }
 }
 
