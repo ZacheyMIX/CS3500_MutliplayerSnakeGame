@@ -295,7 +295,8 @@ public static class Networking
         }
         catch (Exception e)
         {
-            NetworkErrorOccurred(state.OnNetworkAction, "Error when receiving data from the other socket:\n" + e.ToString(), state);
+            NetworkErrorOccurred
+                (state.OnNetworkAction, "Error when receiving data from the other socket:\n" + e.ToString(), state);
             return; // end loop
         }
     }
