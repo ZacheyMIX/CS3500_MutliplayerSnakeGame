@@ -55,6 +55,38 @@ namespace NetworkUtil
             server = serverResult;
         }
 
+
+        public static void SetupTwoConnectionTest
+            (out TcpListener listener, out SocketState? client1, out SocketState? client2, out SocketState? server)
+        {
+            SocketState? clientResult1 = null;
+            SocketState? clientResult2 = null;
+            SocketState? serverResult = null;
+
+            void saveClient1State(SocketState x)
+            {
+                clientResult1 = x;
+            }
+            void saveClient2State(SocketState x)
+            {
+                clientResult2 = x;
+            }
+            void saveServerState(SocketState x)
+            {
+                serverResult = x;
+            }
+
+            listener = Networking.StartServer(saveServerState, 2112);
+            Networking.ConnectToServer(saveClient1State, "localhost", 2112);
+            Networking.ConnectToServer(saveClient2State, "localhost", 2112);
+
+
+            WaitForOrTimeout(() => (clientResult1 != null) && (clientResult2 != null) && (serverResult != null), timeout);
+            client1 = clientResult1;
+            client2 = clientResult2;
+            server = serverResult;
+        }
+
     }
 }
 

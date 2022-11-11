@@ -645,5 +645,84 @@ namespace NetworkUtil
 
             Assert.AreEqual("abcdef", testRemoteSocketState.GetData());
         }
+
+        public void SetupTwoTestConnections
+            (out TcpListener listener, out SocketState client1, out SocketState client2, out SocketState server)
+        {
+            SocketState? tempClient1, tempClient2, tempServer;
+            
+            NetworkTestHelper.SetupTwoConnectionTest(out listener, out tempClient1, out tempClient2, out tempServer);
+
+            Assert.IsNotNull(tempClient1);
+            Assert.IsNotNull(tempClient2);
+            Assert.IsNotNull(tempServer);
+            client1 = tempClient1;
+            client2 = tempClient2;
+            server = tempServer;
+        }
+
+        /// <summary>
+        /// simulates multiple clients on a connection NEED TO FINISH
+        /// </summary>
+        /// <param name="clientSide">true if local is a client, false if local is the server</param>
+        [DataRow(true)]
+        [DataRow(false)]
+        [DataTestMethod]
+        public void TestSendTinyMessageMultipleClients(bool clientSide)
+        {
+            // TODO: FINISH IMPLEMENTING FOR ALL SOCKETS
+
+            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+
+            Networking.GetData(testRemoteSocketState);
+
+            // Note that waiting for data like this is *NOT* how the networking library is 
+            // intended to be used. This is only for testing purposes.
+            // Normally, you would provide an OnNetworkAction that handles the data.
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 0, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("a", testRemoteSocketState.GetData());
+        }
+
+
+        /// <summary>
+        /// simulates multiple clients on a connection NEED TO FINISH
+        /// </summary>
+        /// <param name="clientSide">true if local is a client, false if local is the server</param>
+        [DataRow(true)]
+        [DataRow(false)]
+        [DataTestMethod]
+        public void TestReceiveHugeMessageMultipleClients(bool clientSide)
+        {
+            // TODO: FINISH IMPLEMENTING FOR ALL SOCKETS
+
+            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
+
+            testLocalSocketState.OnNetworkAction = (x) =>
+            {
+                if (x.ErrorOccurred)
+                    return;
+                Networking.GetData(x);
+            };
+
+            Networking.GetData(testLocalSocketState);
+
+            StringBuilder message = new StringBuilder();
+            message.Append('a', (int)(SocketState.BufferSize * 7.5));   // originally multiplied by 7.5
+
+            Networking.Send(testRemoteSocketState.TheSocket, message.ToString());
+
+            NetworkTestHelper.WaitForOrTimeout(() => testLocalSocketState.GetData().Length == message.Length, NetworkTestHelper.timeout);
+            // times out after 5000 ms to evaluate if the socket's data length is equal to the length of the message sent
+
+            Assert.AreEqual(message.ToString(), testLocalSocketState.GetData());
+            // asserts if the message is the same as the one stored in the socket state's data buffer
+        }
     }
 }
