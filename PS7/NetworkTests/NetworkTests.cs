@@ -18,7 +18,7 @@ namespace NetworkUtil
         // since open sockets are system-wide (managed by the OS)
         // Therefore, we need some per-test setup and cleanup
         private TcpListener? testListener;
-        private SocketState? testLocalSocketState, testRemoteSocketState;
+        private SocketState? testLocalSocketState, testLocalSocketState2, testRemoteSocketState;
 
         /// <summary>
         /// added by Ash for randomized tests.
@@ -87,6 +87,8 @@ namespace NetworkUtil
         }
 
 
+
+
         /*** Begin Basic Connectivity Tests ***/
         [TestMethod]
         public void TestConnect()
@@ -100,6 +102,7 @@ namespace NetworkUtil
 
             Assert.AreEqual("127.0.0.1:2112", testLocalSocketState.TheSocket.RemoteEndPoint?.ToString());
         }
+
 
 
         [TestMethod]
@@ -207,6 +210,27 @@ namespace NetworkUtil
         [DataRow(false)]
         [DataTestMethod]
         public void TestSendTinyMessage(bool clientSide)
+        {
+            SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
+
+            // Set the action to do nothing
+            testLocalSocketState.OnNetworkAction = x => { };
+            testRemoteSocketState.OnNetworkAction = x => { };
+
+            Networking.Send(testLocalSocketState.TheSocket, "a");
+
+            Networking.GetData(testRemoteSocketState);
+
+            // Note that waiting for data like this is *NOT* how the networking library is 
+            // intended to be used. This is only for testing purposes.
+            // Normally, you would provide an OnNetworkAction that handles the data.
+            NetworkTestHelper.WaitForOrTimeout(() => testRemoteSocketState.GetData().Length > 0, NetworkTestHelper.timeout);
+
+            Assert.AreEqual("a", testRemoteSocketState.GetData());
+        }
+
+        //
+        public void TestSendTinyMessageTwoClients(bool clientSide)
         {
             SetupTestConnections(clientSide, out testListener, out testLocalSocketState, out testRemoteSocketState);
 
@@ -584,6 +608,69 @@ namespace NetworkUtil
         public void TestRandomHostname3()
         {
             ConnectWithInvalidHostName(GenerateInvalidHostname(14));
+        }
+
+        //Setup for multiconnection tests
+        public void SetupTestMultiConnections(bool clientSide,
+          out TcpListener listener, out SocketState local, out SocketState local2, out SocketState remote)
+        {
+            SocketState? tempLocal, tempLocal2, tempRemote;
+            if (clientSide)
+            {
+                NetworkTestHelper.SetupMultiConnectionTest(
+                  out listener,
+                  out tempLocal,    // local becomes client
+                  out tempLocal2,
+                  out tempRemote);  // remote becomes server
+            }
+            else
+            {
+                NetworkTestHelper.SetupMultiConnectionTest(
+                  out listener,
+                  out tempRemote,   // remote becomes client
+                  out tempLocal,    //local stays the same    
+                  out tempLocal2);   // local2 becomes server
+            }
+
+            Assert.IsNotNull(tempLocal);
+            Assert.IsNotNull(tempLocal2);
+            Assert.IsNotNull(tempRemote);
+            local = tempLocal;
+            local2 = tempLocal2;
+            remote = tempRemote;
+        }
+
+        [TestMethod]
+        public void TestMultiConnect()
+        {
+            NetworkTestHelper.SetupMultiConnectionTest(out testListener, out testLocalSocketState, out testLocalSocketState2, out testRemoteSocketState);
+            Assert.IsNotNull(testLocalSocketState);
+            Assert.IsNotNull(testLocalSocketState2);
+            Assert.IsNotNull(testRemoteSocketState);
+
+            Assert.IsTrue(testRemoteSocketState.TheSocket.Connected);
+            Assert.IsTrue(testLocalSocketState.TheSocket.Connected);
+            Assert.IsTrue(testLocalSocketState2.TheSocket.Connected);
+
+            Assert.AreEqual("127.0.0.1:2112", testLocalSocketState.TheSocket.RemoteEndPoint?.ToString());
+            Assert.AreEqual("127.0.0.1:2112", testLocalSocketState2.TheSocket.RemoteEndPoint?.ToString());
+        }
+
+        [TestMethod]
+        public void TestMultiConnectSleep()
+        {
+            Thread.Sleep(5000);
+            NetworkTestHelper.SetupMultiConnectionTest(out testListener, out testLocalSocketState, out testLocalSocketState2, out testRemoteSocketState);
+            Assert.IsNotNull(testLocalSocketState);
+            Assert.IsNotNull(testLocalSocketState2);
+            Assert.IsNotNull(testRemoteSocketState);
+
+            Assert.IsTrue(testRemoteSocketState.TheSocket.Connected);
+            Assert.IsTrue(testLocalSocketState.TheSocket.Connected);
+            Assert.IsTrue(testLocalSocketState2.TheSocket.Connected);
+
+            Assert.AreEqual("127.0.0.1:2112", testLocalSocketState.TheSocket.RemoteEndPoint?.ToString());
+            Assert.AreEqual("127.0.0.1:2112", testLocalSocketState2.TheSocket.RemoteEndPoint?.ToString());
         }
     }
 }

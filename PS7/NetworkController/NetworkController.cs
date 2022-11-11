@@ -253,9 +253,13 @@ public static class Networking
         state = (SocketState)ar.AsyncState!;
         try
         {
-            state.TheSocket.EndConnect(ar); // finalizes the connection
-            state.TheSocket.NoDelay = true; // disables Nagle algorithm for ease of use in our game
-            state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
+            if (state.TheSocket.Connected)
+            {
+                state.TheSocket.EndConnect(ar); // finalizes the connection
+                state.TheSocket.NoDelay = true; // disables Nagle algorithm for ease of use in our game
+                state.OnNetworkAction(state);   // invokes the toCall Action for a new connection
+            }
+                
         }
         catch (Exception e)
         {
