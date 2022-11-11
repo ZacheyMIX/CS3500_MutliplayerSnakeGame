@@ -54,7 +54,6 @@ namespace NetworkUtil
             client = clientResult;
             server = serverResult;
         }
-
     }
 }
 
