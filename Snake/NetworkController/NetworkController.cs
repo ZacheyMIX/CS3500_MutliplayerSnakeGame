@@ -157,8 +157,6 @@ public static class Networking
     /// <param name="port">The port on which the server is listening</param>
     public static void ConnectToServer(Action<SocketState> toCall, string hostName, int port)
     {
-        // TODO: This method is incomplete, but contains a starting point 
-        //       for decoding a host address
 
         // Establish the remote endpoint for the socket.
         IPHostEntry ipHostInfo;

@@ -1,14 +1,38 @@
-﻿using Newtonsoft.Json;
+﻿using NetworkUtil;
+using Newtonsoft.Json;
 using SnakeGame;
+using System.Data;
 
 namespace ClientModel
 {
-    [JsonObject(MemberSerialization.OptIn)]
+    // Notes about IDs:
+    // IDs cannot be negative,
+    // Each object is unique to their own ID. e.g. two snakes cannot have the same ID, but a snake can have the same ID as a wall.
+    // you cannot assume anything about the order of IDs for walls and powerups
+
+    // Notes about Vector2D:
+    // represents two dimensional space vector. Can represent locations. They will be used more in the server, but possibly in the client.
     public class World
     {
         public IEnumerable<Snake> snakes;
         public IEnumerable<Wall> walls;
         public IEnumerable<Powerup> powerups;
+        private SocketState state;
+
+        public World(string hostname)
+        {
+            snakes = new List<Snake>();
+            walls = new List<Wall>();
+            powerups = new List<Powerup>();
+            // TODO: start a connection to the server and start updating our clientside model
+            state = new()
+            Networking.ConnectToServer(state.OnNetworkAction, hostname, 11000);
+        }
+
+        public void Update(SocketState s)
+        {
+
+        }
     }
 
     [JsonObject(MemberSerialization.OptIn)]
@@ -16,6 +40,7 @@ namespace ClientModel
     {
         /// <summary>
         /// snakes unique ID, objects can have the same ID, but not the same object can have the same ID
+        /// determined by server.
         /// </summary>
         [JsonProperty(PropertyName = "snake")]
         public int snake;
@@ -64,7 +89,15 @@ namespace ClientModel
         public bool join;
         public Snake()
         {
-
+            snake = 0;
+            name = "";
+            body = new();
+            dir = new();
+            score = 0;
+            died = false;
+            alive = false;
+            dc = false;
+            join = false;
         }
     }
 
@@ -88,7 +121,9 @@ namespace ClientModel
         public Vector2D p2;
         public Wall()
         {
-
+            wall = 0;
+            p1 = new();
+            p2 = new();
         }
     }
 
@@ -113,7 +148,9 @@ namespace ClientModel
         public bool died;
         public Powerup()
         {
-
+            power = 0;
+            loc = new();
+            died = false;
         }
     }
     [JsonObject(MemberSerialization.OptIn)]
@@ -126,7 +163,7 @@ namespace ClientModel
         public string moving;
         public ControlCommands()
         {
-
+            moving = "";
         }
     }
 }
