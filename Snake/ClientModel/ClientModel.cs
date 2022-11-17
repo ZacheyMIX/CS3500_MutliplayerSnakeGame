@@ -13,6 +13,11 @@ namespace ClientModel
 
     // Notes about Vector2D:
     // represents two dimensional space vector. Can represent locations. They will be used more in the server, but possibly in the client.
+    /// <summary>
+    /// Clientside representation of the world.
+    /// Stores locations and states of snakes, walls, and powerups.
+    /// All other logic is managed by the server and communicated to our client program.
+    /// </summary>
     public class World
     {
         /// <summary>
@@ -41,8 +46,14 @@ namespace ClientModel
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
 
+        /// <summary>
+        /// Default constructor for clientside World class.
+        /// Clientside worlds are inherently basic,
+        /// so this should be the only constructor needed.
+        /// </summary>
         public World()
         {
+            // World size is 2000x2000. Might need to change this to make that a parameter.
             snakes = new();
             walls = new();
             powerups = new();
