@@ -1,5 +1,6 @@
 ﻿using NetworkUtil;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SnakeGame;
 using System.Data;
 
@@ -14,24 +15,89 @@ namespace ClientModel
     // represents two dimensional space vector. Can represent locations. They will be used more in the server, but possibly in the client.
     public class World
     {
-        public IEnumerable<Snake> snakes;
-        public IEnumerable<Wall> walls;
-        public IEnumerable<Powerup> powerups;
-        private SocketState state;
+        /// <summary>
+        /// integer ID numbers to Snake objects.
+        /// </summary>
+        private Dictionary<int, Snake> snakes;
+        /// <summary>
+        /// integer ID numbers to wall objects.
+        /// </summary>
+        private Dictionary<int, Wall> walls;
+        /// <summary>
+        /// integer ID numbers to powerup objects.
+        /// </summary>
+        private Dictionary<int, Powerup> powerups;
 
-        public World(string hostname)
+        /// <summary>
+        /// Field to make snakes dictionary accessible to the outside
+        /// </summary>
+        public Dictionary<int, Snake> Snakes { get { return snakes; } }
+        /// <summary>
+        /// Field to make walls dictionary accessible to the outside
+        /// </summary>
+        public Dictionary<int, Wall> Walls { get { return walls; } }
+        /// <summary>
+        /// Field to make powerups dictionary accessible to the outside
+        /// </summary>
+        public Dictionary<int, Powerup> Powerups { get { return powerups; } }
+
+        public World()
         {
-            snakes = new List<Snake>();
-            walls = new List<Wall>();
-            powerups = new List<Powerup>();
-            // TODO: start a connection to the server and start updating our clientside model
-            state = new()
-            Networking.ConnectToServer(state.OnNetworkAction, hostname, 11000);
+            snakes = new();
+            walls = new();
+            powerups = new();
         }
 
-        public void Update(SocketState s)
+        /// <summary>
+        /// Updates the World model every time a new Json string is received
+        /// </summary>
+        public void Update(string newElement)
         {
+            JObject newObj = JObject.Parse(newElement);
+            if (newObj.ContainsKey("snake"))
+            {
+                // may scrap entire if statement if this is too convoluted
 
+                // possibly add an if statement for disconnects or deaths so the snake isn't accidentally drawn
+
+                Snake? newSnake = JsonConvert.DeserializeObject<Snake>(newElement); // nullable only to appease return type of DeserializeObject method.
+                if (!(newSnake is Snake))
+                    return; // shouldn't happen but just in case
+
+                if (snakes.ContainsKey(newSnake.ID))
+                    snakes.Remove(newSnake.ID);
+                
+
+                if (newSnake.dc || newSnake.died || !newSnake.alive)
+                    return;     // doesn't keep snake in snakes set if snake is dead or disconnected
+
+                // snake isn't already in snakes set and snake isn't dead, didn't die, and is still connected
+                snakes.Add(newSnake.ID, newSnake!);  // again, this object should just be a snake object if it contains a key called "snake".
+                return;
+            }
+            else if (newObj.ContainsKey("wall"))
+            {
+                Wall? newWall = JsonConvert.DeserializeObject<Wall>(newElement);
+                if (newWall is Wall)
+                    walls.Add(newWall.ID, newWall!);
+                return;
+            }
+            else if (newObj.ContainsKey("power"))
+            {
+                Powerup? newPwp = JsonConvert.DeserializeObject<Powerup>(newElement);
+
+                if (!(newPwp is Powerup))   // if newPwp is not a Powerup
+                    return; // shouldn't happen but just in case
+                
+                if (powerups.ContainsKey(newPwp.ID))
+                    powerups.Remove(newPwp.ID);
+
+                if (newPwp.died)
+                    return;
+
+                powerups.Add(newPwp.ID, newPwp);
+                return;
+            }
         }
     }
 
@@ -43,12 +109,13 @@ namespace ClientModel
         /// determined by server.
         /// </summary>
         [JsonProperty(PropertyName = "snake")]
-        public int snake;
+        public readonly int ID;
+
         /// <summary>
         /// a string representing the players name
         /// </summary>
         [JsonProperty(PropertyName = "name")]
-        public string name;
+        public readonly string name;
         /// <summary>
         /// A list<Vector2D> representing th eentire body of the snake.
         /// Each point in this list represent one vertex of the snakes body where consecutive 
@@ -56,40 +123,43 @@ namespace ClientModel
         /// location fof the snake tail, and the last gives the location of the snakes head.
         /// </summary>
         [JsonProperty(PropertyName = "body")]
-        public List<Vector2D> body;
+        public readonly List<Vector2D> body;
         /// <summary>
         /// Represents snakes orientation, will always be axis aligned
         /// </summary>
         [JsonProperty(PropertyName = "dir")]
-        public Vector2D dir;
+        public readonly Vector2D dir;
         /// <summary>
         /// Represents the players score
         /// </summary>
         [JsonProperty(PropertyName = "score")]
-        public int score;
+        public readonly int score;
         /// <summary>
         /// A bool indicaticating the snake died within a certain frame.
         /// </summary>
         [JsonProperty(PropertyName = "died")]
-        public bool died;
+        public readonly bool died;
         /// <summary>
         /// A bool indicating whether the snake is alive or dead
         /// </summary>
         [JsonProperty(PropertyName = "alive")]
-        public bool alive;
+        public readonly bool alive;
         /// <summary>
         /// A bool indicating wheter the player disconected on that frame
         /// </summary>
         [JsonProperty(PropertyName = "dc")]
-        public bool dc;
+        public readonly bool dc;
         /// <summary>
         /// A bool indicating whether the player joined on this frame.
         /// </summary>
         [JsonProperty(PropertyName = "join")]
-        public bool join;
+        public readonly bool join;
+        /// <summary>
+        /// Snake object constructor. Since the client only ever deserializes objects, we only need the default constructor.
+        /// </summary>
         public Snake()
         {
-            snake = 0;
+            ID = 0;
             name = "";
             body = new();
             dir = new();
@@ -108,20 +178,23 @@ namespace ClientModel
         /// ID
         /// </summary>
         [JsonProperty(PropertyName = "wall")]
-        public int wall;
+        public readonly int ID;
         /// <summary>
         /// A vector2D representing 1 end point of the wall
         /// </summary>
         [JsonProperty(PropertyName = "p1")]
-        public Vector2D p1;
+        public readonly Vector2D p1;
         /// <summary>
         /// A vector2D representing the other end point of the wall
         /// </summary>
         [JsonProperty(PropertyName = "p2")]
-        public Vector2D p2;
+        public readonly Vector2D p2;
+        /// <summary>
+        /// Wall object constructor. Since the client only ever deserializes objects, we only need the default constructor.
+        /// </summary>
         public Wall()
         {
-            wall = 0;
+            ID = 0;
             p1 = new();
             p2 = new();
         }
@@ -134,25 +207,33 @@ namespace ClientModel
         /// ID
         /// </summary>
         [JsonProperty(PropertyName = "power")]
-        public int power;
+        public readonly int ID;
         /// <summary>
         /// Represents the location of the powerup
         /// </summary>
         [JsonProperty(PropertyName = "loc")]
-        public Vector2D loc;
+        public readonly Vector2D loc;
 
         /// <summary>
         /// A bool indicates whether the powerup has died or has been consumed.
         /// </summary>
         [JsonProperty(PropertyName = "died")]
-        public bool died;
+        public readonly bool died;
+        /// <summary>
+        /// Powerup object constructor. Since the client only ever deserializes objects, we only need the default constructor.
+        /// </summary>
         public Powerup()
         {
-            power = 0;
+            ID = 0;
             loc = new();
             died = false;
         }
     }
+
+
+    ////////////////////////////////////////////
+    // POSSIBLY MOVE THIS TO CONTROLLER PROJECT
+    ////////////////////////////////////////////
     [JsonObject(MemberSerialization.OptIn)]
     public class ControlCommands
     {
