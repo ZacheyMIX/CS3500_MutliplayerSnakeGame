@@ -240,22 +240,4 @@ namespace ClientModel
             died = false;
         }
     }
-
-
-    ////////////////////////////////////////////
-    // POSSIBLY MOVE THIS TO CONTROLLER PROJECT
-    ////////////////////////////////////////////
-    [JsonObject(MemberSerialization.OptIn)]
-    public class ControlCommands
-    {
-        /// <summary>
-        /// the only possible strings are none, up, down, left, or right.
-        /// </summary>
-        [JsonProperty(PropertyName = "moving")]
-        public string moving;
-        public ControlCommands()
-        {
-            moving = "";
-        }
-    }
 }

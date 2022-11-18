@@ -55,6 +55,9 @@ public class WorldPanel : IDrawable
         if ( !initializedForDrawing )
             InitializeDrawing();
         
+        
+        canvas.DrawImage(background, 0, 0, 2000, 2000);
         canvas.DrawImage(wall, 0, 0, wall.Width, wall.Height);
+        canvas.DrawImage(wall, 0, 75, wall.Width, wall.Height);
     }
 }
