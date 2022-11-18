@@ -1,7 +1,7 @@
 ﻿using NetworkUtil;
 using ClientModel;
 
-namespace GameController
+namespace GC
 {
     /// <summary>
     /// Controller between the ClientModel and the view.
