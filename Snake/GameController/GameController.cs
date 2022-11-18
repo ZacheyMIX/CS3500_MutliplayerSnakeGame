@@ -64,7 +64,6 @@ namespace GC
                 Networking.Send(theServer.TheSocket, playername + "\n");
                 modelWorld.PlayerName = playername;
             }
-                
         }
 
         /// <summary>

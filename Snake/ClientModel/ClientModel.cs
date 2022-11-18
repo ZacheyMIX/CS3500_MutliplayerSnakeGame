@@ -50,6 +50,8 @@ namespace ClientModel
 
         public int WorldSize { get; set; }
 
+        public string PlayerName { get; set; }
+
         /// <summary>
         /// Default constructor for clientside World class.
         /// Clientside worlds are inherently basic,
