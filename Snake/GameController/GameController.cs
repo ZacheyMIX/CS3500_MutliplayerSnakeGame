@@ -28,6 +28,9 @@ namespace GC
         public delegate void ErrorHandler(string errorMsg);
         public event ErrorHandler? Error;
 
+        public delegate void UpdateHandler();
+        public event UpdateHandler? Update;
+
         // other possible handlers go here
 
         /// <summary>
@@ -113,8 +116,14 @@ namespace GC
 
             lock (modelWorld)
             {
-
+                foreach (string part in parts)
+                {
+                    modelWorld.Update(part);
+                }
             }
+
+            // inform the view that the world has new information
+            Update?.Invoke();
         }
 
         ////////////////////
