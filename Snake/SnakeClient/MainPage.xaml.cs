@@ -8,7 +8,14 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         controller = new GameController();
-        graphicsView.Invalidate();
+
+        controller.Error += NetworkErrorHandler;
+        controller.Update += DisplayChanges;
+    }
+
+    private void DisplayChanges()
+    {
+        Dispatcher.Dispatch(graphicsView.Invalidate);
     }
 
     void OnTapped(object sender, EventArgs args)
@@ -39,9 +46,9 @@ public partial class MainPage : ContentPage
         entry.Text = "";
     }
 
-    private void NetworkErrorHandler()
+    private void NetworkErrorHandler(string errorMsg)
     {
-        DisplayAlert("Error", "Disconnected from server", "OK");
+        DisplayAlert("Error", errorMsg, "OK");
     }
 
 

@@ -22,9 +22,6 @@ namespace GC
         /// </summary>
         private SocketState? theServer = null;
 
-        public delegate void ConnectedHandler();
-        public event ConnectedHandler? Connected;
-
         public delegate void ErrorHandler(string errorMsg);
         public event ErrorHandler? Error;
 
@@ -53,7 +50,14 @@ namespace GC
         /// <param name="address"> string representation of address to connect to </param>
         public void Connect(string address, string playername)
         {
-            Networking.ConnectToServer(OnConnect, address, 11000);
+            try
+            {
+                Networking.ConnectToServer(OnConnect, address, 11000);
+            }
+            catch
+            {
+                Error?.Invoke("Server connection timed out");
+            }
         }
 
         /// <summary>
@@ -74,9 +78,6 @@ namespace GC
             {
                 Error?.Invoke("Error connecting to server");
             }
-
-            // inform view of successful connection
-            Connected?.Invoke();
 
             theServer = state;
 
