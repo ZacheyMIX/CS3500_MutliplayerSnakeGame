@@ -3,7 +3,7 @@ using ClientModel;
 using Newtonsoft.Json;
 using System.Runtime.CompilerServices;
 
-namespace GameController
+namespace GC
 {
     /// <summary>
     /// Controller between the ClientModel and the view.
