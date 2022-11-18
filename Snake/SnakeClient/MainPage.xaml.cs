@@ -22,19 +22,19 @@ public partial class MainPage : ContentPage
         String text = entry.Text.ToLower();
         if (text == "w")
         {
-            // M
+            controller.MoveUp();
         }
         else if (text == "a")
         {
-            // Move left
+            controller.MoveLeft();
         }
         else if (text == "s")
         {
-            // Move down
+            controller.MoveDown();
         }
         else if (text == "d")
         {
-            // Move right
+            controller.MoveRight();
         }
         entry.Text = "";
     }
@@ -71,7 +71,6 @@ public partial class MainPage : ContentPage
         }
         controller.modelWorld.PlayerName = nameText.Text;
         controller.Connect(serverText.Text, nameText.Text);
-        //DisplayAlert("Successful", "Connection has been made", "OK");
 
         keyboardHack.Focus();
     }
