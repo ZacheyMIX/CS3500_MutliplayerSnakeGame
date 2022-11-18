@@ -22,7 +22,7 @@ public partial class MainPage : ContentPage
         String text = entry.Text.ToLower();
         if (text == "w")
         {
-            // Move up
+            // M
         }
         else if (text == "a")
         {
@@ -69,8 +69,9 @@ public partial class MainPage : ContentPage
             DisplayAlert("Error", "Name must be less than 16 characters", "OK");
             return;
         }
+        controller.modelWorld.PlayerName = nameText.Text;
         controller.Connect(serverText.Text, nameText.Text);
-        DisplayAlert("Successful", "Connection has been made", "OK");
+        //DisplayAlert("Successful", "Connection has been made", "OK");
 
         keyboardHack.Focus();
     }

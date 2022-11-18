@@ -16,7 +16,7 @@ namespace GC
         /// <summary>
         /// World used an accessed on the Client end
         /// </summary>
-        private World modelWorld;
+        public World modelWorld { get; }
         /// <summary>
         /// represents the connection the client has to the server.
         /// </summary>
@@ -42,14 +42,6 @@ namespace GC
         {
             modelWorld = new World();
         }
-        /// <summary>
-        /// returns world for use by View
-        /// </summary>
-        public World GetWorld()
-        {
-            return modelWorld;
-        }
-
 
         //////////////////////
         // CONNECTION METHODS
@@ -62,11 +54,6 @@ namespace GC
         public void Connect(string address, string playername)
         {
             Networking.ConnectToServer(OnConnect, address, 11000);
-            if (theServer is not null)
-            {
-                Networking.Send(theServer.TheSocket, playername + "\n");
-                modelWorld.PlayerName = playername;
-            }
         }
 
         /// <summary>
@@ -81,13 +68,20 @@ namespace GC
                 Error?.Invoke("Error connecting to server");
                 return;
             }
+
+            // send player name to server
+            if (!Networking.Send(state.TheSocket, modelWorld.PlayerName))
+            {
+                Error?.Invoke("Error connecting to server");
+            }
+
             // inform view of successful connection
             Connected?.Invoke();
 
             theServer = state;
 
             // Start an event loop to receive data from the server
-            state.OnNetworkAction = ReceiveData; // TODO: write ReceiveData
+            state.OnNetworkAction = ReceiveData;
             Networking.GetData(state);
         }
 
