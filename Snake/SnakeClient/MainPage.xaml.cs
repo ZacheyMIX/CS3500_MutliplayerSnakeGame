@@ -70,6 +70,7 @@ public partial class MainPage : ContentPage
             return;
         }
         controller.Connect(serverText.Text, nameText.Text);
+        DisplayAlert("Successful", "Connection has been made", "OK");
 
         keyboardHack.Focus();
     }
