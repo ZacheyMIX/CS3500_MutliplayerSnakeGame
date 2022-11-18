@@ -60,7 +60,10 @@ namespace GC
         {
             Networking.ConnectToServer(OnConnect, address, 11000);
             if (theServer is not null)
-                Networking.Send(theServer.TheSocket, playername);
+            {
+                Networking.Send(theServer.TheSocket, playername + "\n");
+                modelWorld.PlayerName = playername;
+            }
         }
 
         /// <summary>
