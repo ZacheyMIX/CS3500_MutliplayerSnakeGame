@@ -46,6 +46,10 @@ namespace ClientModel
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
 
+        public int ID { get; set; }
+
+        public int WorldSize { get; set; }
+
         /// <summary>
         /// Default constructor for clientside World class.
         /// Clientside worlds are inherently basic,
