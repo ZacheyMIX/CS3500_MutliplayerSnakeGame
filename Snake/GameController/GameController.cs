@@ -56,9 +56,11 @@ namespace GC
         /// Connects to server with specified address
         /// </summary>
         /// <param name="address"> string representation of address to connect to </param>
-        public void Connect(string address)
+        public void Connect(string address, string playername)
         {
             Networking.ConnectToServer(OnConnect, address, 11000);
+            if (theServer is not null)
+                Networking.Send(theServer.TheSocket, playername);
         }
 
         /// <summary>
@@ -128,8 +130,7 @@ namespace GC
             string toSendString = JsonConvert.SerializeObject(toSend) + "\n";
             if (theServer is not null)
             {
-                while (!Networking.Send(/* FIGURE OUT CONNECTION SOCKETSTATE */
-                    theServer.TheSocket, toSendString))
+                while (!Networking.Send(theServer.TheSocket, toSendString))
                 { /* mine for bitcoin */ }
             }
         }
