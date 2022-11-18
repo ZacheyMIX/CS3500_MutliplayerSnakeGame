@@ -14,5 +14,13 @@ namespace GameController
         /// World used an accessed on the Client end
         /// </summary>
         private World modelWorld;
+        /// <summary>
+        /// represents the connection the client has to the server.
+        /// </summary>
+        private SocketState connection;
+        public GameController()
+        {
+            modelWorld = new World();
+        }
     }
 }
