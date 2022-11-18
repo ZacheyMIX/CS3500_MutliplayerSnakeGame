@@ -63,6 +63,9 @@ namespace ClientModel
             snakes = new();
             walls = new();
             powerups = new();
+            PlayerName = "";
+            WorldSize = -1;
+            ID = -1;
         }
 
         /// <summary>
@@ -70,6 +73,19 @@ namespace ClientModel
         /// </summary>
         public void Update(string newElement)
         {
+            // check if incoming messages have to relate to player ID or worldsize
+            if (ID == -1 && int.TryParse(newElement, out int newID))
+            {
+                ID = newID;
+                return;
+            }
+            if (WorldSize == -1 && int.TryParse(newElement, out int newWorldSize))
+            {
+                WorldSize = newWorldSize;
+                return;
+            }
+
+            // newElement should be a kind of Json string
             JObject newObj = JObject.Parse(newElement);
             if (newObj.ContainsKey("snake"))
             {
