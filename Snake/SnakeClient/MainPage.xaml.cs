@@ -1,10 +1,13 @@
-﻿namespace SnakeGame;
+﻿using GC;
+namespace SnakeGame;
 
 public partial class MainPage : ContentPage
 {
+    GameController controller;
     public MainPage()
     {
         InitializeComponent();
+        controller = new GameController();
         graphicsView.Invalidate();
     }
 
@@ -66,7 +69,7 @@ public partial class MainPage : ContentPage
             DisplayAlert("Error", "Name must be less than 16 characters", "OK");
             return;
         }
-        DisplayAlert("Delete this", "Code to connect to server goes here", "OK");
+        controller.Connect(serverText.Text, nameText.Text);
 
         keyboardHack.Focus();
     }

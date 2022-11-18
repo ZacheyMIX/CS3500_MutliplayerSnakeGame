@@ -60,4 +60,7 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameController\GameController.csproj" />
+  </ItemGroup>
 </Project>
