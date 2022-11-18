@@ -63,6 +63,8 @@ namespace ClientModel
             snakes = new();
             walls = new();
             powerups = new();
+            PlayerName = "";
+            WorldSize = 0;
         }
 
         /// <summary>
