@@ -244,5 +244,4 @@ namespace ClientModel
             died = false;
         }
     }
-
 }
