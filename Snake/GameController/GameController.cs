@@ -96,7 +96,7 @@ namespace GC
             
             if (state.ErrorOccurred)
             {
-                //Error?.Invoke("Lost connection to server");
+                Error?.Invoke("Lost connection to server");
                 return;
             }
             
@@ -116,9 +116,10 @@ namespace GC
         private void ProcessData(SocketState state)
         {
             string totalData = state.GetData();
+            state.RemoveData(0, totalData.Length);
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
 
-            lock (parts)
+            lock (modelWorld)
             {
                 foreach (string part in parts)
                 {
@@ -137,6 +138,7 @@ namespace GC
         {
             theServer?.TheSocket?.Close();
         }
+
 
         ////////////////////
         // MOVEMENT SENDS
@@ -194,6 +196,8 @@ namespace GC
             MoveDirection("none");
         }
     }
+
+
 
     /// <summary>
     /// Helper class for sending move commands over the network
