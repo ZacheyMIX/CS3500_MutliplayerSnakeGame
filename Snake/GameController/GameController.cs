@@ -48,7 +48,7 @@ namespace GC
         /// Connects to server with specified address
         /// </summary>
         /// <param name="address"> string representation of address to connect to </param>
-        public void Connect(string address, string playername)
+        public void Connect(string address)
         {
             try
             {

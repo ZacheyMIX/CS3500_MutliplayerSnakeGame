@@ -95,7 +95,7 @@ public partial class MainPage : ContentPage
             return;
         }
         controller.modelWorld.PlayerName = nameText.Text;
-        controller.Connect(serverText.Text, nameText.Text);
+        controller.Connect(serverText.Text);
 
         keyboardHack.Focus();
     }
