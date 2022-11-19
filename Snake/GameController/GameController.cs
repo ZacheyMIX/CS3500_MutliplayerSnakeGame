@@ -93,11 +93,15 @@ namespace GC
         /// <param name="state">SocketState used and created by Networking library</param>
         private void ReceiveData(SocketState state)
         {
+            
             if (state.ErrorOccurred)
             {
-                Error?.Invoke("Lost connection to server");
+                //Error?.Invoke("Lost connection to server");
                 return;
             }
+            
+            // Errors may occur over receives due to lost data etc
+            // left in as a comment in case this was a mistake to remove
             ProcessData(state);
 
             // resume loop.
@@ -114,7 +118,7 @@ namespace GC
             string totalData = state.GetData();
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
 
-            lock (modelWorld)
+            lock (parts)
             {
                 foreach (string part in parts)
                 {
