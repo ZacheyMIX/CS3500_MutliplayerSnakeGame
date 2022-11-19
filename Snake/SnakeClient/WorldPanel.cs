@@ -60,20 +60,23 @@ public class WorldPanel : IDrawable
             InitializeDrawing();
 
         canvas.ResetState();
-        World world = control.modelWorld;
         canvas.DrawImage(background, 0, 0, 2000, 2000);
         canvas.FillColor = Colors.Red;
 
         
-        lock (world)
+        lock (control.modelWorld)
         {
-            foreach (int p in world.Snakes.Keys)
+            foreach (int p in control.modelWorld.Snakes.Keys)
             {
                 canvas.FillColor = Colors.Red;
-                foreach (Vector2D body in world.Snakes[p].body)
+                foreach (Vector2D body in control.modelWorld.Snakes[p].body)
                 {
-                    canvas.FillRoundedRectangle((float)body.GetX(), (float)body.GetY(), 25, 25, 10);
+                    canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
                 }
+            }
+            foreach(int p in control.modelWorld.Walls.Keys)
+            {
+                canvas.DrawImage(wall, 0, 0, 50, 50);
             }
         } 
     }

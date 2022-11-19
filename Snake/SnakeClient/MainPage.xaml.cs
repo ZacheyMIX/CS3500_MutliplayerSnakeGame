@@ -13,6 +13,7 @@ public partial class MainPage : ContentPage
         controller.Update += DisplayChanges;
     }
 
+
     private void DisplayChanges()
     {
         Dispatcher.Dispatch(graphicsView.Invalidate);
