@@ -13,6 +13,8 @@ using Microsoft.Maui;
 using System.Net;
 using Font = Microsoft.Maui.Graphics.Font;
 using SizeF = Microsoft.Maui.Graphics.SizeF;
+using GC;
+using ClientModel;
 
 namespace SnakeGame;
 public class WorldPanel : IDrawable
@@ -39,6 +41,7 @@ public class WorldPanel : IDrawable
     }
 #endif
 
+    private GameController control = new GameController();
     public WorldPanel()
     {
     }
@@ -52,12 +55,29 @@ public class WorldPanel : IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
+        
         if ( !initializedForDrawing )
             InitializeDrawing();
-        
-        
+
+        canvas.ResetState();
         canvas.DrawImage(background, 0, 0, 2000, 2000);
-        canvas.DrawImage(wall, 0, 0, wall.Width, wall.Height);
-        canvas.DrawImage(wall, 0, 75, wall.Width, wall.Height);
+        canvas.FillColor = Colors.Red;
+
+        
+        lock (control.modelWorld)
+        {
+            foreach (int p in control.modelWorld.Snakes.Keys)
+            {
+                canvas.FillColor = Colors.Red;
+                foreach (Vector2D body in control.modelWorld.Snakes[p].body)
+                {
+                    canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
+                }
+            }
+            foreach(int p in control.modelWorld.Walls.Keys)
+            {
+                canvas.DrawImage(wall, 0, 0, 50, 50);
+            }
+        } 
     }
 }
