@@ -63,7 +63,7 @@ namespace GC
         /// <summary>
         /// Method to be invoked by Networking library when connecting to server.
         /// Starts a Send method asynchronously to send our client's playername to the server
-        /// 
+        /// and then asynchronously starts a receive loop for the client using ReceiveData
         /// </summary>
         /// <param name="state">SocketState created by Networking library</param>
         private void OnConnect(SocketState state)
@@ -93,6 +93,8 @@ namespace GC
         /// <summary>
         /// Delegate to be used by Networking library on network activity.
         /// Receives data from the network for use in our client model.
+        /// Once the method finishes processing data, restarts the receive loop
+        /// with GetData.
         /// </summary>
         /// <param name="state">SocketState used and created by Networking library</param>
         private void ReceiveData(SocketState state)
