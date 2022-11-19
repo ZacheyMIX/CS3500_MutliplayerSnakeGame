@@ -15,7 +15,7 @@ namespace GC
         /// <summary>
         /// World used an accessed on the Client end
         /// </summary>
-        public World modelWorld { get; }
+        private World modelWorld;
         /// <summary>
         /// represents the connection the client has to the server.
         /// </summary>
@@ -37,6 +37,15 @@ namespace GC
         public GameController()
         {
             modelWorld = new World();
+        }
+
+        /// <summary>
+        /// Communicates world to the view
+        /// </summary>
+        /// <returns> Gives an instance of the World to view </returns>
+        public World GetWorld()
+        {
+            return modelWorld;
         }
 
         //////////////////////
@@ -103,7 +112,7 @@ namespace GC
             if (state.ErrorOccurred)
             {
                 Error?.Invoke("Lost connection to server");
-                //Disconnect();
+                Disconnect();
                 return;
             }
             
