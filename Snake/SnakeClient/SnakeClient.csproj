@@ -61,6 +61,7 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClientModel\ClientModel.csproj" />
     <ProjectReference Include="..\GameController\GameController.csproj" />
   </ItemGroup>
 </Project>
