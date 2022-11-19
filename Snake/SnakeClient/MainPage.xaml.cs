@@ -12,17 +12,23 @@ public partial class MainPage : ContentPage
         controller.Error += NetworkErrorHandler;
         controller.Update += DisplayChanges;
     }
-
+    /// <summary>
+    /// Dispatches a request to invalidate graphicsView
+    /// </summary>
     private void DisplayChanges()
     {
         Dispatcher.Dispatch(graphicsView.Invalidate);
     }
-
+    /// <summary>
+    /// input method
+    /// </summary>
     void OnTapped(object sender, EventArgs args)
     {
         keyboardHack.Focus();
     }
-
+    /// <summary>
+    /// handles directional inputs w,a,s,d
+    /// </summary>
     void OnTextChanged(object sender, TextChangedEventArgs args)
     {
         Entry entry = (Entry)sender;
@@ -45,7 +51,10 @@ public partial class MainPage : ContentPage
         }
         entry.Text = "";
     }
-
+    /// <summary>
+    /// event handler for network errors. Displays errors accordingly.
+    /// </summary>
+    /// <param name="errorMsg"> error message to be displayed </param>
     private void NetworkErrorHandler(string errorMsg)
     {
         DisplayAlert("Error", errorMsg, "OK");
