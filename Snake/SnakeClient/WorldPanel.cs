@@ -41,7 +41,7 @@ public class WorldPanel : IDrawable
     }
 #endif
 
-    private GameController control = new GameController();
+    World world;
     public WorldPanel()
     {
     }
@@ -55,6 +55,10 @@ public class WorldPanel : IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
+        // TODO: write code to retrieve this frame's world from our active GameController instance's GetWorld method.
+        // Assign this to WorldPanel's world object and then use that to draw our world.
+        // Also note that we need to check that world is initialized correctly with both the worldsize and our client's ID.
+
         
         if ( !initializedForDrawing )
             InitializeDrawing();
@@ -63,7 +67,8 @@ public class WorldPanel : IDrawable
         canvas.DrawImage(background, 0, 0, 2000, 2000);
         canvas.FillColor = Colors.Red;
 
-        
+
+        // All references to control.modelWorld should be changed to WorldPanel's world data member.
         lock (control.modelWorld)
         {
             foreach (int p in control.modelWorld.Snakes.Keys)

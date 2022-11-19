@@ -39,6 +39,12 @@ namespace GC
             modelWorld = new World();
         }
 
+
+
+        /////////////////////////
+        // VIEW TO WORLD METHODS
+        /////////////////////////
+
         /// <summary>
         /// Communicates world to the view
         /// </summary>
@@ -47,6 +53,20 @@ namespace GC
         {
             return modelWorld;
         }
+
+        /// <summary>
+        /// Sets Client's ID
+        /// </summary>
+        /// <param name="newID"> proposed ID for the client </param>
+        /// <returns> returns true if ID was changed, false if otherwise </returns>
+        public bool SetName(string newName)
+        {
+            if (modelWorld.PlayerName == "")
+                return false;
+            modelWorld.PlayerName = newName;
+            return true;
+        }
+
 
         //////////////////////
         // CONNECTION METHODS

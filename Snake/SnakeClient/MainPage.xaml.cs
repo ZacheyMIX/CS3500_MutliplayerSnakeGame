@@ -94,7 +94,7 @@ public partial class MainPage : ContentPage
             DisplayAlert("Error", "Name must be less than 16 characters", "OK");
             return;
         }
-        controller.modelWorld.PlayerName = nameText.Text;
+        controller.SetName(nameText.Text);
         controller.Connect(serverText.Text);
 
         keyboardHack.Focus();
