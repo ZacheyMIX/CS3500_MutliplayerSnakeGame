@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SnakeGame;
 using System.Data;
+using System.Diagnostics;
 
 namespace ClientModel
 {
@@ -74,6 +75,8 @@ namespace ClientModel
         public void Update(string newElement)
         {
             // check if incoming messages have to relate to player ID or worldsize
+            Debug.WriteLine("\n" + newElement + "\n");
+
             if (ID == -1 && int.TryParse(newElement, out int newID))
             {
                 ID = newID;
@@ -84,6 +87,8 @@ namespace ClientModel
                 WorldSize = newWorldSize;
                 return;
             }
+
+
 
             // newElement should be a kind of Json string
             JObject newObj = JObject.Parse(newElement);

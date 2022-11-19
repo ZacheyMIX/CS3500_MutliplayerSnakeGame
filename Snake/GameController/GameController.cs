@@ -1,7 +1,6 @@
 ﻿using NetworkUtil;
 using ClientModel;
 using Newtonsoft.Json;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace GC
@@ -46,6 +45,7 @@ namespace GC
         
         /// <summary>
         /// Connects to server with specified address
+        /// Starts OnConnect method asynchronously
         /// </summary>
         /// <param name="address"> string representation of address to connect to </param>
         public void Connect(string address)
@@ -62,6 +62,8 @@ namespace GC
 
         /// <summary>
         /// Method to be invoked by Networking library when connecting to server.
+        /// Starts a Send method asynchronously to send our client's playername to the server
+        /// 
         /// </summary>
         /// <param name="state">SocketState created by Networking library</param>
         private void OnConnect(SocketState state)
@@ -70,6 +72,7 @@ namespace GC
             {
                 // communicate error to the view
                 Error?.Invoke("Error connecting to server");
+                Disconnect();
                 return;
             }
 
@@ -77,6 +80,7 @@ namespace GC
             if (!Networking.Send(state.TheSocket, modelWorld.PlayerName))
             {
                 Error?.Invoke("Error connecting to server");
+                Disconnect();
             }
 
             theServer = state;
@@ -97,6 +101,7 @@ namespace GC
             if (state.ErrorOccurred)
             {
                 Error?.Invoke("Lost connection to server");
+                //Disconnect();
                 return;
             }
             
@@ -134,7 +139,7 @@ namespace GC
         /// <summary>
         /// Closes connection with the server
         /// </summary>
-        public void Close()
+        public void Disconnect()
         {
             theServer?.TheSocket?.Close();
         }
