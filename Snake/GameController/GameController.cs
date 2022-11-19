@@ -88,6 +88,7 @@ namespace GC
 
         /// <summary>
         /// Delegate to be used by Networking library on network activity.
+        /// Receives data from the network for use in our client model.
         /// </summary>
         /// <param name="state">SocketState used and created by Networking library</param>
         private void ReceiveData(SocketState state)
@@ -104,6 +105,10 @@ namespace GC
             Networking.GetData(state);
         }
 
+        /// <summary>
+        /// Deeper delegate to be used by networking library on network activity.
+        /// Processes data received by the network and feeds to our client model.
+        /// </summary>
         private void ProcessData(SocketState state)
         {
             string totalData = state.GetData();
@@ -119,6 +124,14 @@ namespace GC
 
             // inform the view that the world has new information
             Update?.Invoke();
+        }
+
+        /// <summary>
+        /// Closes connection with the server
+        /// </summary>
+        public void Close()
+        {
+            theServer?.TheSocket?.Close();
         }
 
         ////////////////////
