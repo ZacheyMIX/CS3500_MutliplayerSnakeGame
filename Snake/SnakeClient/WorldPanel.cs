@@ -32,35 +32,32 @@ public class WorldPanel : IDrawable
         return PlatformImage.FromStream(assembly.GetManifestResourceStream($"{path}.{name}"));
     }
 #else
-  private IImage loadImage( string name )
+    private IImage loadImage(string name)
     {
         Assembly assembly = GetType().GetTypeInfo().Assembly;
         string path = "SnakeGame.Resources.Images";
         var service = new W2DImageLoadingService();
-        return service.FromStream( assembly.GetManifestResourceStream( $"{path}.{name}" ) );
+        return service.FromStream(assembly.GetManifestResourceStream($"{path}.{name}"));
     }
 #endif
 
-    World world;
+    private GameController control = new GameController();
+    private World world;
     public WorldPanel()
     {
     }
 
     private void InitializeDrawing()
     {
-        wall = loadImage( "WallSprite.png" );
-        background = loadImage( "Background.png" );
+        wall = loadImage("WallSprite.png");
+        background = loadImage("Background.png");
         initializedForDrawing = true;
     }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
-        // TODO: write code to retrieve this frame's world from our active GameController instance's GetWorld method.
-        // Assign this to WorldPanel's world object and then use that to draw our world.
-        // Also note that we need to check that world is initialized correctly with both the worldsize and our client's ID.
 
-        
-        if ( !initializedForDrawing )
+        if (!initializedForDrawing)
             InitializeDrawing();
 
         canvas.ResetState();
@@ -68,21 +65,22 @@ public class WorldPanel : IDrawable
         canvas.FillColor = Colors.Red;
 
 
-        // All references to control.modelWorld should be changed to WorldPanel's world data member.
-        lock (control.modelWorld)
+        world = control.modelWorld;
+
+        lock (world)
         {
-            foreach (int p in control.modelWorld.Snakes.Keys)
+            foreach (int p in world.Snakes.Keys)
             {
                 canvas.FillColor = Colors.Red;
-                foreach (Vector2D body in control.modelWorld.Snakes[p].body)
+                foreach (Vector2D body in world.Snakes[p].body)
                 {
                     canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
                 }
             }
-            foreach(int p in control.modelWorld.Walls.Keys)
+            foreach (int p in world.Walls.Keys)
             {
                 canvas.DrawImage(wall, 0, 0, 50, 50);
             }
-        } 
+        }
     }
 }

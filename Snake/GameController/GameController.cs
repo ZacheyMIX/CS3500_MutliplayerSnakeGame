@@ -15,7 +15,7 @@ namespace GC
         /// <summary>
         /// World used an accessed on the Client end
         /// </summary>
-        private World modelWorld;
+        public World modelWorld { get; }
         /// <summary>
         /// represents the connection the client has to the server.
         /// </summary>
@@ -37,34 +37,6 @@ namespace GC
         public GameController()
         {
             modelWorld = new World();
-        }
-
-
-
-        /////////////////////////
-        // VIEW TO WORLD METHODS
-        /////////////////////////
-
-        /// <summary>
-        /// Communicates world to the view
-        /// </summary>
-        /// <returns> Gives an instance of the World to view </returns>
-        public World GetWorld()
-        {
-            return modelWorld;
-        }
-
-        /// <summary>
-        /// Sets Client's ID
-        /// </summary>
-        /// <param name="newID"> proposed ID for the client </param>
-        /// <returns> returns true if ID was changed, false if otherwise </returns>
-        public bool SetName(string newName)
-        {
-            if (modelWorld.PlayerName == "")
-                return false;
-            modelWorld.PlayerName = newName;
-            return true;
         }
 
 
@@ -106,6 +78,7 @@ namespace GC
             }
 
             // send player name to server
+            while (modelWorld.PlayerName == "") { /* wait for model to have a name */ }
             if (!Networking.Send(state.TheSocket, modelWorld.PlayerName))
             {
                 Error?.Invoke("Error connecting to server");

@@ -2,12 +2,13 @@
 #### Written by Ashton Hunt and Zachery Blomquist as part of CS3500, University of Utah, Fall 2022
 
 ## What works:
-- Our client can connect to servers
+- Our client can connect to and be accepted by servers
 - Our client can send messages and data over the network appropriately
-- Networking errors are accomodated for
+- Network errors are accomodated for
 
 ## What doesn't work:
 - Visual representations
+- A network error occurs immediately after connection
 - Possibly unaccounted for errors
 
 ## What we still have to do:
