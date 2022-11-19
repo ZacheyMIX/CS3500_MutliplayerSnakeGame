@@ -52,12 +52,21 @@ public partial class MainPage : ContentPage
         entry.Text = "";
     }
     /// <summary>
-    /// event handler for network errors. Displays errors accordingly.
+    /// event handler for network errors. Dispatches appropriate error displays.
     /// </summary>
     /// <param name="errorMsg"> error message to be displayed </param>
     private void NetworkErrorHandler(string errorMsg)
     {
-        DisplayAlert("Error", errorMsg, "OK");
+        // show the error
+        Dispatcher.Dispatch(() => DisplayAlert("Error", errorMsg, "OK"));
+
+        // then re-enable controls so user can reconenct
+        Dispatcher.Dispatch(
+            () =>
+            {
+                connectButton.IsEnabled = true;
+                serverText.IsEnabled = true;
+            });
     }
 
 
@@ -106,7 +115,7 @@ public partial class MainPage : ContentPage
     {
         DisplayAlert("About",
       "SnakeGame solution\nArtwork by Jolie Uk and Alex Smith\nGame design by Daniel Kopta and Travis Martin\n" +
-      "Implementation by ...\n" +
+      "Implementation by Ashton Hunt and Zachary Blomquist\n" +
         "CS 3500 Fall 2022, University of Utah", "OK");
     }
 
