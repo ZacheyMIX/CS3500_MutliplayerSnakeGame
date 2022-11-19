@@ -88,15 +88,20 @@ namespace GC
 
         /// <summary>
         /// Delegate to be used by Networking library on network activity.
+        /// Receives data from the network for use in our client model.
         /// </summary>
         /// <param name="state">SocketState used and created by Networking library</param>
         private void ReceiveData(SocketState state)
         {
+            
             if (state.ErrorOccurred)
             {
-                Error?.Invoke("Lost connection to server");
+                //Error?.Invoke("Lost connection to server");
                 return;
             }
+            
+            // Errors may occur over receives due to lost data etc
+            // left in as a comment in case this was a mistake to remove
             ProcessData(state);
 
             // resume loop.
@@ -104,12 +109,16 @@ namespace GC
             Networking.GetData(state);
         }
 
+        /// <summary>
+        /// Deeper delegate to be used by networking library on network activity.
+        /// Processes data received by the network and feeds to our client model.
+        /// </summary>
         private void ProcessData(SocketState state)
         {
             string totalData = state.GetData();
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
 
-            lock (modelWorld)
+            lock (parts)
             {
                 foreach (string part in parts)
                 {
@@ -119,6 +128,14 @@ namespace GC
 
             // inform the view that the world has new information
             Update?.Invoke();
+        }
+
+        /// <summary>
+        /// Closes connection with the server
+        /// </summary>
+        public void Close()
+        {
+            theServer?.TheSocket?.Close();
         }
 
         ////////////////////
