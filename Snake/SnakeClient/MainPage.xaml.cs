@@ -11,6 +11,8 @@ public partial class MainPage : ContentPage
 
         controller.Error += NetworkErrorHandler;
         controller.Update += DisplayChanges;
+
+        worldPanel.SetWorld(controller.modelWorld);
     }
     /// <summary>
     /// Dispatches a request to invalidate graphicsView
