@@ -65,7 +65,7 @@ namespace GC
             if (state.ErrorOccurred)
             {
                 // communicate error to the view
-                Error?.Invoke("Error connecting to server");
+                Error?.Invoke("Error connecting to server\n"+state.ErrorMessage);
                 Disconnect();
                 return;
             }
@@ -97,7 +97,7 @@ namespace GC
             
             if (state.ErrorOccurred)
             {
-                Error?.Invoke("Lost connection to server");
+                Error?.Invoke("Lost connection to server\n"+state.ErrorMessage);
                 Disconnect();
                 return;
             }
@@ -160,6 +160,10 @@ namespace GC
             {
                 while (!Networking.Send(theServer.TheSocket, toSendString))
                 { /* mine for bitcoin */ }
+
+                // Check if an error occurred after sendin
+                if (theServer.ErrorOccurred)
+                    Error?.Invoke("lost connection to server\n"+theServer.ErrorMessage);
             }
         }
         /// <summary>
