@@ -51,14 +51,7 @@ namespace GC
         /// <param name="address"> string representation of address to connect to </param>
         public void Connect(string address)
         {
-            try
-            {
-                Networking.ConnectToServer(OnConnect, address, 11000);
-            }
-            catch
-            {
-                Error?.Invoke("Server connection timed out");
-            }
+            Networking.ConnectToServer(OnConnect, address, 11000);
         }
 
         /// <summary>
