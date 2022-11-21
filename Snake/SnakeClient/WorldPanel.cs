@@ -89,7 +89,8 @@ public class WorldPanel : IDrawable
     private void WallDrawer(object o, ICanvas canvas)
     {
         Wall w = o as Wall;
-        canvas.DrawImage(wall, parse(w.p1.GetX()), parse(w.p1.GetY()), parse(w.p2.GetX()), parse(w.p2.GetY()));
+        canvas.DrawImage(wall, parse(w.p1.GetX()), parse(w.p1.GetY()), 50, 50);
+        canvas.DrawImage(wall, parse(w.p2.GetX()), parse(w.p2.GetY()), 50, 50);
     }
 
     private void PowerupDrawer(object o, ICanvas canvas)
@@ -121,21 +122,21 @@ public class WorldPanel : IDrawable
         canvas.ResetState();
         canvas.DrawImage(background, 0, 0, 2000, 2000);
 
-        //lock (world)
-        //{
-        //    foreach (var p in world.Snakes.Values)
-        //    {
-        //        //canvas.FillColor = Colors.Red;
-        //        //canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
-        //    }
-        //    foreach (var p in world.Walls.Values)
-        //    {
-        //        WallDrawer(p, canvas);
-        //    }
-        //    foreach (var p in world.Powerups.Values)
-        //    {
-        //        //canvas.DrawImage(wall, 0, 0, 50, 50);
-        //    }
-        //}
+        lock (world)
+        {
+            foreach (var p in world.Snakes.Values)
+            {
+                //canvas.FillColor = Colors.Red;
+                //canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
+            }
+            foreach (var p in world.Walls.Values)
+            {
+                WallDrawer(p, canvas);
+            }
+            foreach (var p in world.Powerups.Values)
+            {
+                //canvas.DrawImage(wall, 0, 0, 50, 50);
+            }
+        }
     }
 }
