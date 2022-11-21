@@ -19,8 +19,9 @@ public partial class MainPage : ContentPage
     /// </summary>
     private void DisplayChanges()
     {
-        Dispatcher.Dispatch(graphicsView.Invalidate);
+        Dispatcher.Dispatch(() => graphicsView.Invalidate());
     }
+
     /// <summary>
     /// input method
     /// </summary>
