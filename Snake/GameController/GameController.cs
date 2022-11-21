@@ -134,7 +134,7 @@ namespace GC
                         if (modelWorld.ID == -1)
                             modelWorld.ID = value;
 
-                        if (modelWorld.WorldSize == -1)
+                        else if (modelWorld.WorldSize == -1)
                             modelWorld.WorldSize = value;
 
                         continue;
