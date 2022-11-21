@@ -72,33 +72,15 @@ namespace ClientModel
         /// <summary>
         /// Updates the World model every time a new Json string is received
         /// </summary>
-        public void Update(string newElement)
+        public void Update(JObject newObj)
         {
-            // check if incoming messages have to relate to player ID or worldsize
-            Debug.WriteLine("\n" + newElement + "\n");
-
-            if (ID == -1 && int.TryParse(newElement, out int newID))
-            {
-                ID = newID;
-                return;
-            }
-            if (WorldSize == -1 && int.TryParse(newElement, out int newWorldSize))
-            {
-                WorldSize = newWorldSize;
-                return;
-            }
-
-
-
-            // newElement should be a kind of Json string
-            JObject newObj = JObject.Parse(newElement);
             if (newObj.ContainsKey("snake"))
             {
                 // may scrap entire if statement if this is too convoluted
 
                 // possibly add an if statement for disconnects or deaths so the snake isn't accidentally drawn
 
-                Snake? newSnake = JsonConvert.DeserializeObject<Snake>(newElement); // nullable only to appease return type of DeserializeObject method.
+                Snake? newSnake = newObj.ToObject<Snake>(); // nullable only to appease return type of DeserializeObject method.
                 if (!(newSnake is Snake))
                     return; // shouldn't happen but just in case
 
@@ -115,14 +97,14 @@ namespace ClientModel
             }
             else if (newObj.ContainsKey("wall"))
             {
-                Wall? newWall = JsonConvert.DeserializeObject<Wall>(newElement);
+                Wall? newWall = newObj.ToObject<Wall>();
                 if (newWall is Wall)
                     walls.Add(newWall.ID, newWall!);
                 return;
             }
             else if (newObj.ContainsKey("power"))
             {
-                Powerup? newPwp = JsonConvert.DeserializeObject<Powerup>(newElement);
+                Powerup? newPwp = newObj.ToObject<Powerup>();
 
                 if (!(newPwp is Powerup))   // if newPwp is not a Powerup
                     return; // shouldn't happen but just in case

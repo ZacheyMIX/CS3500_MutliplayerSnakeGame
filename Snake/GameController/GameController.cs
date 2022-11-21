@@ -2,6 +2,7 @@
 using ClientModel;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace GC
 {
@@ -65,23 +66,21 @@ namespace GC
             if (state.ErrorOccurred)
             {
                 // communicate error to the view
-                Error?.Invoke("Error connecting to server\n"+state.ErrorMessage);
+                Error?.Invoke("Error connecting to server. Couldn't establish connection.\n"+state.ErrorMessage);
                 Disconnect();
                 return;
             }
-
+            theServer = state;
+            theServer.OnNetworkAction = ReceiveData;
             // send player name to server
-            while (modelWorld.PlayerName == "") { /* wait for model to have a name */ }
-            if (!Networking.Send(state.TheSocket, modelWorld.PlayerName))
+            Networking.Send(theServer.TheSocket, modelWorld.PlayerName);
+
+            if (state.ErrorOccurred)
             {
-                Error?.Invoke("Error connecting to server");
+                Error?.Invoke("Error connecting to server. Couldn't send player name.\n"+state.ErrorMessage);
                 Disconnect();
             }
-
-            theServer = state;
-
             // Start an event loop to receive data from the server
-            state.OnNetworkAction = ReceiveData;
             Networking.GetData(state);
         }
 
@@ -94,10 +93,10 @@ namespace GC
         /// <param name="state">SocketState used and created by Networking library</param>
         private void ReceiveData(SocketState state)
         {
-            
             if (state.ErrorOccurred)
             {
-                Error?.Invoke("Lost connection to server\n"+state.ErrorMessage);
+                Error?.Invoke
+                    ("Lost connection to server. Some receive operation went weird.\n"+state.ErrorMessage);
                 Disconnect();
                 return;
             }
@@ -118,14 +117,30 @@ namespace GC
         private void ProcessData(SocketState state)
         {
             string totalData = state.GetData();
-            state.RemoveData(0, totalData.Length);
+            if (totalData.Length > 0)
+                state.RemoveData(0, totalData.Length-1);
+
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
 
             lock (modelWorld)
             {
                 foreach (string part in parts)
                 {
-                    modelWorld.Update(part);
+                    if (int.TryParse(part, out int value))
+                    {   // means this is the first few messages received from the server
+                        if (modelWorld.ID == -1)
+                            modelWorld.ID = value;
+
+                        if (modelWorld.WorldSize == -1)
+                            modelWorld.WorldSize = value;
+
+                        return;
+                    }
+                    if (part == "" || part == "\n")
+                        return;
+
+                    JObject newObj = JObject.Parse(part.Trim());
+                    modelWorld.Update(newObj);
                 }
             }
 
