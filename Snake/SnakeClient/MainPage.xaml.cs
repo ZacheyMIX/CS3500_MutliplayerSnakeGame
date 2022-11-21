@@ -60,7 +60,13 @@ public partial class MainPage : ContentPage
     private void NetworkErrorHandler(string errorMsg)
     {
         // show the error
-        Dispatcher.Dispatch(() => DisplayAlert("Error", errorMsg, "OK"));
+        Dispatcher.Dispatch(async () =>
+        {
+            if (await DisplayAlert("Error", errorMsg, "Retry Connection", "Disconnect"))
+            {
+                controller.Connect(serverText.Text);
+            }
+        });
 
         // then re-enable controls so user can reconenct
         Dispatcher.Dispatch(
