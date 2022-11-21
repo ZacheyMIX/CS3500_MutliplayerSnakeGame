@@ -41,7 +41,6 @@ public class WorldPanel : IDrawable
     }
 #endif
 
-    private GameController control = new GameController();
     private World world;
     public WorldPanel()
     {

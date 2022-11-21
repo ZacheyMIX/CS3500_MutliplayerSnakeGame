@@ -21,6 +21,7 @@ namespace GC
         /// represents the connection the client has to the server.
         /// </summary>
         private SocketState? theServer = null;
+        private string lastString = "";
 
         public delegate void ErrorHandler(string errorMsg);
         public event ErrorHandler? Error;
@@ -116,11 +117,13 @@ namespace GC
         /// </summary>
         private void ProcessData(SocketState state)
         {
-            string totalData = state.GetData();
-            if (totalData.Length > 0)
-                state.RemoveData(0, totalData.Length-1);
-
-            string[] parts = Regex.Split(totalData, @"(?<=[\n])");
+            // Receive new data and append it to previously cut off data
+            string received = state.GetData();
+            lastString += received;
+            if (received.Length > 0)
+                state.RemoveData(0, received.Length - 1);
+            string[] parts = Regex.Split(lastString, @"(?<=[\n])");
+            lastString = "";
 
             lock (modelWorld)
             {
@@ -134,10 +137,16 @@ namespace GC
                         if (modelWorld.WorldSize == -1)
                             modelWorld.WorldSize = value;
 
-                        return;
+                        continue;
                     }
                     if (part == "" || part == "\n")
+                        continue;
+
+                    if (!Regex.IsMatch(part, @"\n^"))
+                    {
+                        lastString = part;
                         return;
+                    }
 
                     JObject newObj = JObject.Parse(part.Trim());
                     modelWorld.Update(newObj);
