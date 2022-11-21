@@ -121,8 +121,8 @@ namespace GC
             string received = state.GetData();
             lastString += received;
             if (received.Length > 0)
-                state.RemoveData(0, received.Length - 1);
-            string[] parts = Regex.Split(lastString, @"(?<=[\n])");
+                state.RemoveData(0, received.Length);
+            string[] parts = Regex.Split(lastString, "(?<=[\n])");
             lastString = "";
 
             lock (modelWorld)
@@ -142,7 +142,7 @@ namespace GC
                     if (part == "" || part == "\n")     // funky Regex junk
                         continue;
 
-                    if (!Regex.IsMatch(part, @"\n^"))
+                    if (!Regex.IsMatch(part, "\n^"))
                     {   // means the message got cut off and we should receive again before parsing more
                         lastString = part;
                         return;
