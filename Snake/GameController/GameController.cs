@@ -142,7 +142,7 @@ namespace GC
                     if (part == "" || part == "\n")     // funky Regex junk
                         continue;
 
-                    if (!Regex.IsMatch(part, "\n^"))
+                    if (!Regex.IsMatch(part, "\n$"))
                     {   // means the message got cut off and we should receive again before parsing more
                         lastString = part;
                         return;
