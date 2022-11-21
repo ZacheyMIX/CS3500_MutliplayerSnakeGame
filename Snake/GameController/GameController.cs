@@ -142,14 +142,16 @@ namespace GC
                     if (part == "" || part == "\n")
                         continue;
 
-                    if (!Regex.IsMatch(part, @"\n^"))
-                    {
+                    if (!Regex.IsMatch(part, @"\n$"))
+                    {   // means the message got cut off and we should receive again before parsing more
                         lastString = part;
                         return;
                     }
 
-                    JObject newObj = JObject.Parse(part.Trim());
-                    modelWorld.Update(newObj);
+                        JObject newObj = JObject.Parse(part.Trim());
+                        modelWorld.Update(newObj);
+
+                    
                 }
             }
 
