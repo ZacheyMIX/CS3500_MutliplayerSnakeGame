@@ -21,7 +21,7 @@ namespace GC
         /// represents the connection the client has to the server.
         /// </summary>
         private SocketState? theServer = null;
-        private string lastString = "";
+        private string lastString = ""; // used when incoming strings are cut off
 
         public delegate void ErrorHandler(string errorMsg);
         public event ErrorHandler? Error;
@@ -112,7 +112,7 @@ namespace GC
         }
 
         /// <summary>
-        /// Deeper delegate to be used by networking library on network activity.
+        /// Deeper method to be used by networking library on network activity.
         /// Processes data received by the network and feeds to our client model.
         /// </summary>
         private void ProcessData(SocketState state)
@@ -139,15 +139,15 @@ namespace GC
 
                         continue;
                     }
-                    if (part == "" || part == "\n")
+                    if (part == "" || part == "\n")     // funky Regex junk
                         continue;
 
                     if (!Regex.IsMatch(part, @"\n^"))
-                    {
+                    {   // means the message got cut off and we should receive again before parsing more
                         lastString = part;
                         return;
                     }
-
+                    // string is an intact json string
                     JObject newObj = JObject.Parse(part.Trim());
                     modelWorld.Update(newObj);
                 }

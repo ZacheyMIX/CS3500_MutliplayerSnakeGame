@@ -5,15 +5,15 @@
 - Our client can connect to and be accepted by servers
 - Our client can send messages and data over the network appropriately
 - Network errors are accomodated for
+- Interrupted or cut off data receives are saved for later parsing with the full message
 
 ## What doesn't work:
 - Visual representations
-- A network error occurs immediately after connection
 - Possibly unaccounted for errors
 
 ## What we still have to do:
 - Get everything that doesn't work working
-- Connect GameController.cs, WorldPanel.cs, and MainPage.xaml.cs
+- Develop our drawing methods
 
 ## Things we tried to remember in development:
 - Keeping the model passive
@@ -21,3 +21,8 @@
 - Keep networking calls in relevant controller projects only
 - Maintaining separation of concerns with MVC
 - Commuticating appropriately between the model, view, and controller
+
+## Noteworthy design decisions:
+- ClientModel's Update method takes in JObjects instead of strings. This leaves the JSON parsing duties up to GameController.
+- Client IDs are stored within the ClientModel.
+- A client is given an option to reconnect to the server or to fully disconnect from a server given networking errors.
