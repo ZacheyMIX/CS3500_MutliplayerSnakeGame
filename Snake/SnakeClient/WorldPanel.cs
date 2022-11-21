@@ -19,6 +19,7 @@ using ClientModel;
 namespace SnakeGame;
 public class WorldPanel : IDrawable
 {
+    public delegate void ObjectDrawer(object o, ICanvas canvas);
     private IImage wall;
     private IImage background;
 
@@ -63,6 +64,51 @@ public class WorldPanel : IDrawable
         initializedForDrawing = true;
     }
 
+    /// <summary>
+    /// This method performs a translation and rotation to draw an object.
+    /// </summary>
+    /// <param name="canvas">The canvas object for drawing onto</param>
+    /// <param name="o">The object to draw</param>
+    /// <param name="worldX">The X component of the object's position in world space</param>
+    /// <param name="worldY">The Y component of the object's position in world space</param>
+    /// <param name="angle">The orientation of the object, measured in degrees clockwise from "up"</param>
+    /// <param name="drawer">The drawer delegate. After the transformation is applied, the delegate is invoked to draw whatever it wants</param>
+    private void DrawObjectWithTransform(ICanvas canvas, object o, double worldX, double worldY, double angle, ObjectDrawer drawer)
+    {
+        // "push" the current transform
+        canvas.SaveState();
+
+        canvas.Translate((float)worldX, (float)worldY);
+        canvas.Rotate((float)angle);
+        drawer(o, canvas);
+
+        // "pop" the transform
+        canvas.RestoreState();
+    }
+
+    private void WallDrawer(object o, ICanvas canvas)
+    {
+        Wall w = o as Wall;
+        canvas.DrawImage(wall, parse(w.p1.GetX()), parse(w.p1.GetY()), parse(w.p2.GetX()), parse(w.p2.GetY()));
+    }
+
+    private void PowerupDrawer(object o, ICanvas canvas)
+    {
+        Powerup p = o as Powerup;
+        int width = 10;
+        canvas.FillColor = Colors.Orange;
+
+        // Ellipses are drawn starting from the top-left corner.
+        // So if we want the circle centered on the powerup's location, we have to offset it
+        // by half its size to the left (-width/2) and up (-height/2)
+        canvas.FillEllipse(-(width / 2), -(width / 2), width, width);
+    }
+
+    private float parse(double num)
+    {
+        return float.Parse(num.ToString());
+    }
+
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
         if (world.ID == -1 || world.WorldSize == -1)    // do not draw if our information isn't set yet
@@ -74,22 +120,22 @@ public class WorldPanel : IDrawable
 
         canvas.ResetState();
         canvas.DrawImage(background, 0, 0, 2000, 2000);
-        canvas.FillColor = Colors.Red;
 
-        lock (world)
-        {
-            foreach (int p in world.Snakes.Keys)
-            {
-                canvas.FillColor = Colors.Red;
-                foreach (Vector2D body in world.Snakes[p].body)
-                {
-                    canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
-                }
-            }
-            foreach (int p in world.Walls.Keys)
-            {
-                canvas.DrawImage(wall, 0, 0, 50, 50);
-            }
-        }
+        //lock (world)
+        //{
+        //    foreach (var p in world.Snakes.Values)
+        //    {
+        //        //canvas.FillColor = Colors.Red;
+        //        //canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
+        //    }
+        //    foreach (var p in world.Walls.Values)
+        //    {
+        //        WallDrawer(p, canvas);
+        //    }
+        //    foreach (var p in world.Powerups.Values)
+        //    {
+        //        //canvas.DrawImage(wall, 0, 0, 50, 50);
+        //    }
+        //}
     }
 }
