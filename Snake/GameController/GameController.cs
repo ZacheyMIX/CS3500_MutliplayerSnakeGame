@@ -121,7 +121,7 @@ namespace GC
             string received = state.GetData();
             lastString += received;
             if (received.Length > 0)
-                state.RemoveData(0, received.Length - 1);
+                state.RemoveData(0, received.Length);
             string[] parts = Regex.Split(lastString, @"(?<=[\n])");
             lastString = "";
 
