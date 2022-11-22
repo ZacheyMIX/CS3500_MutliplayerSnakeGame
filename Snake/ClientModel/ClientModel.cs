@@ -82,9 +82,13 @@ namespace ClientModel
         {
             if (newObj.ContainsKey("snake"))
             {
-                // may scrap entire if statement if this is too convoluted
-
-                // possibly add an if statement for disconnects or deaths so the snake isn't accidentally drawn
+                // method checks if snake is valid,
+                // removes identical snakes (if applicable) temporarily
+                // if the snake died this same frame, and isn't already in the deadSnakes data structure,
+                // snake is added to deadSnakes for display in view.
+                // otherwise, snake has been dead for a little bit, and isn't added to anything.
+                // finally, if the snake isn't dead, snake is added to snakes
+                // to be drawn as a living, breathing, gen-you-wine snake.
 
                 Snake? newSnake = newObj.ToObject<Snake>(); // nullable only to appease return type of DeserializeObject method.
                 if (!(newSnake is Snake))
@@ -107,6 +111,8 @@ namespace ClientModel
             }
             else if (newObj.ContainsKey("wall"))
             {
+                // Walls are only sent once and at the beginning
+                // so method just adds these walls to the appropriate data structure.
                 Wall? newWall = newObj.ToObject<Wall>();
                 if (newWall is Wall)
                     walls.Add(newWall.ID, newWall!);
@@ -114,6 +120,13 @@ namespace ClientModel
             }
             else if (newObj.ContainsKey("power"))
             {
+                // Whenever a new JSON string regarding a powerup is received,
+                // method checks if that ID is already in powerup data structure.
+                // if it is, it's removed temporarily.
+                // if the JSON string is sent because that powerup died,
+                // the powerup is not added back to the data structure.
+                // otherwise the powerup is added.
+
                 Powerup? newPwp = newObj.ToObject<Powerup>();
 
                 if (!(newPwp is Powerup))   // if newPwp is not a Powerup
@@ -132,6 +145,7 @@ namespace ClientModel
 
         /// <summary>
         /// Used to remove dead snakes every frame
+        /// so as to not clutter the view
         /// </summary>
         public void ResetDeadSnakes()
         {
