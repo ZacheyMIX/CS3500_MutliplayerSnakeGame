@@ -15,6 +15,7 @@ using Font = Microsoft.Maui.Graphics.Font;
 using SizeF = Microsoft.Maui.Graphics.SizeF;
 using GC;
 using ClientModel;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SnakeGame;
 public class WorldPanel : IDrawable
@@ -22,6 +23,8 @@ public class WorldPanel : IDrawable
     public delegate void ObjectDrawer(object o, ICanvas canvas);
     private IImage wall;
     private IImage background;
+    //private IImage explode;
+    private int viewSize = 900;
 
     private bool initializedForDrawing = false;
 
@@ -61,6 +64,7 @@ public class WorldPanel : IDrawable
     {
         wall = loadImage("WallSprite.png");
         background = loadImage("Background.png");
+        //explode = loadImage("Explode.png");
         initializedForDrawing = true;
     }
 
@@ -86,14 +90,38 @@ public class WorldPanel : IDrawable
         canvas.RestoreState();
     }
 
+    private void ColorID(int num, ICanvas canvas)
+    {
+        while(num > 7)
+        {
+            num -= 8;
+        }
+        if (num == 0)
+            canvas.FillColor = Colors.Red;
+        else if (num == 1)
+            canvas.FillColor = Colors.Orange;
+        else if (num == 2)
+            canvas.FillColor = Colors.Green;
+        else if (num == 3)
+            canvas.FillColor = Colors.Blue;
+        else if (num == 4)
+            canvas.FillColor = Colors.Black;
+        else if (num == 5)
+            canvas.FillColor = Colors.White;
+        else if (num == 6)
+            canvas.FillColor = Colors.Purple;
+        else
+            canvas.FillColor = Colors.Yellow;
+    }
+
     private void SnakeDrawer(object o, ICanvas canvas)
     {
         Snake s = o as Snake;
-        canvas.FillColor = Colors.Red;
-        foreach(Vector2D body in s.body)
+        canvas.DrawString(s.name + ": " + s.score, parse(s.body[1].GetX()), parse(s.body[1].GetY()), HorizontalAlignment.Center);
+        ColorID(s.ID, canvas);
+        foreach (Vector2D body in s.body)
         {
-            canvas.FillRectangle(parse(body.GetX()), parse(body.GetY()), 50, 50);
-            canvas.FillRectangle(parse(body.GetX()), parse(body.GetY()), 50, 50);
+            canvas.FillRectangle(parse(body.GetX()), parse(body.GetY()), 10, 10);
         }
         
     }
@@ -108,7 +136,7 @@ public class WorldPanel : IDrawable
     private void PowerupDrawer(object o, ICanvas canvas)
     {
         Powerup p = o as Powerup;
-        int width = 10;
+        int width = 16;
         canvas.FillColor = Colors.Orange;
 
         // Ellipses are drawn starting from the top-left corner.
@@ -132,13 +160,18 @@ public class WorldPanel : IDrawable
             InitializeDrawing();
 
         canvas.ResetState();
-        canvas.DrawImage(background, 0, 0, 2000, 2000);
+
+        
+        canvas.DrawImage(background, 0, 0, viewSize, viewSize);
 
         lock (world)
         {
             foreach (var p in world.Snakes.Values)
             {
-                
+                float playerX = parse(p.body[1].GetX());
+                float playerY = parse(p.body[1].GetY());
+
+                canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
                 SnakeDrawer(p, canvas);
             }
             foreach (var p in world.Walls.Values)
