@@ -122,7 +122,7 @@ namespace GC
             lastString += received;
             if (received.Length > 0)
                 state.RemoveData(0, received.Length);
-            string[] parts = Regex.Split(lastString, @"(?<=[\n])");
+            string[] parts = Regex.Split(lastString, "(?<=[\n])");
             lastString = "";
 
             lock (modelWorld)
@@ -147,11 +147,9 @@ namespace GC
                         lastString = part;
                         return;
                     }
-
-                        JObject newObj = JObject.Parse(part.Trim());
-                        modelWorld.Update(newObj);
-
-                    
+                    // string is an intact json string
+                    JObject newObj = JObject.Parse(part.Trim());
+                    modelWorld.Update(newObj);
                 }
             }
 

@@ -1,9 +1,6 @@
-﻿using NetworkUtil;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SnakeGame;
-using System.Data;
-using System.Diagnostics;
 
 namespace ClientModel
 {
@@ -33,6 +30,10 @@ namespace ClientModel
         /// integer ID numbers to powerup objects.
         /// </summary>
         private Dictionary<int, Powerup> powerups;
+        /// <summary>
+        /// represents snakes that died this last frame so the view can display cute lil' explosions
+        /// </summary>
+        private Dictionary<int, Snake> deadSnakes;
 
         /// <summary>
         /// Field to make snakes dictionary accessible to the outside
@@ -46,6 +47,10 @@ namespace ClientModel
         /// Field to make powerups dictionary accessible to the outside
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
+        /// <summary>
+        /// Field to make deadSnakes dictionary accessible to the outside
+        /// </summary>
+        public Dictionary<int, Snake> DeadSnakes { get { return deadSnakes; } }
 
         public int ID { get; set; }
 
@@ -64,6 +69,7 @@ namespace ClientModel
             snakes = new();
             walls = new();
             powerups = new();
+            deadSnakes = new();
             PlayerName = "";
             WorldSize = -1;
             ID = -1;
@@ -86,9 +92,13 @@ namespace ClientModel
 
                 if (snakes.ContainsKey(newSnake.ID))
                     snakes.Remove(newSnake.ID);
-                
 
-                if (newSnake.dc || newSnake.died || !newSnake.alive)
+                // checks if snake is supposed to go up in a puff of smoke this frame
+                if (newSnake!.died && !deadSnakes.ContainsKey(newSnake.ID))
+                    deadSnakes.Add(newSnake.ID, newSnake);
+
+
+                if (newSnake.dc || !newSnake.alive)
                     return;     // doesn't keep snake in snakes set if snake is dead or disconnected
 
                 // snake isn't already in snakes set and snake isn't dead, didn't die, and is still connected
@@ -118,6 +128,14 @@ namespace ClientModel
                 powerups.Add(newPwp.ID, newPwp);
                 return;
             }
+        }
+
+        /// <summary>
+        /// Used to remove dead snakes every frame
+        /// </summary>
+        public void ResetDeadSnakes()
+        {
+            deadSnakes.Clear();
         }
     }
 
