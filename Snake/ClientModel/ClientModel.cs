@@ -1,9 +1,6 @@
-﻿using NetworkUtil;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SnakeGame;
-using System.Data;
-using System.Diagnostics;
 
 namespace ClientModel
 {
