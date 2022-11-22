@@ -6,6 +6,7 @@
 - Our client can send messages and data over the network appropriately
 - Network errors are accomodated for
 - Interrupted or cut off data receives are saved for later parsing with the full message
+- Client can reliably reconnect after network errors
 
 ## What doesn't work:
 - Visual representations
