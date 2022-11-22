@@ -156,6 +156,11 @@ namespace ClientModel
             WorldSize = -1;
             PlayerName = "";
         }
+
+        public void getWorldSize()
+        {
+
+        }
     }
 
     [JsonObject(MemberSerialization.OptIn)]

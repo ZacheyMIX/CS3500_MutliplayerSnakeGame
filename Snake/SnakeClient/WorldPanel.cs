@@ -97,37 +97,34 @@ public class WorldPanel : IDrawable
             num -= 8;
         }
         if (num == 0)
-            canvas.FillColor = Colors.Red;
+            canvas.StrokeColor = Colors.Red;
         else if (num == 1)
-            canvas.FillColor = Colors.Orange;
+            canvas.StrokeColor = Colors.Orange;
         else if (num == 2)
-            canvas.FillColor = Colors.Green;
+            canvas.StrokeColor = Colors.Green;
         else if (num == 3)
-            canvas.FillColor = Colors.Blue;
+            canvas.StrokeColor = Colors.Blue;
         else if (num == 4)
-            canvas.FillColor = Colors.Black;
+            canvas.StrokeColor = Colors.Black;
         else if (num == 5)
-            canvas.FillColor = Colors.White;
+            canvas.StrokeColor = Colors.White;
         else if (num == 6)
-            canvas.FillColor = Colors.Purple;
+            canvas.StrokeColor = Colors.Purple;
         else
-            canvas.FillColor = Colors.Yellow;
+            canvas.StrokeColor = Colors.Yellow;
     }
 
     private void SnakeDrawer(object o, ICanvas canvas)
     {
         Snake s = o as Snake;
-        int snakeBodyLen = s.body.Count;
-        canvas.DrawString(s.name + ": " + s.score,
-            parse(s.body[snakeBodyLen-1].GetX()),
-            parse(s.body[snakeBodyLen-1].GetY()),
-            HorizontalAlignment.Center);
+        canvas.StrokeSize = 10;
+        int count = s.body.Count - 1;
+        //Sets color based on snake ID
         ColorID(s.ID, canvas);
-        foreach (Vector2D body in s.body)
+        for (int i = count; i > 0; i--)
         {
-            canvas.FillRectangle(parse(body.GetX()), parse(body.GetY()), 10, 10);
-        }
-        
+            canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i-1].GetX()), parse(s.body[i-1].GetY()));
+        }      
     }
 
     private void WallDrawer(object o, ICanvas canvas)
@@ -142,10 +139,6 @@ public class WorldPanel : IDrawable
         Powerup p = o as Powerup;
         int width = 16;
         canvas.FillColor = Colors.Orange;
-
-        // Ellipses are drawn starting from the top-left corner.
-        // So if we want the circle centered on the powerup's location, we have to offset it
-        // by half its size to the left (-width/2) and up (-height/2)
         canvas.FillEllipse(-(width / 2), -(width / 2), width, width);
     }
 
@@ -170,8 +163,8 @@ public class WorldPanel : IDrawable
 
         canvas.ResetState();
 
-        
-        canvas.DrawImage(background, 0, 0, viewSize, viewSize);
+        //Draws background according to world size
+        canvas.DrawImage(background, 0, 0, world.WorldSize / 2, world.WorldSize / 2);
 
         lock (world)
         {
@@ -195,8 +188,18 @@ public class WorldPanel : IDrawable
             // draw snakes
             foreach (var p in world.Snakes.Values)
             {
-                SnakeDrawer(p, canvas);
+                // Loop through snake segments, calculate segment length and segment direction
+                // Set the Stroke Color, etc, based on s's ID
+                int snakeBodyCount = p.body.Count;
+                //Creates the ID and Score for the snake head
+                canvas.DrawString(p.name + ": " + p.score,
+                    parse(p.body[snakeBodyCount - 1].GetX()),
+                    parse(p.body[snakeBodyCount - 1].GetY()),
+                    HorizontalAlignment.Center);
+                //DrawObjectWithTransform(canvas, p, p.loc.GetX(), p.loc.GetY(),
+                    //p.body[snakeBodyCount - 1].ToAngle(), SnakeDrawer);
                 // remember to alter this so it works after transform
+                SnakeDrawer(p, canvas);
             }
 
             //draw walls
