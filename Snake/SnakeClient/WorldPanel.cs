@@ -86,6 +86,18 @@ public class WorldPanel : IDrawable
         canvas.RestoreState();
     }
 
+    private void SnakeDrawer(object o, ICanvas canvas)
+    {
+        Snake s = o as Snake;
+        canvas.FillColor = Colors.Red;
+        foreach(Vector2D body in s.body)
+        {
+            canvas.FillRectangle(parse(body.GetX()), parse(body.GetY()), 50, 50);
+            canvas.FillRectangle(parse(body.GetX()), parse(body.GetY()), 50, 50);
+        }
+        
+    }
+
     private void WallDrawer(object o, ICanvas canvas)
     {
         Wall w = o as Wall;
@@ -126,8 +138,8 @@ public class WorldPanel : IDrawable
         {
             foreach (var p in world.Snakes.Values)
             {
-                //canvas.FillColor = Colors.Red;
-                //canvas.FillRoundedRectangle(0, 0, 25, 25, 10);
+                
+                SnakeDrawer(p, canvas);
             }
             foreach (var p in world.Walls.Values)
             {
@@ -135,7 +147,7 @@ public class WorldPanel : IDrawable
             }
             foreach (var p in world.Powerups.Values)
             {
-                //canvas.DrawImage(wall, 0, 0, 50, 50);
+                DrawObjectWithTransform(canvas, p, p.loc.GetX(), p.loc.GetY(), 0, PowerupDrawer);
             }
         }
     }
