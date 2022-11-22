@@ -208,27 +208,29 @@ public class WorldPanel : IDrawable
 
         canvas.ResetState();
 
+        //center canvas on player snake
+        float playerX = 0;
+        float playerY = 0;
+        if (world.Snakes.ContainsKey(world.ID))
+        {
+            int bodyListLen = world.Snakes[world.ID].body.Count;
+            playerX = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetX());
+            playerY = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetY());
+        }
+        else if (world.DeadSnakes.ContainsKey(world.ID))
+        {
+            int bodyListLen = world.DeadSnakes[world.ID].body.Count;
+            playerX = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetX());
+            playerY = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetY());
+        }
+        canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
+
         //Draws background according to world size
-        canvas.DrawImage(background, 0, 0, world.WorldSize / 2, world.WorldSize / 2);
+        canvas.DrawImage(background, -world.WorldSize/2, -world.WorldSize/2, world.WorldSize, world.WorldSize);
 
         lock (world)
         {
-            //center canvas on player snake
-            float playerX = 0;
-            float playerY = 0;
-            if (world.Snakes.ContainsKey(world.ID))
-            {
-                int bodyListLen = world.Snakes[world.ID].body.Count;
-                playerX = parse(world.Snakes[world.ID].body[bodyListLen-1].GetX());
-                playerY = parse(world.Snakes[world.ID].body[bodyListLen-1].GetY());
-            }
-            else if (world.DeadSnakes.ContainsKey(world.ID))
-            {
-                int bodyListLen = world.DeadSnakes[world.ID].body.Count;
-                playerX = parse(world.DeadSnakes[world.ID].body[bodyListLen-1].GetX());
-                playerY = parse(world.DeadSnakes[world.ID].body[bodyListLen-1].GetY());
-            }
-            canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
+            
 
             // draw snakes
             foreach (var p in world.Snakes.Values)
