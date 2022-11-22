@@ -132,7 +132,9 @@ public class WorldPanel : IDrawable
         //Draws the body connecting to the next body until it reaches the tail
         for (int i = count; i > 0; i--)
         {
+            canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .5f);
             canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i-1].GetX()), parse(s.body[i-1].GetY()));
+            canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .5f);
         }      
     }
 
@@ -208,7 +210,7 @@ public class WorldPanel : IDrawable
         canvas.ResetState();
 
         //Draws background according to world size
-        canvas.DrawImage(background, 0, 0, 900, 900);
+        canvas.DrawImage(background, 0, 0, world.WorldSize / 2, world.WorldSize / 2);
 
         lock (world)
         {
