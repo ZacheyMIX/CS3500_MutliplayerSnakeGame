@@ -130,8 +130,35 @@ public class WorldPanel : IDrawable
     private void WallDrawer(object o, ICanvas canvas)
     {
         Wall w = o as Wall;
-        canvas.DrawImage(wall, parse(w.p1.GetX()), parse(w.p1.GetY()), 50, 50);
-        canvas.DrawImage(wall, parse(w.p2.GetX()), parse(w.p2.GetY()), 50, 50);
+        double sizeX = w.p1.GetX();
+        double sizeY = w.p1.GetY();
+        while (sizeX >= w.p2.GetX() && sizeY == w.p2.GetY())
+        {
+            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            sizeX -= 50;
+        }
+        sizeX = w.p1.GetX();
+        sizeY = w.p1.GetY();
+        while (sizeX <= w.p2.GetX() && sizeY == w.p2.GetY())
+        {
+            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            sizeX += 50;
+        }
+        sizeX = w.p1.GetX();
+        sizeY = w.p1.GetY();
+        while (sizeX == w.p2.GetX() && sizeY >= w.p2.GetY())
+        {
+            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            sizeY -= 50;
+        }
+        sizeX = w.p1.GetX();
+        sizeY = w.p1.GetY();
+        while (sizeX == w.p2.GetX() && sizeY <= w.p2.GetY())
+        {
+            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            sizeY += 50;
+        }
+
     }
 
     private void PowerupDrawer(object o, ICanvas canvas)
@@ -164,7 +191,7 @@ public class WorldPanel : IDrawable
         canvas.ResetState();
 
         //Draws background according to world size
-        canvas.DrawImage(background, 0, 0, world.WorldSize / 2, world.WorldSize / 2);
+        canvas.DrawImage(background, 0, 0, 900, 900);
 
         lock (world)
         {
@@ -206,7 +233,7 @@ public class WorldPanel : IDrawable
             foreach (var p in world.Walls.Values)
             {
                 WallDrawer(p, canvas);
-                // remember to alter this so it works after transform
+                //DrawObjectWithTransform(canvas, p, p.p1.GetX(), p.p1.GetY(), 0, WallDrawer);
             }
 
             // draw powerups
