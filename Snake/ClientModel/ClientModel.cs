@@ -105,6 +105,9 @@ namespace ClientModel
                 if (newSnake.dc || !newSnake.alive)
                     return;     // doesn't keep snake in snakes set if snake is dead or disconnected
 
+                if (deadSnakes.ContainsKey(newSnake.ID))    // means new snake is a revived snake and needs to be removed
+                    deadSnakes.Remove(newSnake.ID);
+
                 // snake isn't already in snakes set and snake isn't dead, didn't die, and is still connected
                 snakes.Add(newSnake.ID, newSnake!);  // again, this object should just be a snake object if it contains a key called "snake".
                 return;
@@ -142,15 +145,6 @@ namespace ClientModel
                 return;
             }
         }
-
-        /// <summary>
-        /// Used to remove dead snakes every frame
-        /// so as to not clutter the view
-        /// </summary>
-        public void ResetDeadSnakes()
-        {
-            deadSnakes.Clear();
-        }
     }
 
     [JsonObject(MemberSerialization.OptIn)]
@@ -162,7 +156,6 @@ namespace ClientModel
         /// </summary>
         [JsonProperty(PropertyName = "snake")]
         public readonly int ID;
-
         /// <summary>
         /// a string representing the players name
         /// </summary>
@@ -171,8 +164,8 @@ namespace ClientModel
         /// <summary>
         /// A list<Vector2D> representing th eentire body of the snake.
         /// Each point in this list represent one vertex of the snakes body where consecutive 
-        /// veritices make up a straiht segment ofthe body. The frst point o fth elist give the 
-        /// location fof the snake tail, and the last gives the location of the snakes head.
+        /// veritices make up a straiht segment ofthe body. The frst point of the list give the 
+        /// location of the snake tail, and the last gives the location of the snakes head.
         /// </summary>
         [JsonProperty(PropertyName = "body")]
         public readonly List<Vector2D> body;

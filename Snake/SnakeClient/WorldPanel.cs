@@ -145,6 +145,11 @@ public class WorldPanel : IDrawable
         canvas.FillEllipse(-(width / 2), -(width / 2), width, width);
     }
 
+    private void DeadSnakeDrawer(object o, ICanvas canvas)
+    {
+        return;
+    }
+
     private float parse(double num)
     {
         return float.Parse(num.ToString());
@@ -166,21 +171,49 @@ public class WorldPanel : IDrawable
 
         lock (world)
         {
+            //center canvas on player snake
+            float playerX = 0;
+            float playerY = 0;
+            if (world.Snakes.ContainsKey(world.ID))
+            {
+                int bodyListLen = world.Snakes[world.ID].body.Count;
+                playerX = parse(world.Snakes[world.ID].body[bodyListLen-1].GetX());
+                playerY = parse(world.Snakes[world.ID].body[bodyListLen-1].GetY());
+            }
+            else if (world.DeadSnakes.ContainsKey(world.ID))
+            {
+                int bodyListLen = world.DeadSnakes[world.ID].body.Count;
+                playerX = parse(world.DeadSnakes[world.ID].body[bodyListLen-1].GetX());
+                playerY = parse(world.DeadSnakes[world.ID].body[bodyListLen-1].GetY());
+            }
+            canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
+
+            // draw snakes
             foreach (var p in world.Snakes.Values)
             {
-                float playerX = parse(p.body[1].GetX());
-                float playerY = parse(p.body[1].GetY());
-
-                canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
                 SnakeDrawer(p, canvas);
+                // remember to alter this so it works after transform
             }
+
+            //draw walls
             foreach (var p in world.Walls.Values)
             {
                 WallDrawer(p, canvas);
+                // remember to alter this so it works after transform
             }
+
+            // draw powerups
             foreach (var p in world.Powerups.Values)
             {
                 DrawObjectWithTransform(canvas, p, p.loc.GetX(), p.loc.GetY(), 0, PowerupDrawer);
+            }
+
+            // draw dead snakes (i.e. explosions)
+            foreach (var p in world.DeadSnakes.Values)
+            {
+                DeadSnakeDrawer(p, canvas);
+                // remember to alter this so it works after transform
+                //TODO: write DeadSnakeDrawer method
             }
         }
     }
