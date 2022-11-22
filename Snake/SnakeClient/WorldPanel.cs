@@ -119,13 +119,6 @@ public class WorldPanel : IDrawable
         Snake s = o as Snake;
         int count = s.body.Count - 1;
 
-        //Creates the ID and Score for the snake head
-        canvas.DrawString(s.name + ": " + s.score,
-            parse(s.body[count].GetX()),
-            parse(s.body[count].GetY()),
-            HorizontalAlignment.Center);
-
-
         //Sets stroke and color based on snake ID
         canvas.StrokeSize = 10;
         ColorID(s.ID, canvas);
@@ -135,7 +128,13 @@ public class WorldPanel : IDrawable
             canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .5f);
             canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i-1].GetX()), parse(s.body[i-1].GetY()));
             canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .5f);
-        }      
+        }
+
+        //Creates the ID and Score for the snake head
+        canvas.DrawString(s.name + ": " + s.score,
+            parse(s.body[count].GetX()),
+            parse(s.body[count].GetY()),
+            HorizontalAlignment.Center);
     }
 
     private void WallDrawer(object o, ICanvas canvas)
