@@ -117,10 +117,19 @@ public class WorldPanel : IDrawable
     private void SnakeDrawer(object o, ICanvas canvas)
     {
         Snake s = o as Snake;
-        canvas.StrokeSize = 10;
         int count = s.body.Count - 1;
-        //Sets color based on snake ID
+
+        //Creates the ID and Score for the snake head
+        canvas.DrawString(s.name + ": " + s.score,
+            parse(s.body[count].GetX()),
+            parse(s.body[count].GetY()),
+            HorizontalAlignment.Center);
+
+
+        //Sets stroke and color based on snake ID
+        canvas.StrokeSize = 10;
         ColorID(s.ID, canvas);
+        //Draws the body connecting to the next body until it reaches the tail
         for (int i = count; i > 0; i--)
         {
             canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i-1].GetX()), parse(s.body[i-1].GetY()));
@@ -132,30 +141,38 @@ public class WorldPanel : IDrawable
         Wall w = o as Wall;
         double sizeX = w.p1.GetX();
         double sizeY = w.p1.GetY();
+
+        //Draws walls with the same Y coord until it reaches the X other direction
         while (sizeX >= w.p2.GetX() && sizeY == w.p2.GetY())
         {
-            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            canvas.DrawImage(wall, parse(sizeX) - 25, parse(sizeY) - 25, 50, 50);
             sizeX -= 50;
         }
+        //Reset sizeX
         sizeX = w.p1.GetX();
-        sizeY = w.p1.GetY();
+
+        //Draws walls with the same Y coord until it reaches the X coord other direction
         while (sizeX <= w.p2.GetX() && sizeY == w.p2.GetY())
         {
-            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            canvas.DrawImage(wall, parse(sizeX) - 25, parse(sizeY) - 25 , 50, 50);
             sizeX += 50;
         }
+        //Reset sizeX
         sizeX = w.p1.GetX();
-        sizeY = w.p1.GetY();
+
+        //Draws walls with the same X coord until it reaches the Y coord
         while (sizeX == w.p2.GetX() && sizeY >= w.p2.GetY())
         {
-            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            canvas.DrawImage(wall, parse(sizeX) - 25, parse(sizeY) - 25 , 50, 50);
             sizeY -= 50;
         }
-        sizeX = w.p1.GetX();
+        //Reset sizeY
         sizeY = w.p1.GetY();
+
+        //Draws walls with the same X coord until it reaches the Y coord other direction
         while (sizeX == w.p2.GetX() && sizeY <= w.p2.GetY())
         {
-            canvas.DrawImage(wall, parse(sizeX), parse(sizeY), 50, 50);
+            canvas.DrawImage(wall, parse(sizeX) - 25, parse(sizeY) - 25, 50, 50);
             sizeY += 50;
         }
 
@@ -215,17 +232,6 @@ public class WorldPanel : IDrawable
             // draw snakes
             foreach (var p in world.Snakes.Values)
             {
-                // Loop through snake segments, calculate segment length and segment direction
-                // Set the Stroke Color, etc, based on s's ID
-                int snakeBodyCount = p.body.Count;
-                //Creates the ID and Score for the snake head
-                canvas.DrawString(p.name + ": " + p.score,
-                    parse(p.body[snakeBodyCount - 1].GetX()),
-                    parse(p.body[snakeBodyCount - 1].GetY()),
-                    HorizontalAlignment.Center);
-                //DrawObjectWithTransform(canvas, p, p.loc.GetX(), p.loc.GetY(),
-                    //p.body[snakeBodyCount - 1].ToAngle(), SnakeDrawer);
-                // remember to alter this so it works after transform
                 SnakeDrawer(p, canvas);
             }
 
@@ -233,7 +239,6 @@ public class WorldPanel : IDrawable
             foreach (var p in world.Walls.Values)
             {
                 WallDrawer(p, canvas);
-                //DrawObjectWithTransform(canvas, p, p.p1.GetX(), p.p1.GetY(), 0, WallDrawer);
             }
 
             // draw powerups
