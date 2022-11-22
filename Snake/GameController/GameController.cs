@@ -29,7 +29,9 @@ namespace GC
         public delegate void UpdateHandler();
         public event UpdateHandler? Update;
 
-        // other possible handlers go here
+        public delegate void ConnectedHandler();
+        public event ConnectedHandler? Connected;
+
 
         /// <summary>
         /// Default constructor.
@@ -81,6 +83,10 @@ namespace GC
                 Error?.Invoke("Error connecting to server. Couldn't send player name.\n"+state.ErrorMessage);
                 Disconnect();
             }
+
+            // notify the view that the connection went through
+            Connected?.Invoke();
+
             // Start an event loop to receive data from the server
             Networking.GetData(state);
         }
@@ -162,7 +168,9 @@ namespace GC
         /// </summary>
         public void Disconnect()
         {
-            theServer?.TheSocket?.Close();
+            theServer?.TheSocket?.Close();  // cleanly disconnects from server
+            theServer = null;               // resets the socket state just in case
+            modelWorld.Reset();
         }
 
 

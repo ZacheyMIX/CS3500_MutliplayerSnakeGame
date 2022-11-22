@@ -11,6 +11,7 @@ public partial class MainPage : ContentPage
 
         controller.Error += NetworkErrorHandler;
         controller.Update += DisplayChanges;
+        controller.Connected += SuccessfulConnect;
 
         worldPanel.SetWorld(controller.modelWorld);
     }
@@ -60,22 +61,19 @@ public partial class MainPage : ContentPage
     /// <param name="errorMsg"> error message to be displayed </param>
     private void NetworkErrorHandler(string errorMsg)
     {
-        // show the error
+        // show the error then give the user the option to reconnect or to not
         Dispatcher.Dispatch(async () =>
         {
             if (await DisplayAlert("Error", errorMsg, "Retry Connection", "Disconnect"))
             {
                 controller.Connect(serverText.Text);
             }
-        });
-
-        // then re-enable controls so user can reconenct
-        Dispatcher.Dispatch(
-            () =>
+            else
             {
                 connectButton.IsEnabled = true;
                 serverText.IsEnabled = true;
-            });
+            }
+        });
     }
 
 
@@ -106,6 +104,20 @@ public partial class MainPage : ContentPage
         controller.modelWorld.PlayerName = nameText.Text;
         controller.Connect(serverText.Text);
         keyboardHack.Focus();
+    }
+
+    /// <summary>
+    /// Handler for what the view should do on a successful connect.
+    /// Disables connectButton and serverText.
+    /// Event notified by controller.
+    /// </summary>
+    private void SuccessfulConnect()
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            connectButton.IsEnabled = false;
+            serverText.IsEnabled = false;
+        });
     }
 
 

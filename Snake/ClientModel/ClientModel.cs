@@ -145,6 +145,17 @@ namespace ClientModel
                 return;
             }
         }
+
+        public void Reset()
+        {
+            snakes.Clear();
+            walls.Clear();
+            powerups.Clear();
+            deadSnakes.Clear();
+            ID = -1;
+            WorldSize = -1;
+            PlayerName = "";
+        }
     }
 
     [JsonObject(MemberSerialization.OptIn)]

@@ -117,7 +117,11 @@ public class WorldPanel : IDrawable
     private void SnakeDrawer(object o, ICanvas canvas)
     {
         Snake s = o as Snake;
-        canvas.DrawString(s.name + ": " + s.score, parse(s.body[1].GetX()), parse(s.body[1].GetY()), HorizontalAlignment.Center);
+        int snakeBodyLen = s.body.Count;
+        canvas.DrawString(s.name + ": " + s.score,
+            parse(s.body[snakeBodyLen-1].GetX()),
+            parse(s.body[snakeBodyLen-1].GetY()),
+            HorizontalAlignment.Center);
         ColorID(s.ID, canvas);
         foreach (Vector2D body in s.body)
         {
