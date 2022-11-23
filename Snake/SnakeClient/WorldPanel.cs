@@ -136,9 +136,9 @@ public class WorldPanel : IDrawable
                 continue;
             else
             {
-                canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .5f);
+                canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .3f);
                 canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()));
-                canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .5f);
+                canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .3f);
             }
             
         }
