@@ -7,14 +7,13 @@
 - Network errors are accomodated for
 - Interrupted or cut off data receives are saved for later parsing with the full message
 - Client can reliably reconnect after network errors
+- Visual representations including snakes, walls, powerups, images, views, etc
 
 ## What doesn't work:
-- Visual representations
 - Possibly unaccounted for errors
 
 ## What we still have to do:
 - Get everything that doesn't work working
-- Develop our drawing methods
 
 ## Things we tried to remember in development:
 - Keeping the model passive
@@ -22,6 +21,8 @@
 - Keep networking calls in relevant controller projects only
 - Maintaining separation of concerns with MVC
 - Commuticating appropriately between the model, view, and controller
+- Gracefully handling weird cases like snakes dying on our same join etc
+- Snakes wrapping around the map in a successful and visually intuitive way
 
 ## Noteworthy design decisions:
 - ClientModel's Update method takes in JObjects instead of strings. This leaves the JSON parsing duties up to GameController.
