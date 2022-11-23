@@ -16,6 +16,7 @@ using SizeF = Microsoft.Maui.Graphics.SizeF;
 using GC;
 using ClientModel;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Maui.Graphics;
 
 namespace SnakeGame;
 public class WorldPanel : IDrawable
@@ -90,6 +91,11 @@ public class WorldPanel : IDrawable
         canvas.RestoreState();
     }
 
+    /// <summary>
+    /// Method that determines the snakes color based on its ID
+    /// </summary>
+    /// <param name="num"></param>
+    /// <param name="canvas"></param>
     private void ColorID(int num, ICanvas canvas)
     {
         while(num > 7)
@@ -123,7 +129,6 @@ public class WorldPanel : IDrawable
         canvas.StrokeSize = 10;
         ColorID(s.ID, canvas);
         //Draws the body connecting to the next body until it reaches the tail
-        Debug.WriteLine(s.body[count].GetX() + ", " + s.body[count].GetY());
         for (int i = count; i > 0; i--)
         {
             //Check for when the snake is crossing a border
@@ -154,19 +159,22 @@ public class WorldPanel : IDrawable
     /// <returns></returns>
     private bool borderSwitch(Snake s, ICanvas canvas, int i)
     {
-
+        //Snake enters right border
         if (s.body[i].GetX() >= 975 && s.body[i - 1].GetX() <= -975)
         {
             return true;
         }
+        //Snake enters left border
         if (s.body[i].GetX() <= -975 && s.body[i - 1].GetX() >= 975)
         {
             return true;
         }
+        //Snake enters upper border
         if (s.body[i].GetY() >= 975 && s.body[i - 1].GetY() <= -975)
         {
             return true;
         }
+        //Snake enters lower border
         if (s.body[i].GetY() <= -975 && s.body[i - 1].GetY() >= 975)
         {
             return true;
@@ -174,6 +182,11 @@ public class WorldPanel : IDrawable
         return false;
     }
 
+    /// <summary>
+    /// Drawer for Wall objects
+    /// </summary>
+    /// <param name="o"></param>
+    /// <param name="canvas"></param>
     private void WallDrawer(object o, ICanvas canvas)
     {
         Wall w = o as Wall;
@@ -216,6 +229,11 @@ public class WorldPanel : IDrawable
 
     }
 
+    /// <summary>
+    /// Drawer for PowerUp Objects
+    /// </summary>
+    /// <param name="o"></param>
+    /// <param name="canvas"></param>
     private void PowerupDrawer(object o, ICanvas canvas)
     {
         Powerup p = o as Powerup;
@@ -224,11 +242,23 @@ public class WorldPanel : IDrawable
         canvas.FillEllipse(-(width / 2), -(width / 2), width, width);
     }
 
+    /// <summary>
+    /// Drawer for Dead Snake Objects i.e. Death animations
+    /// </summary>
+    /// <param name="o"></param>
+    /// <param name="canvas"></param>
     private void DeadSnakeDrawer(object o, ICanvas canvas)
     {
-        return;
+        Snake dead = o as Snake;
+        canvas.FillColor = Colors.Red;
+        canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 10);
     }
 
+    /// <summary>
+    /// Method for parsing doubles to floats
+    /// </summary>
+    /// <param name="num"></param>
+    /// <returns></returns>
     private float parse(double num)
     {
         return float.Parse(num.ToString());
@@ -291,8 +321,6 @@ public class WorldPanel : IDrawable
             foreach (var p in world.DeadSnakes.Values)
             {
                 DeadSnakeDrawer(p, canvas);
-                // remember to alter this so it works after transform
-                //TODO: write DeadSnakeDrawer method
             }
         }
     }

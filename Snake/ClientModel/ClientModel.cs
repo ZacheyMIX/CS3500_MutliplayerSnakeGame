@@ -65,7 +65,6 @@ namespace ClientModel
         /// </summary>
         public World()
         {
-            // World size is 2000x2000. Might need to change this to make that a parameter.
             snakes = new();
             walls = new();
             powerups = new();
@@ -155,11 +154,6 @@ namespace ClientModel
             ID = -1;
             WorldSize = -1;
             PlayerName = "";
-        }
-
-        public void getWorldSize()
-        {
-
         }
     }
 
@@ -289,5 +283,7 @@ namespace ClientModel
             loc = new();
             died = false;
         }
+
     }
+
 }
