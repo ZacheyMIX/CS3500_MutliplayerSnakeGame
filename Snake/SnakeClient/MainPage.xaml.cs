@@ -12,7 +12,6 @@ public partial class MainPage : ContentPage
         controller.Error += NetworkErrorHandler;
         controller.Update += DisplayChanges;
         controller.Connected += SuccessfulConnect;
-        controller.SnakeDied += worldPanel.KillSnake;
 
         worldPanel.SetWorld(controller.modelWorld);
     }

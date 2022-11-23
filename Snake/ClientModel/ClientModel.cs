@@ -31,12 +31,15 @@ namespace ClientModel
         /// </summary>
         private Dictionary<int, Powerup> powerups;
 
-        /*
         /// <summary>
         /// represents snakes that died this last frame so the view can display cute lil' explosions
         /// </summary>
         private Dictionary<int, Snake> deadSnakes;
-        */
+
+        /// <summary>
+        /// represents a death animation i.e an explosion
+        /// </summary>
+        private Explosion explosion;
 
         /// <summary>
         /// Field to make snakes dictionary accessible to the outside
@@ -50,13 +53,11 @@ namespace ClientModel
         /// Field to make powerups dictionary accessible to the outside
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
-
-        /*
         /// <summary>
         /// Field to make deadSnakes dictionary accessible to the outside
         /// </summary>
         public Dictionary<int, Snake> DeadSnakes { get { return deadSnakes; } }
-        */
+        
 
         public int ID { get; set; }
 
@@ -74,7 +75,8 @@ namespace ClientModel
             snakes = new();
             walls = new();
             powerups = new();
-            //deadSnakes = new();
+            deadSnakes = new();
+            explosion = new();
             PlayerName = "";
             WorldSize = -1;
             ID = -1;
@@ -97,9 +99,17 @@ namespace ClientModel
             if (snakes.ContainsKey(newSnake.ID))
                 snakes.Remove(newSnake.ID);
 
+            if (newSnake!.died && !deadSnakes.ContainsKey(newSnake.ID))
+            {
+                deadSnakes.Add(newSnake.ID, newSnake);
+            }
+                
 
-            if (newSnake.dc)
+            if (newSnake.dc || !newSnake.alive)
                 return;     // doesn't keep snake in snakes set if snake is disconnected
+
+            if(deadSnakes.ContainsKey(newSnake.ID))    // means new snake is a revived snake and needs to be removed
+                    deadSnakes.Remove(newSnake.ID);
 
             // snake isn't already in snakes set and snake isn't dead, didn't die, and is still connected
             snakes.Add(newSnake.ID, newSnake!);  // again, this object should just be a snake object if it contains a key called "snake".
@@ -154,7 +164,7 @@ namespace ClientModel
             snakes.Clear();
             walls.Clear();
             powerups.Clear();
-            //deadSnakes.Clear();
+            deadSnakes.Clear();
             ID = -1;
             WorldSize = -1;
             PlayerName = "";
@@ -213,6 +223,8 @@ namespace ClientModel
         /// </summary>
         [JsonProperty(PropertyName = "join")]
         public readonly bool join;
+
+        public readonly Explosion explode;
         /// <summary>
         /// Snake object constructor. Since the client only ever deserializes objects, we only need the default constructor.
         /// </summary>
@@ -227,7 +239,10 @@ namespace ClientModel
             alive = false;
             dc = false;
             join = false;
+            explode = new();
         }
+
+
     }
 
     [JsonObject(MemberSerialization.OptIn)]
@@ -288,6 +303,20 @@ namespace ClientModel
             died = false;
         }
 
+    }
+
+    public class Explosion
+    {
+        public int currentFrame;
+        public Explosion()
+        {
+            currentFrame = 0;
+        }
+
+        public void runThroughFrames()
+        {
+            currentFrame++;   
+        }
     }
 
 }

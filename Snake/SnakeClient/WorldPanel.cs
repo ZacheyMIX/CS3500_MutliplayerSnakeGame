@@ -24,7 +24,8 @@ public class WorldPanel : IDrawable
     public delegate void ObjectDrawer(object o, ICanvas canvas);
     private IImage wall;
     private IImage background;
-    private IImage explode;
+    private IImage explode1, explode2, explode3, explode4, explode5, explode6, explode7, explode8;
+    private IImage explode9, explode10, explode11, explode12, explode13, explode14, explode15;
     private int viewSize = 900;
 
     private bool initializedForDrawing = false;
@@ -65,8 +66,27 @@ public class WorldPanel : IDrawable
     {
         wall = loadImage("WallSprite.png");
         background = loadImage("Background.png");
-        explode = loadImage("Explode.gif");
+        loadGif();
         initializedForDrawing = true;
+    }
+
+    private void loadGif()
+    {
+        explode1 = loadImage("Explode1.gif");
+        explode2 = loadImage("Explode2.gif");
+        explode3 = loadImage("Explode3.gif");
+        explode4 = loadImage("Explode4.gif");
+        explode5 = loadImage("Explode5.gif");
+        explode6 = loadImage("Explode6.gif");
+        explode7 = loadImage("Explode7.gif");
+        explode8 = loadImage("Explode8.gif");
+        explode9 = loadImage("Explode9.gif");
+        explode10 = loadImage("Explode10.gif");
+        explode11 = loadImage("Explode11.gif");
+        explode12 = loadImage("Explode12.gif");
+        explode13 = loadImage("Explode13.gif");
+        explode14 = loadImage("Explode14.gif");
+        explode15 = loadImage("Explode15.gif");
     }
 
     /// <summary>
@@ -243,7 +263,6 @@ public class WorldPanel : IDrawable
     }
 
     // CHANGED TO AN EVENT HANDLER
-    /*
     /// <summary>
     /// Drawer for Dead Snake Objects i.e. Death animations
     /// </summary>
@@ -252,26 +271,48 @@ public class WorldPanel : IDrawable
     private void DeadSnakeDrawer(object o, ICanvas canvas)
     {
         Snake dead = o as Snake;
-        //canvas.FillColor = Colors.Red;
-        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 20);
-        //canvas.FillColor = Colors.Orange;
-        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 15);
-        //canvas.FillColor = Colors.Yellow;
-        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 10);
-        //canvas.FillColor = Colors.White;
-        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 5);
-        canvas.DrawImage(explode, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        if(dead.explode.currentFrame == 14)
+            canvas.DrawImage(explode15, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 13)
+            canvas.DrawImage(explode14, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 12)
+            canvas.DrawImage(explode13, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 11)
+            canvas.DrawImage(explode12, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 10)
+            canvas.DrawImage(explode11, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 9)
+            canvas.DrawImage(explode10, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 8)
+            canvas.DrawImage(explode9, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 7)
+            canvas.DrawImage(explode8, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 6)
+            canvas.DrawImage(explode7, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 5)
+            canvas.DrawImage(explode6, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 4)
+            canvas.DrawImage(explode5, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 3)
+            canvas.DrawImage(explode4, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 2)
+            canvas.DrawImage(explode3, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 1)
+            canvas.DrawImage(explode2, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        else if (dead.explode.currentFrame == 0)
+            canvas.DrawImage(explode1, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        dead.explode.runThroughFrames();
     }
-    */
+    
 
     /// <summary>
     /// Given coordinates of a dead snake's head,
     /// method adds the explosion animation.
     /// </summary>
     /// <param name="coordinates"> Vector2D representation of a dead snake's head </param>
-    public void KillSnake(Vector2D coordinates)
+    public void KillSnake(Vector2D coordinates, ICanvas canvas)
     {
-        // TODO: implement this the rest of the way
+
         return;
     }
 
@@ -309,15 +350,12 @@ public class WorldPanel : IDrawable
                 playerY = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetY());
             }
 
-            // CHANGED TO AN EVENT HANDLER
-            /*
             else if (world.DeadSnakes.ContainsKey(world.ID))
             {
                 int bodyListLen = world.DeadSnakes[world.ID].body.Count;
                 playerX = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetX());
                 playerY = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetY());
             }
-            */
 
             canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
 
@@ -344,14 +382,12 @@ public class WorldPanel : IDrawable
                 DrawObjectWithTransform(canvas, p, p.loc.GetX(), p.loc.GetY(), 0, PowerupDrawer);
             }
 
-            // ChANGED TO AN EVENT HANDLER
-            /*
             // draw dead snakes (i.e. explosions)
             foreach (var p in world.DeadSnakes.Values)
             {
                 DeadSnakeDrawer(p, canvas);
             }
-            */
+            
         }
     }
 }

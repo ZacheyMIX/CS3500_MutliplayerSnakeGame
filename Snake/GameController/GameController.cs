@@ -33,9 +33,6 @@ namespace GC
         public delegate void ConnectedHandler();
         public event ConnectedHandler? Connected;
 
-        public delegate void SnakeDiedHandler(Vector2D coordinates);
-        public event SnakeDiedHandler? SnakeDied;
-
 
         /// <summary>
         /// Default constructor.
@@ -167,9 +164,6 @@ namespace GC
 
                         if (newSnake is null)
                             continue;
-
-                        if (newSnake.died)
-                            SnakeDied?.Invoke(newSnake.body[newSnake.body.Count - 1]);
 
                         modelWorld.UpdateSnakes(newSnake);
                     }

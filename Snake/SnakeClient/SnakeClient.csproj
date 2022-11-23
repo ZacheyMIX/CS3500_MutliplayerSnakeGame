@@ -50,6 +50,21 @@
 	<ItemGroup>
 	  <None Remove="Resources\Images\Explode.gif" />
 	  <None Remove="Resources\Images\Explode.png" />
+	  <None Remove="Resources\Images\Explode1.gif" />
+	  <None Remove="Resources\Images\Explode10.gif" />
+	  <None Remove="Resources\Images\Explode11.gif" />
+	  <None Remove="Resources\Images\Explode12.gif" />
+	  <None Remove="Resources\Images\Explode13.gif" />
+	  <None Remove="Resources\Images\Explode14.gif" />
+	  <None Remove="Resources\Images\Explode15.gif" />
+	  <None Remove="Resources\Images\Explode2.gif" />
+	  <None Remove="Resources\Images\Explode3.gif" />
+	  <None Remove="Resources\Images\Explode4.gif" />
+	  <None Remove="Resources\Images\Explode5.gif" />
+	  <None Remove="Resources\Images\Explode6.gif" />
+	  <None Remove="Resources\Images\Explode7.gif" />
+	  <None Remove="Resources\Images\Explode8.gif" />
+	  <None Remove="Resources\Images\Explode9.gif" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -58,8 +73,21 @@
 	  </MauiXaml>
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Include="Resources\Images\Explode.gif" />
-	  <EmbeddedResource Include="Resources\Images\Explode.png" />
+	  <EmbeddedResource Include="Resources\Images\Explode1.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode10.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode11.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode12.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode13.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode14.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode15.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode2.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode3.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode4.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode5.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode6.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode7.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode8.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode9.gif" />
 	  <EmbeddedResource Include="Resources\Images\WallSprite.png" />
 	  <EmbeddedResource Include="Resources\Images\Background.png" />
   </ItemGroup>
