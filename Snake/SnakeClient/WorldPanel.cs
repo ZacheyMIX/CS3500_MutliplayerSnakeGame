@@ -125,15 +125,15 @@ public class WorldPanel : IDrawable
         //Draws the body connecting to the next body until it reaches the tail
         for (int i = count; i > 0; i--)
         {
-            canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .5f);
+            canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .3f);
             canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i-1].GetX()), parse(s.body[i-1].GetY()));
-            canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .5f);
+            canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .3f);
         }
 
         //Creates the ID and Score for the snake head
         canvas.DrawString(s.name + ": " + s.score,
             parse(s.body[count].GetX()),
-            parse(s.body[count].GetY()),
+            parse(s.body[count].GetY()-10),
             HorizontalAlignment.Center);
     }
 
