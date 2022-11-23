@@ -16,6 +16,7 @@ using SizeF = Microsoft.Maui.Graphics.SizeF;
 using GC;
 using ClientModel;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Maui.Graphics;
 
 namespace SnakeGame;
 public class WorldPanel : IDrawable
@@ -90,6 +91,11 @@ public class WorldPanel : IDrawable
         canvas.RestoreState();
     }
 
+    /// <summary>
+    /// Method that determines the snakes color based on its ID
+    /// </summary>
+    /// <param name="num"></param>
+    /// <param name="canvas"></param>
     private void ColorID(int num, ICanvas canvas)
     {
         while(num > 7)
@@ -125,9 +131,16 @@ public class WorldPanel : IDrawable
         //Draws the body connecting to the next body until it reaches the tail
         for (int i = count; i > 0; i--)
         {
-            canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .3f);
-            canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i-1].GetX()), parse(s.body[i-1].GetY()));
-            canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .3f);
+            //Check for when the snake is crossing a border
+            if (borderSwitch(s, canvas, i))
+                continue;
+            else
+            {
+                canvas.DrawCircle(parse(s.body[i].GetX()), parse(s.body[i].GetY()), .5f);
+                canvas.DrawLine(parse(s.body[i].GetX()), parse(s.body[i].GetY()), parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()));
+                canvas.DrawCircle(parse(s.body[i - 1].GetX()), parse(s.body[i - 1].GetY()), .5f);
+            }
+            
         }
 
         //Creates the ID and Score for the snake head
@@ -137,6 +150,43 @@ public class WorldPanel : IDrawable
             HorizontalAlignment.Center);
     }
 
+    /// <summary>
+    /// Method for handling when the snake teleports from 1 border to the other
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="canvas"></param>
+    /// <param name="i"></param>
+    /// <returns></returns>
+    private bool borderSwitch(Snake s, ICanvas canvas, int i)
+    {
+        //Snake enters right border
+        if (s.body[i].GetX() >= 975 && s.body[i - 1].GetX() <= -975)
+        {
+            return true;
+        }
+        //Snake enters left border
+        if (s.body[i].GetX() <= -975 && s.body[i - 1].GetX() >= 975)
+        {
+            return true;
+        }
+        //Snake enters upper border
+        if (s.body[i].GetY() >= 975 && s.body[i - 1].GetY() <= -975)
+        {
+            return true;
+        }
+        //Snake enters lower border
+        if (s.body[i].GetY() <= -975 && s.body[i - 1].GetY() >= 975)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Drawer for Wall objects
+    /// </summary>
+    /// <param name="o"></param>
+    /// <param name="canvas"></param>
     private void WallDrawer(object o, ICanvas canvas)
     {
         Wall w = o as Wall;
@@ -179,6 +229,11 @@ public class WorldPanel : IDrawable
 
     }
 
+    /// <summary>
+    /// Drawer for PowerUp Objects
+    /// </summary>
+    /// <param name="o"></param>
+    /// <param name="canvas"></param>
     private void PowerupDrawer(object o, ICanvas canvas)
     {
         Powerup p = o as Powerup;
@@ -187,11 +242,23 @@ public class WorldPanel : IDrawable
         canvas.FillEllipse(-(width / 2), -(width / 2), width, width);
     }
 
+    /// <summary>
+    /// Drawer for Dead Snake Objects i.e. Death animations
+    /// </summary>
+    /// <param name="o"></param>
+    /// <param name="canvas"></param>
     private void DeadSnakeDrawer(object o, ICanvas canvas)
     {
-        return;
+        Snake dead = o as Snake;
+        canvas.FillColor = Colors.Red;
+        canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 10);
     }
 
+    /// <summary>
+    /// Method for parsing doubles to floats
+    /// </summary>
+    /// <param name="num"></param>
+    /// <returns></returns>
     private float parse(double num)
     {
         return float.Parse(num.ToString());
@@ -208,29 +275,29 @@ public class WorldPanel : IDrawable
 
         canvas.ResetState();
 
-        //center canvas on player snake
-        float playerX = 0;
-        float playerY = 0;
-        if (world.Snakes.ContainsKey(world.ID))
-        {
-            int bodyListLen = world.Snakes[world.ID].body.Count;
-            playerX = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetX());
-            playerY = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetY());
-        }
-        else if (world.DeadSnakes.ContainsKey(world.ID))
-        {
-            int bodyListLen = world.DeadSnakes[world.ID].body.Count;
-            playerX = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetX());
-            playerY = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetY());
-        }
-        canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
-
-        //Draws background according to world size
-        canvas.DrawImage(background, -world.WorldSize/2, -world.WorldSize/2, world.WorldSize, world.WorldSize);
-
         lock (world)
         {
-            
+
+            //center canvas on player snake
+            float playerX = 0;
+            float playerY = 0;
+            if (world.Snakes.ContainsKey(world.ID))
+            {
+                int bodyListLen = world.Snakes[world.ID].body.Count;
+                playerX = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetX());
+                playerY = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetY());
+            }
+            else if (world.DeadSnakes.ContainsKey(world.ID))
+            {
+                int bodyListLen = world.DeadSnakes[world.ID].body.Count;
+                playerX = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetX());
+                playerY = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetY());
+            }
+            canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
+
+            //Draws background according to world size
+            canvas.DrawImage(background, -world.WorldSize / 2, -world.WorldSize / 2, world.WorldSize, world.WorldSize);
+
 
             // draw snakes
             foreach (var p in world.Snakes.Values)
@@ -254,8 +321,6 @@ public class WorldPanel : IDrawable
             foreach (var p in world.DeadSnakes.Values)
             {
                 DeadSnakeDrawer(p, canvas);
-                // remember to alter this so it works after transform
-                //TODO: write DeadSnakeDrawer method
             }
         }
     }
