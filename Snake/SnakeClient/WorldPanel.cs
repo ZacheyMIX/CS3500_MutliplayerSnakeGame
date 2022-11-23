@@ -257,6 +257,12 @@ public class WorldPanel : IDrawable
     }
     */
 
+    public void KillSnake(Vector2D coordinates)
+    {
+        // TODO: implement this the rest of the way
+        return;
+    }
+
     /// <summary>
     /// Method for parsing doubles to floats
     /// </summary>
