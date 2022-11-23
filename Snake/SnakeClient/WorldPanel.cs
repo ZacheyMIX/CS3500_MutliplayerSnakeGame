@@ -257,6 +257,11 @@ public class WorldPanel : IDrawable
     }
     */
 
+    /// <summary>
+    /// Given coordinates of a dead snake's head,
+    /// method adds the explosion animation.
+    /// </summary>
+    /// <param name="coordinates"> Vector2D representation of a dead snake's head </param>
     public void KillSnake(Vector2D coordinates)
     {
         // TODO: implement this the rest of the way
