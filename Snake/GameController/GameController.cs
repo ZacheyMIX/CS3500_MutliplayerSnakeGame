@@ -3,6 +3,7 @@ using ClientModel;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using SnakeGame;
 
 namespace GC
 {
@@ -31,6 +32,9 @@ namespace GC
 
         public delegate void ConnectedHandler();
         public event ConnectedHandler? Connected;
+
+        public delegate void SnakeDiedHandler(Vector2D coordinates);
+        public event SnakeDiedHandler? SnakeDied;
 
 
         /// <summary>
@@ -155,7 +159,26 @@ namespace GC
                     }
                     // string is an intact json string
                     JObject newObj = JObject.Parse(part.Trim());
-                    modelWorld.Update(newObj);
+
+                    // check what kind of json string
+                    if (newObj.ContainsKey("snake"))    // "snake" token unique to snake objects
+                    {
+                        Snake? newSnake = newObj.ToObject<Snake>();
+
+                        if (newSnake is null)
+                            continue;
+
+                        if (newSnake.died)
+                            SnakeDied?.Invoke(newSnake.body[newSnake.body.Count - 1]);
+
+                        modelWorld.UpdateSnakes(newSnake);
+                    }
+
+                    else if (newObj.ContainsKey("wall"))
+                        modelWorld.UpdateWalls(newObj.ToObject<Wall>());
+
+                    else if (newObj.ContainsKey("power"))
+                        modelWorld.UpdatePowerups(newObj.ToObject<Powerup>());
                 }
             }
 

@@ -242,6 +242,8 @@ public class WorldPanel : IDrawable
         canvas.FillEllipse(-(width / 2), -(width / 2), width, width);
     }
 
+    // CHANGED TO AN EVENT HANDLER
+    /*
     /// <summary>
     /// Drawer for Dead Snake Objects i.e. Death animations
     /// </summary>
@@ -253,6 +255,7 @@ public class WorldPanel : IDrawable
         canvas.FillColor = Colors.Red;
         canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 10);
     }
+    */
 
     /// <summary>
     /// Method for parsing doubles to floats
@@ -287,12 +290,17 @@ public class WorldPanel : IDrawable
                 playerX = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetX());
                 playerY = parse(world.Snakes[world.ID].body[bodyListLen - 1].GetY());
             }
+
+            // CHANGED TO AN EVENT HANDLER
+            /*
             else if (world.DeadSnakes.ContainsKey(world.ID))
             {
                 int bodyListLen = world.DeadSnakes[world.ID].body.Count;
                 playerX = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetX());
                 playerY = parse(world.DeadSnakes[world.ID].body[bodyListLen - 1].GetY());
             }
+            */
+
             canvas.Translate(-playerX + (viewSize / 2), -playerY + (viewSize / 2));
 
             //Draws background according to world size
@@ -302,7 +310,8 @@ public class WorldPanel : IDrawable
             // draw snakes
             foreach (var p in world.Snakes.Values)
             {
-                SnakeDrawer(p, canvas);
+                if (p.alive)
+                    SnakeDrawer(p, canvas);
             }
 
             //draw walls
@@ -317,11 +326,14 @@ public class WorldPanel : IDrawable
                 DrawObjectWithTransform(canvas, p, p.loc.GetX(), p.loc.GetY(), 0, PowerupDrawer);
             }
 
+            // ChANGED TO AN EVENT HANDLER
+            /*
             // draw dead snakes (i.e. explosions)
             foreach (var p in world.DeadSnakes.Values)
             {
                 DeadSnakeDrawer(p, canvas);
             }
+            */
         }
     }
 }

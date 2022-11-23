@@ -30,10 +30,13 @@ namespace ClientModel
         /// integer ID numbers to powerup objects.
         /// </summary>
         private Dictionary<int, Powerup> powerups;
+
+        /*
         /// <summary>
         /// represents snakes that died this last frame so the view can display cute lil' explosions
         /// </summary>
         private Dictionary<int, Snake> deadSnakes;
+        */
 
         /// <summary>
         /// Field to make snakes dictionary accessible to the outside
@@ -47,10 +50,13 @@ namespace ClientModel
         /// Field to make powerups dictionary accessible to the outside
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
+
+        /*
         /// <summary>
         /// Field to make deadSnakes dictionary accessible to the outside
         /// </summary>
         public Dictionary<int, Snake> DeadSnakes { get { return deadSnakes; } }
+        */
 
         public int ID { get; set; }
 
@@ -68,89 +74,87 @@ namespace ClientModel
             snakes = new();
             walls = new();
             powerups = new();
-            deadSnakes = new();
+            //deadSnakes = new();
             PlayerName = "";
             WorldSize = -1;
             ID = -1;
         }
 
         /// <summary>
-        /// Updates the World model every time a new Json string is received
+        /// method for updating snakes dictionary
+        /// note that this is different from UpdateWalls and UpdatePowerups
+        /// in that this takes in an already parsed Snake object.
         /// </summary>
-        public void Update(JObject newObj)
+        public void UpdateSnakes(Snake? newSnake)
         {
-            if (newObj.ContainsKey("snake"))
-            {
-                // method checks if snake is valid,
-                // removes identical snakes (if applicable) temporarily
-                // if the snake died this same frame, and isn't already in the deadSnakes data structure,
-                // snake is added to deadSnakes for display in view.
-                // otherwise, snake has been dead for a little bit, and isn't added to anything.
-                // finally, if the snake isn't dead, snake is added to snakes
-                // to be drawn as a living, breathing, gen-you-wine snake.
-
-                Snake? newSnake = newObj.ToObject<Snake>(); // nullable only to appease return type of DeserializeObject method.
-                if (!(newSnake is Snake))
-                    return; // shouldn't happen but just in case
-
-                if (snakes.ContainsKey(newSnake.ID))
-                    snakes.Remove(newSnake.ID);
-
-                // checks if snake is supposed to go up in a puff of smoke this frame
-                if (newSnake!.died && !deadSnakes.ContainsKey(newSnake.ID))
-                    deadSnakes.Add(newSnake.ID, newSnake);
-
-
-                if (newSnake.dc || !newSnake.alive)
-                    return;     // doesn't keep snake in snakes set if snake is dead or disconnected
-
-                if (deadSnakes.ContainsKey(newSnake.ID))    // means new snake is a revived snake and needs to be removed
-                    deadSnakes.Remove(newSnake.ID);
-
-                // snake isn't already in snakes set and snake isn't dead, didn't die, and is still connected
-                snakes.Add(newSnake.ID, newSnake!);  // again, this object should just be a snake object if it contains a key called "snake".
+            // method checks if snake is valid,
+            // removes identical snakes (if applicable) temporarily
+            // finally, if the snake is still connected, added back
+            // to be drawn as a (possibly) living, (possibly) breathing, gen-you-wine snake.
+            if (newSnake == null)
                 return;
-            }
-            else if (newObj.ContainsKey("wall"))
-            {
-                // Walls are only sent once and at the beginning
-                // so method just adds these walls to the appropriate data structure.
-                Wall? newWall = newObj.ToObject<Wall>();
-                if (newWall is Wall)
-                    walls.Add(newWall.ID, newWall!);
-                return;
-            }
-            else if (newObj.ContainsKey("power"))
-            {
-                // Whenever a new JSON string regarding a powerup is received,
-                // method checks if that ID is already in powerup data structure.
-                // if it is, it's removed temporarily.
-                // if the JSON string is sent because that powerup died,
-                // the powerup is not added back to the data structure.
-                // otherwise the powerup is added.
 
-                Powerup? newPwp = newObj.ToObject<Powerup>();
+            if (snakes.ContainsKey(newSnake.ID))
+                snakes.Remove(newSnake.ID);
 
-                if (!(newPwp is Powerup))   // if newPwp is not a Powerup
-                    return; // shouldn't happen but just in case
-                
-                if (powerups.ContainsKey(newPwp.ID))
-                    powerups.Remove(newPwp.ID);
 
-                if (newPwp.died)
-                    return;
+            if (newSnake.dc)
+                return;     // doesn't keep snake in snakes set if snake is disconnected
 
-                powerups.Add(newPwp.ID, newPwp);
-                return;
-            }
+            // snake isn't already in snakes set and snake isn't dead, didn't die, and is still connected
+            snakes.Add(newSnake.ID, newSnake!);  // again, this object should just be a snake object if it contains a key called "snake".
+            return;
         }
 
+        /// <summary>
+        /// Updates walls dictionary with given nullable wall object
+        /// Walls are never removed
+        /// </summary>
+        /// <param name="newObj"></param>
+        public void UpdateWalls(Wall? newWall)
+        {
+            // Walls are only sent once and at the beginning
+            // so method just adds these walls to the appropriate data structure.
+            if (newWall is Wall)
+                walls.Add(newWall.ID, newWall!);
+        }
+
+        /// <summary>
+        /// Updates powerups dictionary with given nullable Powerup object
+        /// Powerups are removed after being eaten
+        /// </summary>
+        /// <param name="newObj"></param>
+        public void UpdatePowerups(Powerup? newPwp)
+        {
+            // Whenever a new JSON string regarding a powerup is received,
+            // method checks if that ID is already in powerup data structure.
+            // if it is, it's removed temporarily.
+            // if the JSON string is sent because that powerup died,
+            // the powerup is not added back to the data structure.
+            // otherwise the powerup is added.
+
+            if (!(newPwp is Powerup))   // if newPwp is not a Powerup
+                return; // shouldn't happen but just in case
+
+            if (powerups.ContainsKey(newPwp.ID))
+                powerups.Remove(newPwp.ID);
+
+            if (newPwp.died)
+                return;
+
+            powerups.Add(newPwp.ID, newPwp);
+            return;
+        }
+
+        /// <summary>
+        /// Resets the world on disconnect
+        /// </summary>
         public void Reset()
         {
             snakes.Clear();
             walls.Clear();
             powerups.Clear();
-            deadSnakes.Clear();
+            //deadSnakes.Clear();
             ID = -1;
             WorldSize = -1;
             PlayerName = "";
