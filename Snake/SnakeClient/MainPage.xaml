@@ -42,6 +42,11 @@
                               x:Name="graphicsView"
                               HeightRequest="900"
                               WidthRequest="900" />
+                <Image Source="Explode.gif
+                       x:Name = explosionGif"
+                       HeightRequest="50"
+                       WidthRequest="50"
+                       IsAnimationPlaying="True"/>
             </Border>
         </VerticalStackLayout>
     </ScrollView>

@@ -47,6 +47,10 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Resources\Images\Explode.gif" />
+	  <None Remove="Resources\Images\Explode.png" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="MainPage.xaml">
@@ -54,11 +58,10 @@
 	  </MauiXaml>
 	</ItemGroup>
 	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Images\Explode.gif" />
+	  <EmbeddedResource Include="Resources\Images\Explode.png" />
 	  <EmbeddedResource Include="Resources\Images\WallSprite.png" />
 	  <EmbeddedResource Include="Resources\Images\Background.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClientModel\ClientModel.csproj" />

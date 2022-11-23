@@ -24,7 +24,7 @@ public class WorldPanel : IDrawable
     public delegate void ObjectDrawer(object o, ICanvas canvas);
     private IImage wall;
     private IImage background;
-    //private IImage explode;
+    private IImage explode;
     private int viewSize = 900;
 
     private bool initializedForDrawing = false;
@@ -65,7 +65,7 @@ public class WorldPanel : IDrawable
     {
         wall = loadImage("WallSprite.png");
         background = loadImage("Background.png");
-        //explode = loadImage("Explode.png");
+        explode = loadImage("Explode.gif");
         initializedForDrawing = true;
     }
 
@@ -250,8 +250,15 @@ public class WorldPanel : IDrawable
     private void DeadSnakeDrawer(object o, ICanvas canvas)
     {
         Snake dead = o as Snake;
-        canvas.FillColor = Colors.Red;
-        canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 10);
+        //canvas.FillColor = Colors.Red;
+        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 20);
+        //canvas.FillColor = Colors.Orange;
+        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 15);
+        //canvas.FillColor = Colors.Yellow;
+        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 10);
+        //canvas.FillColor = Colors.White;
+        //canvas.FillCircle(parse(dead.body[dead.body.Count - 1].GetX()), parse(dead.body[dead.body.Count - 1].GetY()), 5);
+        canvas.DrawImage(explode, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
     }
 
     /// <summary>
