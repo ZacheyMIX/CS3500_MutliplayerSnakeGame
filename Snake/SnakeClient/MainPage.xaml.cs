@@ -12,6 +12,7 @@ public partial class MainPage : ContentPage
         controller.Error += NetworkErrorHandler;
         controller.Update += DisplayChanges;
         controller.Connected += SuccessfulConnect;
+        controller.SnakeDied += worldPanel.KillSnake;
 
         worldPanel.SetWorld(controller.modelWorld);
     }
@@ -72,6 +73,7 @@ public partial class MainPage : ContentPage
             {
                 connectButton.IsEnabled = true;
                 serverText.IsEnabled = true;
+                nameText.IsEnabled = true;
             }
         });
     }
@@ -117,6 +119,7 @@ public partial class MainPage : ContentPage
         {
             connectButton.IsEnabled = false;
             serverText.IsEnabled = false;
+            nameText.IsEnabled = false;
         });
     }
 
