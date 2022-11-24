@@ -1,12 +1,17 @@
 ﻿using GC;
+using Plugin.Maui.Audio;
+
 namespace SnakeGame;
 
 public partial class MainPage : ContentPage
 {
     GameController controller;
-    public MainPage()
+    IAudioManager audioManager;
+    public MainPage(IAudioManager audioManager)
     {
         InitializeComponent();
+        this.audioManager = audioManager;
+
         controller = new GameController();
 
         controller.Error += NetworkErrorHandler;

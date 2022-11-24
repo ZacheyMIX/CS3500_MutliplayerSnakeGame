@@ -91,6 +91,9 @@
 	  <EmbeddedResource Include="Resources\Images\WallSprite.png" />
 	  <EmbeddedResource Include="Resources\Images\Background.png" />
   </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Plugin.Maui.Audio" Version="0.1.0-preview2" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClientModel\ClientModel.csproj" />
     <ProjectReference Include="..\GameController\GameController.csproj" />
