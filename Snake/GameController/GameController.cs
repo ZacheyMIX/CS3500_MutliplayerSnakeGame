@@ -3,7 +3,6 @@ using ClientModel;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using SnakeGame;
 
 namespace GC
 {

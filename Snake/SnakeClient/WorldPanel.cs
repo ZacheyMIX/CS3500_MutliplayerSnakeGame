@@ -262,7 +262,6 @@ public class WorldPanel : IDrawable
         canvas.FillEllipse(-(width / 2), -(width / 2), width, width);
     }
 
-    // CHANGED TO AN EVENT HANDLER
     /// <summary>
     /// Drawer for Dead Snake Objects i.e. Death animations
     /// </summary>
