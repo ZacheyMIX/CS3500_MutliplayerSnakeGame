@@ -35,6 +35,17 @@ public partial class MainPage : ContentPage
     {
         keyboardHack.Focus();
     }
+
+    public void PlayDeathSound()
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            var player = audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync
+                ("deathsound.wav"));
+            player.Play();
+        });
+    }
+
     /// <summary>
     /// handles directional inputs w,a,s,d
     /// </summary>
