@@ -23,8 +23,11 @@ public partial class MainPage : ContentPage
         controller.Connected += SuccessfulConnect;
         controller.PlayerDied += PlayDeathSound;
 
-        AddDeathSound("crash.wav"); // car crash sound effect
-        AddDeathSound("bonk2.wav"); // bonk sound effect #2
+        AddDeathSound("crash.wav");     // car crash
+        AddDeathSound("bonk2.wav");     // bonk sound effect #2
+        AddDeathSound("explode.wav");   // roblox explosion
+        AddDeathSound("homer.wav");     // homer simpson screaming
+        AddDeathSound("slip.wav");      // cartoon slipping
 
         worldPanel.SetWorld(controller.modelWorld);
     }
@@ -50,7 +53,7 @@ public partial class MainPage : ContentPage
     /// </summary>
     public void PlayDeathSound()
     {
-        int index = random.Next(0, 2);  // excludes 2, so goes from 0 to 1. Change this appropriately with new death sounds.
+        int index = random.Next(0, 5);  // excludes last. make sure to have the upper bound be # of sounds
         audioPlayers[index].Play();
     }
 
