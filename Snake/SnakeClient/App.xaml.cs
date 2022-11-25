@@ -1,4 +1,5 @@
-﻿namespace SnakeGame;
+﻿using Plugin.Maui.Audio;
+namespace SnakeGame;
 
 public partial class App : Application
 {
@@ -6,7 +7,7 @@ public partial class App : Application
 	{
 		InitializeComponent();
 
-		MainPage = new MainPage();
+		MainPage = new MainPage(AudioManager.Current);
     }
 }
 

@@ -17,6 +17,7 @@ public static class MauiProgram
 
         // added to use sounds. Uses the installed Plugin.Maui.Audio package
         builder.Services.AddSingleton(AudioManager.Current);
+        builder.Services.AddTransient<MainPage>();
 
         return builder.Build();
     }

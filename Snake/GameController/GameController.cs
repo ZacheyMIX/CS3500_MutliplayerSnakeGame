@@ -32,6 +32,9 @@ namespace GC
         public delegate void ConnectedHandler();
         public event ConnectedHandler? Connected;
 
+        public delegate void PlayerDeathHandler();
+        public event PlayerDeathHandler? PlayerDied;
+
 
         /// <summary>
         /// Default constructor.
@@ -163,6 +166,9 @@ namespace GC
 
                         if (newSnake is null)
                             continue;
+
+                        if (newSnake.ID == modelWorld.ID && newSnake.died)
+                            PlayerDied?.Invoke();
 
                         modelWorld.UpdateSnakes(newSnake);
                     }

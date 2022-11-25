@@ -7,16 +7,24 @@ public partial class MainPage : ContentPage
 {
     GameController controller;
     IAudioManager audioManager;
+    List<IAudioPlayer> audioPlayers; // possible death sounds
+    Random random;  // used in playing a random death sound, or eventually doing a random effect
     public MainPage(IAudioManager audioManager)
     {
         InitializeComponent();
         this.audioManager = audioManager;
 
         controller = new GameController();
+        audioPlayers = new List<IAudioPlayer>();
+        random = new Random();
 
         controller.Error += NetworkErrorHandler;
         controller.Update += DisplayChanges;
         controller.Connected += SuccessfulConnect;
+        controller.PlayerDied += PlayDeathSound;
+
+        AddDeathSound("crash.wav"); // car crash sound effect
+        AddDeathSound("bonk2.wav"); // bonk sound effect #2
 
         worldPanel.SetWorld(controller.modelWorld);
     }
@@ -36,13 +44,27 @@ public partial class MainPage : ContentPage
         keyboardHack.Focus();
     }
 
+    /// <summary>
+    /// Plays a death sound on player's death.
+    /// Accessed from WorldPanel
+    /// </summary>
     public void PlayDeathSound()
+    {
+        int index = random.Next(0, 2);  // excludes 2, so goes from 0 to 1. Change this appropriately with new death sounds.
+        audioPlayers[index].Play();
+    }
+
+    /// <summary>
+    /// Adds sound from specified path to audioPlayers for playing a death sound.
+    /// </summary>
+    /// <param name="path"> string representation of the name of the file to add from Raw subdirectory </param>
+    private void AddDeathSound(String path)
     {
         Dispatcher.Dispatch(async () =>
         {
-            var player = audioManager.CreatePlayer(await FileSystem.OpenAppPackageFileAsync
-                ("deathsound.wav"));
-            player.Play();
+            var player = audioManager.CreatePlayer
+                (await FileSystem.OpenAppPackageFileAsync(path));
+            audioPlayers.Add(player);
         });
     }
 
