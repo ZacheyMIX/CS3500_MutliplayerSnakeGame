@@ -28,6 +28,7 @@ public partial class MainPage : ContentPage
         AddDeathSound("explode.wav");   // roblox explosion
         AddDeathSound("homer.wav");     // homer simpson screaming
         AddDeathSound("slip.wav");      // cartoon slipping
+        AddDeathSound("subaluwa.wav");  // Ed, Edd n Eddy Japanese warrior call
 
         worldPanel.SetWorld(controller.modelWorld);
     }
@@ -53,7 +54,7 @@ public partial class MainPage : ContentPage
     /// </summary>
     public void PlayDeathSound()
     {
-        int index = random.Next(0, 5);  // excludes last. make sure to have the upper bound be # of sounds
+        int index = random.Next(0, 6);  // excludes last. make sure to have the upper bound be # of sounds
         audioPlayers[index].Play();
     }
 
