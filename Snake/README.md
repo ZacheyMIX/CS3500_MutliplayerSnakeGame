@@ -7,7 +7,8 @@
 - Network errors are accomodated for
 - Interrupted or cut off data receives are saved for later parsing with the full message
 - Client can reliably reconnect after network errors
-- Visual representations including snakes, walls, powerups, images, views, etc
+- Visual representations including snakes, walls, powerups, images, views, explosions etc
+- Sufficiently high framerate regardless of playercount or connection source
 
 ## What doesn't work:
 - Possibly unaccounted for errors
@@ -25,6 +26,8 @@
 - Snakes wrapping around the map in a successful and visually intuitive way
 
 ## Noteworthy design decisions:
-- ClientModel's Update method takes in JObjects instead of strings. This leaves the JSON parsing duties up to GameController.
-- Client IDs are stored within the ClientModel.
-- A client is given an option to reconnect to the server or to fully disconnect from a server given networking errors.
+- ClientModel's Update method takes in JObjects instead of strings. This leaves the JSON parsing duties up to GameController
+- Client IDs are stored within the ClientModel
+- A client is given an option to reconnect to the server or to fully disconnect from a server given networking errors
+- Six different working sound effects upon death. All sound effects are loaded at program start
+- Added a class for explosions as to simulate a gif by rotating through loaded images at a high speed
