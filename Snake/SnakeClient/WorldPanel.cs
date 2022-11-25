@@ -302,18 +302,7 @@ public class WorldPanel : IDrawable
             canvas.DrawImage(explode1, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
         dead.explode.runThroughFrames();
     }
-    
-
-    /// <summary>
-    /// Given coordinates of a dead snake's head,
-    /// method adds the explosion animation.
-    /// </summary>
-    /// <param name="coordinates"> Vector2D representation of a dead snake's head </param>
-    public void KillSnake(Vector2D coordinates, ICanvas canvas)
-    {
-
-        return;
-    }
+  
 
     /// <summary>
     /// Method for parsing doubles to floats
