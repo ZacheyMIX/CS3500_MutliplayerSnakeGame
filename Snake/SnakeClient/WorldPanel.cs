@@ -270,33 +270,33 @@ public class WorldPanel : IDrawable
     private void DeadSnakeDrawer(object o, ICanvas canvas)
     {
         Snake dead = o as Snake;
-        if(dead.explode.currentFrame == 14)
+        if(dead.explode.currentFrame == 28)
             canvas.DrawImage(explode15, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 13)
+        else if (dead.explode.currentFrame == 26)
             canvas.DrawImage(explode14, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 12)
+        else if (dead.explode.currentFrame == 24)
             canvas.DrawImage(explode13, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 11)
+        else if (dead.explode.currentFrame == 22)
             canvas.DrawImage(explode12, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 10)
+        else if (dead.explode.currentFrame == 20)
             canvas.DrawImage(explode11, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 9)
+        else if (dead.explode.currentFrame == 18)
             canvas.DrawImage(explode10, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 8)
+        else if (dead.explode.currentFrame == 16)
             canvas.DrawImage(explode9, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 7)
+        else if (dead.explode.currentFrame == 14)
             canvas.DrawImage(explode8, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 6)
+        else if (dead.explode.currentFrame == 12)
             canvas.DrawImage(explode7, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 5)
+        else if (dead.explode.currentFrame == 10)
             canvas.DrawImage(explode6, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 4)
+        else if (dead.explode.currentFrame == 8)
             canvas.DrawImage(explode5, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 3)
+        else if (dead.explode.currentFrame == 6)
             canvas.DrawImage(explode4, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 2)
+        else if (dead.explode.currentFrame == 4)
             canvas.DrawImage(explode3, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 1)
+        else if (dead.explode.currentFrame == 2)
             canvas.DrawImage(explode2, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
         else if (dead.explode.currentFrame == 0)
             canvas.DrawImage(explode1, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
