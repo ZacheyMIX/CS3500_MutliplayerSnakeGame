@@ -101,7 +101,7 @@
 	  <PackageReference Include="Plugin.Maui.Audio" Version="0.1.0-preview2" />
 	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClientModel\ClientModel.csproj" />
+    <ProjectReference Include="..\ClientModel\GameModel.csproj" />
     <ProjectReference Include="..\GameController\GameController.csproj" />
   </ItemGroup>
 </Project>

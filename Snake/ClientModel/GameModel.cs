@@ -82,6 +82,11 @@ namespace ClientModel
             ID = -1;
         }
 
+
+        ////////////////////////
+        // CLIENT SIDE UPDATERS
+        ////////////////////////
+
         /// <summary>
         /// method for updating snakes dictionary
         /// note that this is different from UpdateWalls and UpdatePowerups
