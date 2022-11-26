@@ -29,5 +29,5 @@
 - ClientModel's Update method takes in JObjects instead of strings. This leaves the JSON parsing duties up to GameController
 - Client IDs are stored within the ClientModel
 - A client is given an option to reconnect to the server or to fully disconnect from a server given networking errors
-- Several different working sound effects upon death. All sound effects are loaded at program start
-- Added a class for explosions as to simulate a gif by rotating through loaded images at a high speed
+- Several different working sound effects upon death. All sound effects are loaded at program start. Invoked when died is true for snake with client ID.
+- Added a class for explosions as to simulate a gif by rotating through loaded images at a high speed. Also utilizes !alive rather than dead.
