@@ -270,35 +270,35 @@ public class WorldPanel : IDrawable
     private void DeadSnakeDrawer(object o, ICanvas canvas)
     {
         Snake dead = o as Snake;
-        if(dead.explode.currentFrame == 28)
+        if(dead.explode.currentFrame == 28 )
             canvas.DrawImage(explode15, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 26)
+        else if (dead.explode.currentFrame == 26 || dead.explode.currentFrame == 27)
             canvas.DrawImage(explode14, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 24)
+        else if (dead.explode.currentFrame == 24 || dead.explode.currentFrame == 25)
             canvas.DrawImage(explode13, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 22)
+        else if (dead.explode.currentFrame == 22 || dead.explode.currentFrame == 23)
             canvas.DrawImage(explode12, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 20)
+        else if (dead.explode.currentFrame == 20 || dead.explode.currentFrame == 21)
             canvas.DrawImage(explode11, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 18)
+        else if (dead.explode.currentFrame == 18 || dead.explode.currentFrame == 19)
             canvas.DrawImage(explode10, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 16)
+        else if (dead.explode.currentFrame == 16 || dead.explode.currentFrame == 17)
             canvas.DrawImage(explode9, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 14)
+        else if (dead.explode.currentFrame == 14 || dead.explode.currentFrame == 15)
             canvas.DrawImage(explode8, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 12)
+        else if (dead.explode.currentFrame == 12 || dead.explode.currentFrame == 13)
             canvas.DrawImage(explode7, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 10)
+        else if (dead.explode.currentFrame == 10 || dead.explode.currentFrame == 11)
             canvas.DrawImage(explode6, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 8)
+        else if (dead.explode.currentFrame == 8 || dead.explode.currentFrame == 9)
             canvas.DrawImage(explode5, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 6)
+        else if (dead.explode.currentFrame == 6 || dead.explode.currentFrame == 7)
             canvas.DrawImage(explode4, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 4)
+        else if (dead.explode.currentFrame == 4 || dead.explode.currentFrame == 5)
             canvas.DrawImage(explode3, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 2)
+        else if (dead.explode.currentFrame == 2 || dead.explode.currentFrame == 3)
             canvas.DrawImage(explode2, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
-        else if (dead.explode.currentFrame == 0)
+        else if (dead.explode.currentFrame == 0 || dead.explode.currentFrame == 1)
             canvas.DrawImage(explode1, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
         dead.explode.runThroughFrames();
     }
