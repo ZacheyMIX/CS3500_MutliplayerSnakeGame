@@ -7,6 +7,7 @@ namespace Server
     internal class GameServer
     {
         private Dictionary<long, SocketState> clients;
+        private ServerWorld zeWorld;
         static void Main(string[] args)
         {
             GameServer server = new();
@@ -23,6 +24,7 @@ namespace Server
         public GameServer()
         {
             clients = new Dictionary<long, SocketState>();
+            zeWorld = new ServerWorld();
         }
 
         /// <summary>
@@ -77,33 +79,39 @@ namespace Server
             Networking.GetData(state);
         }
 
+        /// <summary>
+        /// Gathers the JSON strings and seperatest them into substrings, 
+        /// </summary>
+        /// <param name="state"></param>
         private void ProcessData(SocketState state)
         {
             string totalData = state.GetData();
+            if (totalData.Length > 0)
+                state.RemoveData(0, totalData.Length);
+
             // splits received strings into substrings that end in newline
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
+            
 
-            // loop until we process all messages.
-            // We may have received more than one.
-            foreach (string p in parts)
+            lock (zeWorld)
             {
-                // Ignore empty strings added by the regex splitter
-                if (p.Length == 0)
-                    continue;
+                // loop until we process all messages.
+                // We may have received more than one.
+                foreach (string p in parts)
+                {
+                    // Ignore empty strings added by the regex splitter
+                    if (p.Length == 0)
+                        continue;
 
-                // terminator string wasn't included, so this message is corrupt
-                if (p[p.Length - 1] != '\n')
-                    break;
+                    // terminator string wasn't included, so this message is corrupt
+                    if (p[p.Length - 1] != '\n')
+                        break;
 
-                // may add message received or the message received from the client
-                // but this clutters up the console so we'll leave it out.
-                // otherwise, uncomment the following line:
-                //Console.WriteLine("received data from client " + state.ID + ": \"" + p.Substring(0, p.Length - 1) + "\"");
 
-                state.RemoveData(0, p.Length);
 
-                // TODO: Process data in model, make sure that this actually is valid
-                // also find out how to send information every frame
+                    // TODO: Process data in model, make sure that this actually is valid
+                    // also find out how to send information every frame
+                }
             }
         }
 
