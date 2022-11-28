@@ -1,10 +1,19 @@
-﻿namespace Server
+﻿using NetworkUtil;
+using GameModel;
+
+namespace Server
 {
-    internal class ServerProgram
+    internal class GameServer
     {
+        private Dictionary<long, SocketState> clients;
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            GameServer server = new();
+            server.StartServer();
+
+            Console.Read();
         }
+
+
     }
 }
