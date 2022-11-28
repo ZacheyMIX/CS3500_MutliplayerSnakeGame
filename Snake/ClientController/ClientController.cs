@@ -79,7 +79,7 @@ namespace GC
             theServer = state;
             theServer.OnNetworkAction = ReceiveData;
             // send player name to server
-            Networking.Send(theServer.TheSocket, modelWorld.PlayerName);
+            Networking.Send(theServer.TheSocket, modelWorld.PlayerName + "\n");
 
             if (state.ErrorOccurred)
             {

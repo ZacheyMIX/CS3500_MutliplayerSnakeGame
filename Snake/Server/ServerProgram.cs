@@ -1,6 +1,7 @@
 ﻿using NetworkUtil;
 using GameModel;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Server
 {
@@ -55,6 +56,8 @@ namespace Server
 
             // delegate to be invoked whenever we receive some data from this client
             state.OnNetworkAction = ReceiveData;
+
+            Console.WriteLine("Client " + state.ID + " has connected." );
             
             // data thread loop
             Networking.GetData(state);
@@ -86,9 +89,6 @@ namespace Server
         private void ProcessData(SocketState state)
         {
             string totalData = state.GetData();
-            if (totalData.Length > 0)
-                state.RemoveData(0, totalData.Length);
-
             // splits received strings into substrings that end in newline
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
             
@@ -107,10 +107,19 @@ namespace Server
                     if (p[p.Length - 1] != '\n')
                         break;
 
+                    ControlCommand? Movement = JsonConvert.DeserializeObject<ControlCommand>(p);
+
+                    if (Movement is null)
+                        continue;
+
+
+
 
 
                     // TODO: Process data in model, make sure that this actually is valid
                     // also find out how to send information every frame
+
+                    state.RemoveData(0, p.Length);
                 }
             }
         }
