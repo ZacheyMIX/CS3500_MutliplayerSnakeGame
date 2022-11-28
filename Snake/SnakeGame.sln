@@ -14,9 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameModel", "ClientModel\GameModel.csproj", "{D3959DCA-6229-4344-AFD4-5A09CA791666}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameModel", "GameModel\GameModel.csproj", "{D3959DCA-6229-4344-AFD4-5A09CA791666}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameController", "GameController\GameController.csproj", "{7681A614-C9D1-45B9-9290-C9EC763003B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientController", "ClientController\ClientController.csproj", "{7681A614-C9D1-45B9-9290-C9EC763003B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{8A89B155-3EBF-4AF1-86A6-74E33A87A5D4}"
 EndProject

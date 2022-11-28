@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClientModel\GameModel.csproj" />
+    <ProjectReference Include="..\GameModel\GameModel.csproj" />
     <ProjectReference Include="..\NetworkController\NetworkController.csproj" />
   </ItemGroup>
 

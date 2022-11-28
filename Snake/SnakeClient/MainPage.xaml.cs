@@ -5,7 +5,7 @@ namespace SnakeGame;
 
 public partial class MainPage : ContentPage
 {
-    GameController controller;
+    ClientController controller;
     IAudioManager audioManager;
     List<IAudioPlayer> audioPlayers; // possible death sounds
     Random random;  // used in playing a random death sound, or eventually doing a random effect
@@ -14,7 +14,7 @@ public partial class MainPage : ContentPage
         InitializeComponent();
         this.audioManager = audioManager;
 
-        controller = new GameController();
+        controller = new ClientController();
         audioPlayers = new List<IAudioPlayer>();
         random = new Random();
 

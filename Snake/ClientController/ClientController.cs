@@ -11,7 +11,7 @@ namespace GC
     /// Should contain all Networking functionality,
     /// and delegate appropriate information to and from appropriate things.
     /// </summary>
-    public class GameController
+    public class ClientController
     {
         /// <summary>
         /// World used an accessed on the Client end
@@ -41,7 +41,7 @@ namespace GC
         /// Should create a valid model and connection state,
         /// and work with view.
         /// </summary>
-        public GameController()
+        public ClientController()
         {
             modelWorld = new World();
         }
