@@ -14,7 +14,7 @@ using System.Net;
 using Font = Microsoft.Maui.Graphics.Font;
 using SizeF = Microsoft.Maui.Graphics.SizeF;
 using GC;
-using ClientModel;
+using GameModel;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Maui.Graphics;
 
@@ -47,7 +47,7 @@ public class WorldPanel : IDrawable
     }
 #endif
 
-    private World world;
+    private ClientWorld world;
     public WorldPanel()
     {
     }
@@ -57,7 +57,7 @@ public class WorldPanel : IDrawable
     /// Acquires a pointer to the client's main World object.
     /// </summary>
     /// <param name="w"> World pointer for our world field </param>
-    public void SetWorld(World w)
+    public void SetWorld(ClientWorld w)
     {
         world = w;
     }

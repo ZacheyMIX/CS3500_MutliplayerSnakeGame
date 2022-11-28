@@ -1,5 +1,5 @@
 ﻿using NetworkUtil;
-using ClientModel;
+using GameModel;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -16,7 +16,7 @@ namespace GC
         /// <summary>
         /// World used an accessed on the Client end
         /// </summary>
-        public World modelWorld { get; }
+        public ClientWorld modelWorld { get; }
         /// <summary>
         /// represents the connection the client has to the server.
         /// </summary>
@@ -43,7 +43,7 @@ namespace GC
         /// </summary>
         public ClientController()
         {
-            modelWorld = new World();
+            modelWorld = new ClientWorld();
         }
 
 
