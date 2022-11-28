@@ -256,27 +256,4 @@ namespace GC
             MoveDirection("none");
         }
     }
-
-
-
-    /// <summary>
-    /// Helper class for sending move commands over the network
-    /// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
-    public class ControlCommand
-    {
-        /// <summary>
-        /// the only possible strings are none, up, down, left, or right.
-        /// </summary>
-        [JsonProperty(PropertyName = "moving")]
-        public string moving;
-        /// <summary>
-        /// Only necessary constructor for our helper class
-        /// </summary>
-        /// <param name="direction"> should only be "none", "up", "down", "left" or "right" </param>
-        public ControlCommand(string direction)
-        {
-            moving = direction;
-        }
-    }
 }
