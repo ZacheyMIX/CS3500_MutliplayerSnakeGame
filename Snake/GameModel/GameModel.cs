@@ -181,7 +181,7 @@ namespace GameModel
         /// <summary>
         /// integer ID numbers to Snake objects.
         /// </summary>
-        private Dictionary<int, Snake> snakes;
+        private Dictionary<long, Snake> snakes;
         /// <summary>
         /// integer ID numbers to wall objects.
         /// </summary>
@@ -194,7 +194,7 @@ namespace GameModel
         /// <summary>
         /// Field to make snakes dictionary accessible to the outside
         /// </summary>
-        public Dictionary<int, Snake> Snakes { get { return snakes; } }
+        public Dictionary<long, Snake> Snakes { get { return snakes; } }
         /// <summary>
         /// Field to make walls dictionary accessible to the outside
         /// </summary>
@@ -249,31 +249,10 @@ namespace GameModel
         /// note that this is different from UpdateWalls and UpdatePowerups
         /// in that this takes in an already parsed Snake object.
         /// </summary>
-        public void UpdateSnakes(Snake? newSnake)
+        public void AddSnake(string playerName, long ID)
         {
-            // method checks if snake is valid,
-            // removes identical snakes (if applicable) temporarily
-            // finally, if the snake is still connected, added back
-            // to be drawn as a (possibly) living, (possibly) breathing, gen-you-wine snake.
-            if (newSnake == null)
-                return;
-
-            if (snakes.ContainsKey(newSnake.ID))
-                snakes.Remove(newSnake.ID);
-
-
-            if (newSnake.dc || !newSnake.alive)
-                return;     // doesn't keep snake in snakes set if snake is disconnected
-
-            // snake isn't already in snakes set and snake isn't dead, didn't die, and is still connected
-            snakes.Add(newSnake.ID, newSnake!);  // again, this object should just be a snake object if it contains a key called "snake".
-
-
-
-            // REMEMBER TO REMOVE
-            maxPowers++;
-            maxPowersDelay++;
-            return;
+            // add a new snake on connection that has name field and ID field provided.
+            snakes.Add(ID, new Snake(playerName, ID));
         }
 
         /// <summary>
@@ -314,6 +293,11 @@ namespace GameModel
 
             powerups.Add(newPwp.ID, newPwp);
             return;
+        }
+
+        public void MoveSnake(long iD, ControlCommand movement)
+        {
+            // TODO: write movement method
         }
 
         // note: we removed Reset method.
@@ -398,6 +382,22 @@ namespace GameModel
             name = "";
             body = new();
             dir = new();
+            score = 0;
+            died = false;
+            alive = false;
+            dc = false;
+            join = false;
+            explode = new();
+            speed = 3;
+            growth = 12;
+        }
+
+        public Snake(string Name, long iD)
+        {
+            ID = (int)iD;
+            name = Name;
+            body = new();   // remember to randomize
+            dir = new();    // remember to randomize
             score = 0;
             died = false;
             alive = false;

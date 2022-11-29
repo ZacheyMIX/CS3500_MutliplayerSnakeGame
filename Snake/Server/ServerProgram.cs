@@ -109,15 +109,14 @@ namespace Server
 
                     ControlCommand? Movement = JsonConvert.DeserializeObject<ControlCommand>(p);
 
-                    if (Movement is null)
+                    if (Movement is null)   // then we are given a new playername
+                    {
+                        if (zeWorld.Snakes.ContainsKey(state.ID))
+                            zeWorld.AddSnake(Regex.Replace(p, @"\t|\n|\r", ""), state.ID);
                         continue;
+                    }
 
-
-
-
-
-                    // TODO: Process data in model, make sure that this actually is valid
-                    // also find out how to send information every frame
+                    zeWorld.MoveSnake(state.ID, Movement);
 
                     state.RemoveData(0, p.Length);
                 }
