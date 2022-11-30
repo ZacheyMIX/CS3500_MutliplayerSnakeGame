@@ -50,11 +50,10 @@ namespace Server
             // make settings instance accessible by server methods
             server.settings = settings;
 
-            // create new world instance
-            server.zeWorld = new ServerWorld(server.settings.UniverseSize, server.settings.Walls);
+            server.zeWorld = new ServerWorld(settings.UniverseSize, settings.Walls);
 
             server.StartServer();
-            
+
             // Sleep to prevent program from closing.
             // this thread is done, but other threads are still working.
             Console.Read();
@@ -96,8 +95,8 @@ namespace Server
             // delegate to be invoked whenever we receive some data from this client
             state.OnNetworkAction = ReceiveName;
 
-            Console.WriteLine("Client " + state.ID + " has connected." );
-            
+            Console.WriteLine("Client " + state.ID + " has connected.");
+
             // data thread loop
             Networking.GetData(state);
         }
@@ -119,13 +118,32 @@ namespace Server
             if (totalData.Length == 0)
                 return;
 
-                // haven't received terminator character yet
-                if (totalData[totalData.Length - 1] != '\n')
-                    return;
+            // haven't received terminator character yet
+            if (totalData[totalData.Length - 1] != '\n')
+                return;
 
-                // in this last case we have a full message ending with a terminator character
-                // that we can use as a name
-                
+            // in this last case we have a full message ending with a terminator character
+            // that we can use as a name
+
+            if (state.ErrorOccurred)
+            {
+                Console.WriteLine("Error finishing handshake with user ID " + state.ID);
+                RemoveClient(state.ID);
+                return;
+            }
+
+            // add client state to set of connections
+            // locks for race conditions etc
+            lock (clients)
+            {
+                clients.Add(state.ID, state);
+            }
+
+            // add client snake to model
+            lock (zeWorld)
+            {
+                if (!zeWorld.AddSnake(Regex.Replace(totalData, @"\t|\n|\r", ""), state.ID))
+                    RemoveClient(state.ID);
 
                 // PS9 FAQ states to first send then add state to client set
                 // is important because we need to ensure the client gets handshake info FIRST
@@ -134,25 +152,12 @@ namespace Server
                     state.ID.ToString() + "\n"      // send client ID
                 + settings.UniverseSize + "\n");    // and then worldsize
 
-                if (state.ErrorOccurred)
-                {
-                    Console.WriteLine("Error finishing handshake with user ID " + state.ID);
-                    return;
-                }
+                state.OnNetworkAction = ReceiveData;
+                Console.WriteLine("Player " + Regex.Replace(totalData, @"\t|\n|\r", "") + " has joined the game.");
 
-                // add client state to set of connections
-                // locks for race conditions etc
-                lock (clients)
-                {
-                    clients[state.ID] = state;
-                }
 
-                // add client snake to model
-                lock (zeWorld)
-                {
-                    zeWorld.AddSnake(Regex.Replace(totalData, @"\t|\n|\r", ""), state.ID);
-                    state.OnNetworkAction = ReceiveData;
-                }
+                // send Walls information to the client
+            }
 
             // resume client receive loop with whichever delegate is valid at this point
             Networking.GetData(state);
@@ -186,7 +191,7 @@ namespace Server
             string totalData = state.GetData();
             // splits received strings into substrings that end in newline
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
-            
+
 
             lock (zeWorld)
             {
@@ -206,7 +211,7 @@ namespace Server
 
                     // then we are given some weird string with a terminator character at the end
                     // possibly change to disable or remove client
-                    if (Movement is null)   
+                    if (Movement is null)
                         continue;
 
                     zeWorld.MoveSnake(state.ID, Movement);  // still need to implement this ServerWorld method
@@ -216,6 +221,24 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Serializes some object to prepare it to be sent over the network.
+        /// Uses should only be for walls, snakes, and powerups.
+        /// </summary>
+        /// <param name="obj"> a wall, snake, or powerup </param>
+        private static void SerializeAndSend(object obj, SocketState socket)
+        {
+            // this method should only be sending a Snake, Wall, or Powerup instance
+            if (obj is not Snake && obj is not Wall && obj is not Powerup)
+                return;
+
+            string toSendString = JsonConvert.SerializeObject(obj) + "\n";
+            Networking.Send(socket.TheSocket, toSendString);
+        }
+
+        /// <summary>
+        /// Removes client from client set
+        /// </summary>
         private void RemoveClient(long id)
         {
             Console.WriteLine("Client " + id + " disconnected");
@@ -229,9 +252,10 @@ namespace Server
     /// <summary>
     /// Used as a kind of helper class on Server construct to read provided settings.xml file
     /// </summary>
-    [DataContract (Namespace = "")]
+    [DataContract(Namespace = "")]
     internal class GameSettings
     {
+        // note that this doesn't do anything.
         [DataMember(Name = "FramesPerShot")]
         internal int FramesPerShot;
 
