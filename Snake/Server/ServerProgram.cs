@@ -47,7 +47,11 @@ namespace Server
             if (settings is null)
                 return;
 
+            // make settings instance accessible by server methods
             server.settings = settings;
+
+            // set walls within world instance
+            server.zeWorld.SetWalls(settings.Walls);
 
             server.StartServer();
             

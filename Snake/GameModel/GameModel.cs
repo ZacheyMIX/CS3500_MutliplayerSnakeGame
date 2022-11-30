@@ -188,24 +188,13 @@ namespace GameModel
         /// <summary>
         /// integer ID numbers to wall objects.
         /// </summary>
-        private Dictionary<int, Wall> walls;
+        private List<Wall> walls;
         /// <summary>
         /// integer ID numbers to powerup objects.
         /// </summary>
         private Dictionary<int, Powerup> powerups;
 
-        /// <summary>
-        /// Field to make snakes dictionary accessible to the outside
-        /// </summary>
-        public Dictionary<long, Snake> Snakes { get { return snakes; } }
-        /// <summary>
-        /// Field to make walls dictionary accessible to the outside
-        /// </summary>
-        public Dictionary<int, Wall> Walls { get { return walls; } }
-        /// <summary>
-        /// Field to make powerups dictionary accessible to the outside
-        /// </summary>
-        public Dictionary<int, Powerup> Powerups { get { return powerups; } }
+        //public List<Wall> Walls { get { return walls; } }
 
 
         ////////////////////////////
@@ -247,9 +236,9 @@ namespace GameModel
         /// should be used at server initialization when reading XML file
         /// </summary>
         /// <param name="newObj"></param>
-        public void AddWall(Wall newWall)
+        public void SetWalls(List<Wall> newWalls)
         {
-            walls.Add(newWall.ID, newWall);
+            walls = newWalls;
         }
 
         /// <summary>
