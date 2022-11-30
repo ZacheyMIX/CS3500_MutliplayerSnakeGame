@@ -210,26 +210,26 @@ public class WorldPanel : IDrawable
     private void WallDrawer(object o, ICanvas canvas)
     {
         Wall w = o as Wall;
-        double sizeX = w.p1.GetX();
-        double sizeY = w.p1.GetY();
+        float sizeX = parse(w.p1.GetX());
+        float sizeY = parse(w.p1.GetY());
 
         //Draws walls with the same Y coord until it reaches the X other direction
         while (sizeX >= w.p2.GetX() && sizeY == w.p2.GetY())
         {
-            canvas.DrawImage(wall, parse(sizeX) - 25, parse(sizeY) - 25, 50, 50);
+            canvas.DrawImage(wall, sizeX - 25, sizeY - 25, 50, 50);
             sizeX -= 50;
         }
         //Reset sizeX
-        sizeX = w.p1.GetX();
+        sizeX = parse(w.p1.GetX());
 
         //Draws walls with the same Y coord until it reaches the X coord other direction
         while (sizeX <= w.p2.GetX() && sizeY == w.p2.GetY())
         {
-            canvas.DrawImage(wall, parse(sizeX) - 25, parse(sizeY) - 25 , 50, 50);
+            canvas.DrawImage(wall, sizeX - 25, sizeY - 25 , 50, 50);
             sizeX += 50;
         }
         //Reset sizeX
-        sizeX = w.p1.GetX();
+        sizeX = parse(w.p1.GetX());
 
         //Draws walls with the same X coord until it reaches the Y coord
         while (sizeX == w.p2.GetX() && sizeY >= w.p2.GetY())
@@ -238,12 +238,12 @@ public class WorldPanel : IDrawable
             sizeY -= 50;
         }
         //Reset sizeY
-        sizeY = w.p1.GetY();
+        sizeY = parse(w.p1.GetY());
 
         //Draws walls with the same X coord until it reaches the Y coord other direction
         while (sizeX == w.p2.GetX() && sizeY <= w.p2.GetY())
         {
-            canvas.DrawImage(wall, parse(sizeX) - 25, parse(sizeY) - 25, 50, 50);
+            canvas.DrawImage(wall, sizeX - 25, parse(sizeY) - 25, 50, 50);
             sizeY += 50;
         }
 
@@ -270,8 +270,10 @@ public class WorldPanel : IDrawable
     private void DeadSnakeDrawer(object o, ICanvas canvas)
     {
         Snake dead = o as Snake;
-        if(dead.explode.currentFrame == 28 )
-            canvas.DrawImage(explode15, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
+        float locX = parse(dead.body[dead.body.Count - 1].GetX());
+        float locY = parse(dead.body[dead.body.Count - 1].GetX());
+        if (dead.explode.currentFrame == 28 )
+            canvas.DrawImage(explode15, locX - 25, parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
         else if (dead.explode.currentFrame == 26 || dead.explode.currentFrame == 27)
             canvas.DrawImage(explode14, parse(dead.body[dead.body.Count - 1].GetX() - 25), parse(dead.body[dead.body.Count - 1].GetY() - 25), 50, 50);
         else if (dead.explode.currentFrame == 24 || dead.explode.currentFrame == 25)
@@ -318,7 +320,6 @@ public class WorldPanel : IDrawable
     {
         if (world.ID == -1 || world.WorldSize == -1)    // do not draw if our information isn't set yet
             return;
-
 
         if (!initializedForDrawing)
             InitializeDrawing();
