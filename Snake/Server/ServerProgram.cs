@@ -11,7 +11,6 @@ namespace Server
     {
         private Dictionary<long, SocketState> clients;
         private ServerWorld zeWorld;
-
         public GameSettings settings;
         static void Main(string[] args)
         {
@@ -41,6 +40,8 @@ namespace Server
                     settings = (GameSettings?)ser.ReadObject(reader);
                 }
             }
+
+
 
             // ensure settings are valid. stop program if not
             if (settings is null)

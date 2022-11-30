@@ -179,6 +179,8 @@ namespace GameModel
 
     public class ServerWorld
     {
+        // NOTE THAT ALL SETTINGS ATTRIBUTES ARE STORED IN THE PROGRAM'S GAMESETTINGS INSTANCE
+
         /// <summary>
         /// integer ID numbers to Snake objects.
         /// </summary>
@@ -211,22 +213,6 @@ namespace GameModel
         ////////////////////////////
 
         /// <summary>
-        /// How many powerups can be in the world at a time
-        /// Default is 20.
-        /// We should try to allow this to be changed by the settings xml file
-        /// </summary>
-        private int maxPowers;
-
-        /// <summary>
-        /// How much delay between spawning new powerups
-        /// default is 200 frames
-        /// After spawning a powerup, the server should pick a random number of frames
-        /// less than this number before trying to spawn another.
-        /// We should try to allow this to be changed by the settings xml file
-        /// </summary>
-        private int maxPowersDelay;
-
-        /// <summary>
         /// Default constructor for serverside World class.
         /// Different XML settings may require parameter constructors,
         /// but this default should work with default settings.
@@ -236,8 +222,6 @@ namespace GameModel
             snakes = new();
             walls = new();
             powerups = new();
-            maxPowers = 20;
-            maxPowersDelay = 200;
         }
 
 
@@ -255,12 +239,6 @@ namespace GameModel
             // add a new snake on connection that has name field and ID field provided.
             if (!snakes.ContainsKey(ID))
                 snakes.Add(ID, new Snake(playerName, ID));
-
-            ///////////////////////
-            // REMEMBER TO REMOVE
-            ///////////////////////
-            maxPowers++;
-            maxPowersDelay++;
         }
 
         /// <summary>
@@ -424,23 +402,26 @@ namespace GameModel
 
     }
 
-    [DataContract]
+    [DataContract (Namespace = "")]
     [JsonObject(MemberSerialization.OptIn)]
     public class Wall
     {
         /// <summary>
         /// ID
         /// </summary>
+        [DataMember (Name = "ID")]
         [JsonProperty(PropertyName = "wall")]
         public readonly int ID;
         /// <summary>
         /// A vector2D representing 1 end point of the wall
         /// </summary>
+        [DataMember (Name = "p1")]
         [JsonProperty(PropertyName = "p1")]
         public readonly Vector2D p1;
         /// <summary>
         /// A vector2D representing the other end point of the wall
         /// </summary>
+        [DataMember (Name = "p2")]
         [JsonProperty(PropertyName = "p2")]
         public readonly Vector2D p2;
         /// <summary>
