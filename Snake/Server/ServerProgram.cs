@@ -50,8 +50,8 @@ namespace Server
             // make settings instance accessible by server methods
             server.settings = settings;
 
-            // set walls within world instance
-            server.zeWorld.SetWalls(settings.Walls);
+            // create new world instance
+            server.zeWorld = new ServerWorld(server.settings.UniverseSize, server.settings.Walls);
 
             server.StartServer();
             
