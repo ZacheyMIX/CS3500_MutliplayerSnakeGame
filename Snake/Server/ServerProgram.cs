@@ -115,18 +115,13 @@ namespace Server
             }
 
             string totalData = state.GetData();
-            // possibly multiple messages.
-            // we want the first message that has a newline to register as a name
-            string[] parts = Regex.Split(totalData, @"(?<=[\n])");
-            foreach (string p in parts)
-            {
-                // Ignore empty strings added by the regex splitter
-                if (p.Length == 0)
-                    continue;
+            // Ignore empty strings added by the regex splitter
+            if (totalData.Length == 0)
+                return;
 
                 // haven't received terminator character yet
-                if (p[p.Length - 1] != '\n')
-                    continue;
+                if (totalData[totalData.Length - 1] != '\n')
+                    return;
 
                 // in this last case we have a full message ending with a terminator character
                 // that we can use as a name
@@ -155,12 +150,9 @@ namespace Server
                 // add client snake to model
                 lock (zeWorld)
                 {
-                    zeWorld.AddSnake(Regex.Replace(p, @"\t|\n|\r", ""), state.ID);
+                    zeWorld.AddSnake(Regex.Replace(totalData, @"\t|\n|\r", ""), state.ID);
                     state.OnNetworkAction = ReceiveData;
                 }
-
-                break;
-            }
 
             // resume client receive loop with whichever delegate is valid at this point
             Networking.GetData(state);
