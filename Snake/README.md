@@ -1,6 +1,8 @@
 # Parkstrikers Snake Client
 #### Written by Ashton Hunt and Zachery Blomquist as part of CS3500, University of Utah, Fall 2022
 
+### PS8/Client Notes
+
 ## What works:
 - Our client can connect to and be accepted by servers
 - Our client can send messages and data over the network appropriately
@@ -31,3 +33,20 @@
 - A client is given an option to reconnect to the server or to fully disconnect from a server given networking errors
 - Several different working sound effects upon death. All sound effects are loaded at program start. Invoked when died is true for snake with client ID.
 - Added a class for explosions as to simulate a gif by rotating through loaded images at a high speed. Also utilizes !alive rather than dead.
+
+
+### PS9/Server Notes
+
+## What works:
+- Client can connect
+- thing two
+
+## What doesn't work:
+- thing three
+- thing four
+
+## Things we tried to remember in development:
+- What steps there are on the connection handshake and in which order
+
+## Noteworthy design decisions:
+- Server class and program are within the same file, ServerProgram.cs
