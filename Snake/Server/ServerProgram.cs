@@ -50,9 +50,6 @@ namespace Server
             // make settings instance accessible by server methods
             server.settings = settings;
 
-            // set walls within world instance
-            server.zeWorld.SetWalls(settings.Walls);
-
             server.StartServer();
             
             // Sleep to prevent program from closing.
@@ -115,6 +112,13 @@ namespace Server
             }
 
             string totalData = state.GetData();
+
+            if (totalData.Length <= 0)
+            {
+                RemoveClient(state.ID);
+                return;
+            }
+
             // possibly multiple messages.
             // we want the first message that has a newline to register as a name
             string[] parts = Regex.Split(totalData, @"(?<=[\n])");
@@ -157,6 +161,9 @@ namespace Server
                 {
                     zeWorld.AddSnake(Regex.Replace(p, @"\t|\n|\r", ""), state.ID);
                     state.OnNetworkAction = ReceiveData;
+                    Console.WriteLine("Player " + Regex.Replace(p, @"\t|\n|\r", "") + " has joined the game.");
+
+                    // send Walls information to the client
                 }
 
                 break;
@@ -224,6 +231,24 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Serializes some object to prepare it to be sent over the network.
+        /// Uses should only be for walls, snakes, and powerups.
+        /// </summary>
+        /// <param name="obj"> a wall, snake, or powerup </param>
+        private static void SerializeAndSend(object obj, SocketState socket)
+        {
+            // this method should only be sending a Snake, Wall, or Powerup instance
+            if (obj is not Snake && obj is not Wall && obj is not Powerup)
+                return;
+
+            string toSendString = JsonConvert.SerializeObject(obj) + "\n";
+            Networking.Send(socket.TheSocket, toSendString);
+        }
+
+        /// <summary>
+        /// Removes client from client set
+        /// </summary>
         private void RemoveClient(long id)
         {
             Console.WriteLine("Client " + id + " disconnected");
@@ -240,6 +265,7 @@ namespace Server
     [DataContract (Namespace = "")]
     internal class GameSettings
     {
+        // note that this doesn't do anything.
         [DataMember(Name = "FramesPerShot")]
         internal int FramesPerShot;
 
