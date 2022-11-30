@@ -12,11 +12,11 @@ namespace Server
         private Dictionary<long, SocketState> clients;
         private ServerWorld zeWorld;
 
-        public SnakeSettings settings;
+        public GameSettings settings;
         static void Main(string[] args)
         {
             GameServer server = new();
-            SnakeSettings? settings;
+            GameSettings? settings;
             // XML stuff
 
             // Set the reader settings.
@@ -29,16 +29,16 @@ namespace Server
             {
                 using (XmlReader reader = XmlReader.Create("settings.xml", xmlsettings))
                 {
-                    DataContractSerializer ser = new DataContractSerializer(typeof(SnakeSettings));
-                    settings = (SnakeSettings?)ser.ReadObject(reader);
+                    DataContractSerializer ser = new DataContractSerializer(typeof(GameSettings));
+                    settings = (GameSettings?)ser.ReadObject(reader);
                 }
             }
             catch
             {
                 using (XmlReader reader = XmlReader.Create("../../../settings.xml", xmlsettings))
                 {
-                    DataContractSerializer ser = new DataContractSerializer(typeof(SnakeSettings));
-                    settings = (SnakeSettings?)ser.ReadObject(reader);
+                    DataContractSerializer ser = new DataContractSerializer(typeof(GameSettings));
+                    settings = (GameSettings?)ser.ReadObject(reader);
                 }
             }
 
@@ -63,7 +63,7 @@ namespace Server
         {
             clients = new Dictionary<long, SocketState>();
             zeWorld = new ServerWorld();
-            settings = new SnakeSettings();
+            settings = new GameSettings();
         }
 
         /// <summary>
@@ -232,8 +232,8 @@ namespace Server
     /// <summary>
     /// Used as a kind of helper class on Server construct to read provided settings.xml file
     /// </summary>
-    [DataContract (Name = "GameSettings")]
-    internal class SnakeSettings
+    [DataContract (Namespace = "")]
+    internal class GameSettings
     {
         [DataMember(Name = "FramesPerShot")]
         internal int FramesPerShot;
@@ -250,7 +250,7 @@ namespace Server
         [DataMember(Name = "Walls")]
         internal List<Wall> Walls;
 
-        public SnakeSettings()
+        public GameSettings()
         {
             Walls = new();
             FramesPerShot = 0;
