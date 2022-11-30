@@ -1,163 +1,272 @@
-<GameSettings>
-  <UniverseSize>2000</UniverseSize>
-  <MSPerFrame>17</MSPerFrame>
+﻿<GameSettings>
   <FramesPerShot>80</FramesPerShot>
-  <RespawnRate>30</RespawnRate> 
-  
-  
-  <!-- top border left side -->
-  <Wall>
-    <p1><x>-975</x><y>-975</y></p1>
-	<p2><x>975</x><y>-975</y></p2>
-  </Wall>
-  
-  <!-- top border right side -->
-  <Wall>
-    <p1><x>-975</x><y>-975</y></p1>
-	<p2><x>975</x><y>-975</y></p2>
-  </Wall>
-  
-  <!-- left border top side-->
-  <Wall>
-	<p2><x>-975</x><y>975</y></p2>
-    <p1><x>-975</x><y>-975</y></p1>
-  </Wall>
-  
-  <!-- left border bottom side-->
-  <Wall>
-	<p2><x>-975</x><y>975</y></p2>
-    <p1><x>-975</x><y>-975</y></p1>
-  </Wall>
-  
-  <!-- right border top side-->
-  <Wall>
-    <p1><x>975</x><y>975</y></p1>
-	<p2><x>975</x><y>-975</y></p2>
-  </Wall>
-  
-  <!-- right border bottom side-->
-  <Wall>
-    <p1><x>975</x><y>975</y></p1>
-	<p2><x>975</x><y>-975</y></p2>
-  </Wall>
-  
-  <!-- bottom border left side-->
-  <Wall>
-    <p1><x>975</x><y>975</y></p1>
-	<p2><x>-975</x><y>975</y></p2>
-  </Wall>
-  
-  <!-- bottom border right side-->
-  <Wall>
-    <p1><x>975</x><y>975</y></p1>
-	<p2><x>-975</x><y>975</y></p2>
-  </Wall>
-  
-  <!-- upper left 'L' piece -->
-  <Wall>
-    <p1><x>-425</x><y>-425</y></p1>
-	<p2><x>-275</x><y>-425</y></p2>
-  </Wall>  
-  
-  <Wall>
-    <p1><x>-425</x><y>-425</y></p1>
-	<p2><x>-425</x><y>-275</y></p2>
-  </Wall>
-  
-  
-  <!-- upper right 'L' piece -->
-  <Wall>
-    <p1><x>425</x><y>-425</y></p1>
-	<p2><x>275</x><y>-425</y></p2>
-  </Wall>  
-  
-  <Wall>
-    <p1><x>425</x><y>-425</y></p1>
-	<p2><x>425</x><y>-275</y></p2>
-  </Wall>
-  
-  
-  <!-- lower right 'L' piece -->
-  <Wall>
-    <p1><x>425</x><y>425</y></p1>
-	<p2><x>275</x><y>425</y></p2>
-  </Wall>  
-  
-  <Wall>
-    <p1><x>425</x><y>425</y></p1>
-	<p2><x>425</x><y>275</y></p2>
-  </Wall>
-  
-  
-  <!-- lower left 'L' piece -->
-  <Wall>
-    <p1><x>-425</x><y>425</y></p1>
-	<p2><x>-275</x><y>425</y></p2>
-  </Wall>  
-  
-  <Wall>
-    <p1><x>-425</x><y>425</y></p1>
-	<p2><x>-425</x><y>275</y></p2>
-  </Wall>
-  
-  
-  <!-- bottom innermost wall -->
-  <Wall>
-    <p1><x>-50</x><y>-275</y></p1>
-	<p2><x>50</x><y>-275</y></p2>
-  </Wall> 
-
-  <!-- top innermost wall -->
-  <Wall>
-    <p1><x>-50</x><y>275</y></p1>
-	<p2><x>50</x><y>275</y></p2>
-  </Wall> 
-
-  <!-- left innermost wall -->
-  <Wall>
-    <p1><x>-225</x><y>-50</y></p1>
-	<p2><x>-225</x><y>50</y></p2>
-  </Wall>   
-  <!-- right innermost wall -->
-  <Wall>
-    <p1><x>225</x><y>-50</y></p1>
-	<p2><x>225</x><y>50</y></p2>
-  </Wall>  
-  
-    <!-- left bunker -->
-  <Wall>
-    <p1><x>-975</x><y>-200</y></p1>
-	<p2><x>-775</x><y>-200</y></p2>
-  </Wall> 
-  <Wall>
-    <p1><x>-975</x><y>200</y></p1>
-	<p2><x>-775</x><y>200</y></p2>
-  </Wall> 
-  <Wall>
-    <p1><x>-775</x><y>200</y></p1>
-	<p2><x>-775</x><y>75</y></p2>
-  </Wall> 
-  <Wall>
-    <p1><x>-775</x><y>-200</y></p1>
-	<p2><x>-775</x><y>-75</y></p2>
-  </Wall>   
-
-    <!-- right bunker -->
-  <Wall>
-    <p1><x>975</x><y>-200</y></p1>
-	<p2><x>775</x><y>-200</y></p2>
-  </Wall> 
-  <Wall>
-    <p1><x>975</x><y>200</y></p1>
-	<p2><x>775</x><y>200</y></p2>
-  </Wall> 
-  <Wall>
-    <p1><x>775</x><y>200</y></p1>
-	<p2><x>775</x><y>75</y></p2>
-  </Wall> 
-  <Wall>
-    <p1><x>775</x><y>-200</y></p1>
-	<p2><x>775</x><y>-75</y></p2>
-  </Wall>   
-
+  <MSPerFrame>17</MSPerFrame>
+  <RespawnRate>300</RespawnRate>
+  <UniverseSize>2000</UniverseSize>
+  <Walls>
+    <Wall>
+      <ID>0</ID>
+      <p1>
+        <x>-975</x>
+        <y>-975</y>
+      </p1>
+      <p2>
+        <x>975</x>
+        <y>-975</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>1</ID>
+      <p1>
+        <x>-975</x>
+        <y>-975</y>
+      </p1>
+      <p2>
+        <x>-975</x>
+        <y>975</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>2</ID>
+      <p1>
+        <x>975</x>
+        <y>975</y>
+      </p1>
+      <p2>
+        <x>975</x>
+        <y>-975</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>3</ID>
+      <p1>
+        <x>975</x>
+        <y>975</y>
+      </p1>
+      <p2>
+        <x>-975</x>
+        <y>975</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>4</ID>
+      <p1>
+        <x>-425</x>
+        <y>-425</y>
+      </p1>
+      <p2>
+        <x>-275</x>
+        <y>-425</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>5</ID>
+      <p1>
+        <x>-425</x>
+        <y>-425</y>
+      </p1>
+      <p2>
+        <x>-425</x>
+        <y>-275</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>6</ID>
+      <p1>
+        <x>425</x>
+        <y>-425</y>
+      </p1>
+      <p2>
+        <x>275</x>
+        <y>-425</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>7</ID>
+      <p1>
+        <x>425</x>
+        <y>-425</y>
+      </p1>
+      <p2>
+        <x>425</x>
+        <y>-275</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>8</ID>
+      <p1>
+        <x>425</x>
+        <y>425</y>
+      </p1>
+      <p2>
+        <x>275</x>
+        <y>425</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>9</ID>
+      <p1>
+        <x>425</x>
+        <y>425</y>
+      </p1>
+      <p2>
+        <x>425</x>
+        <y>275</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>10</ID>
+      <p1>
+        <x>-425</x>
+        <y>425</y>
+      </p1>
+      <p2>
+        <x>-275</x>
+        <y>425</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>11</ID>
+      <p1>
+        <x>-425</x>
+        <y>425</y>
+      </p1>
+      <p2>
+        <x>-425</x>
+        <y>275</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>12</ID>
+      <p1>
+        <x>-50</x>
+        <y>-275</y>
+      </p1>
+      <p2>
+        <x>50</x>
+        <y>-275</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>13</ID>
+      <p1>
+        <x>-50</x>
+        <y>275</y>
+      </p1>
+      <p2>
+        <x>50</x>
+        <y>275</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>14</ID>
+      <p1>
+        <x>-225</x>
+        <y>-50</y>
+      </p1>
+      <p2>
+        <x>-225</x>
+        <y>50</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>15</ID>
+      <p1>
+        <x>225</x>
+        <y>-50</y>
+      </p1>
+      <p2>
+        <x>225</x>
+        <y>50</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>16</ID>
+      <p1>
+        <x>-975</x>
+        <y>-200</y>
+      </p1>
+      <p2>
+        <x>-775</x>
+        <y>-200</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>17</ID>
+      <p1>
+        <x>-975</x>
+        <y>200</y>
+      </p1>
+      <p2>
+        <x>-775</x>
+        <y>200</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>18</ID>
+      <p1>
+        <x>-775</x>
+        <y>200</y>
+      </p1>
+      <p2>
+        <x>-775</x>
+        <y>100</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>19</ID>
+      <p1>
+        <x>-775</x>
+        <y>-200</y>
+      </p1>
+      <p2>
+        <x>-775</x>
+        <y>-100</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>20</ID>
+      <p1>
+        <x>975</x>
+        <y>-200</y>
+      </p1>
+      <p2>
+        <x>775</x>
+        <y>-200</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>21</ID>
+      <p1>
+        <x>975</x>
+        <y>200</y>
+      </p1>
+      <p2>
+        <x>775</x>
+        <y>200</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>22</ID>
+      <p1>
+        <x>775</x>
+        <y>200</y>
+      </p1>
+      <p2>
+        <x>775</x>
+        <y>100</y>
+      </p2>
+    </Wall>
+    <Wall>
+      <ID>23</ID>
+      <p1>
+        <x>775</x>
+        <y>-200</y>
+      </p1>
+      <p2>
+        <x>775</x>
+        <y>-100</y>
+      </p2>
+    </Wall>
+  </Walls>
 </GameSettings>
