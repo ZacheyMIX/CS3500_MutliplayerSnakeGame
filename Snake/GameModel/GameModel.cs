@@ -196,6 +196,8 @@ namespace GameModel
 
         //public List<Wall> Walls { get { return walls; } }
 
+        private int WorldSize;
+
 
         ////////////////////////////
         // SERVER SIDE DATA MEMBERS
@@ -211,6 +213,17 @@ namespace GameModel
             snakes = new();
             walls = new();
             powerups = new();
+        }
+
+        /// <summary>
+        /// Constructor built for existing settings
+        /// </summary>
+        public ServerWorld(int worldSize, List<Wall> ListOWalls)
+        {
+            snakes = new();
+            walls = ListOWalls;
+            powerups = new();
+            WorldSize = worldSize;
         }
 
 
