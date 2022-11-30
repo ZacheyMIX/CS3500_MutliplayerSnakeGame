@@ -223,11 +223,15 @@ namespace GameModel
         /// note that this is different from UpdateWalls and UpdatePowerups
         /// in that this takes in an already parsed Snake object.
         /// </summary>
-        public void AddSnake(string playerName, long ID)
+        public bool AddSnake(string playerName, long ID)
         {
             // add a new snake on connection that has name field and ID field provided.
             if (!snakes.ContainsKey(ID))
+            {
                 snakes.Add(ID, new Snake(playerName, ID));
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
