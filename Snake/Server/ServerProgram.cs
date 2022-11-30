@@ -12,11 +12,11 @@ namespace Server
         private Dictionary<long, SocketState> clients;
         private ServerWorld zeWorld;
 
-        public GameSettings settings;
+        public SnakeSettings settings;
         static void Main(string[] args)
         {
             GameServer server = new();
-            GameSettings? settings;
+            SnakeSettings? settings;
             // XML stuff
 
             // Set the reader settings.
@@ -25,11 +25,21 @@ namespace Server
             xmlsettings.IgnoreProcessingInstructions = true;
             xmlsettings.IgnoreWhitespace = true;
 
-            using (XmlReader reader = XmlReader.Create("settings.xml", xmlsettings))
-                // TODO: find out how to read settings.xml in the right spot
+            try
             {
-                DataContractSerializer ser = new DataContractSerializer(typeof(GameSettings));
-                settings = (GameSettings?)ser.ReadObject(reader);
+                using (XmlReader reader = XmlReader.Create("settings.xml", xmlsettings))
+                {
+                    DataContractSerializer ser = new DataContractSerializer(typeof(SnakeSettings));
+                    settings = (SnakeSettings?)ser.ReadObject(reader);
+                }
+            }
+            catch
+            {
+                using (XmlReader reader = XmlReader.Create("../../../settings.xml", xmlsettings))
+                {
+                    DataContractSerializer ser = new DataContractSerializer(typeof(SnakeSettings));
+                    settings = (SnakeSettings?)ser.ReadObject(reader);
+                }
             }
 
             // ensure settings are valid. stop program if not
@@ -53,7 +63,7 @@ namespace Server
         {
             clients = new Dictionary<long, SocketState>();
             zeWorld = new ServerWorld();
-            settings = new GameSettings();
+            settings = new SnakeSettings();
         }
 
         /// <summary>
@@ -222,8 +232,8 @@ namespace Server
     /// <summary>
     /// Used as a kind of helper class on Server construct to read provided settings.xml file
     /// </summary>
-    [DataContract]
-    internal class GameSettings
+    [DataContract (Name = "GameSettings")]
+    internal class SnakeSettings
     {
         [DataMember(Name = "FramesPerShot")]
         internal int FramesPerShot;
@@ -240,7 +250,7 @@ namespace Server
         [DataMember(Name = "Walls")]
         internal List<Wall> Walls;
 
-        public GameSettings()
+        public SnakeSettings()
         {
             Walls = new();
             FramesPerShot = 0;
