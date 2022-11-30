@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SnakeGame;
+using System.Runtime.Serialization;
 
 namespace GameModel
 {
@@ -252,20 +253,25 @@ namespace GameModel
         public void AddSnake(string playerName, long ID)
         {
             // add a new snake on connection that has name field and ID field provided.
-            snakes.Add(ID, new Snake(playerName, ID));
+            if (!snakes.ContainsKey(ID))
+                snakes.Add(ID, new Snake(playerName, ID));
+
+            ///////////////////////
+            // REMEMBER TO REMOVE
+            ///////////////////////
+            maxPowers++;
+            maxPowersDelay++;
         }
 
         /// <summary>
-        /// Updates walls dictionary with given nullable wall object
+        /// Updates walls dictionary with given wall object
         /// Walls are never removed
+        /// should be used at server initialization when reading XML file
         /// </summary>
         /// <param name="newObj"></param>
-        public void UpdateWalls(Wall? newWall)
+        public void AddWall(Wall newWall)
         {
-            // Walls are only sent once and at the beginning
-            // so method just adds these walls to the appropriate data structure.
-            if (newWall is Wall)
-                walls.Add(newWall.ID, newWall!);
+            walls.Add(newWall.ID, newWall);
         }
 
         /// <summary>
@@ -418,6 +424,7 @@ namespace GameModel
 
     }
 
+    [DataContract]
     [JsonObject(MemberSerialization.OptIn)]
     public class Wall
     {
