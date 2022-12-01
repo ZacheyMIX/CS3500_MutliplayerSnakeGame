@@ -283,9 +283,10 @@ namespace Server
 
         //TODO: Method for handling input from user. Direction, etc.
         //TODO: Method for handling updates every frame loop
-        public void Update()
+        private void Update()
         {
-
+            IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => (!snake.alive || snake.dc)).Select(snake => snake.ID);
+     
         }
     }
 

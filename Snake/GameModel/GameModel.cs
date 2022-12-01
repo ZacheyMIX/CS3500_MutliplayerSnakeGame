@@ -184,7 +184,7 @@ namespace GameModel
         /// <summary>
         /// integer ID numbers to Snake objects.
         /// </summary>
-        private Dictionary<long, Snake> snakes;
+        private Dictionary<int, Snake> snakes;
         /// <summary>
         /// integer ID numbers to wall objects.
         /// </summary>
@@ -203,6 +203,8 @@ namespace GameModel
         /// Field to make walls list accessible to the outside
         /// </summary>
         public List<Wall> Walls { get { return walls; } }
+
+        public Dictionary<int, Snake> Snakes { get { return Snakes; } }
 
 
         ////////////////////////////
@@ -242,7 +244,7 @@ namespace GameModel
         /// note that this is different from UpdateWalls and UpdatePowerups
         /// in that this takes in an already parsed Snake object.
         /// </summary>
-        public bool AddSnake(string playerName, long ID)
+        public bool AddSnake(string playerName, int ID)
         {
             // add a new snake on connection that has name field and ID field provided.
             if (!snakes.ContainsKey(ID))
@@ -280,9 +282,14 @@ namespace GameModel
             return;
         }
 
-        public void MoveSnake(long iD, ControlCommand movement)
+        public void MoveSnake(int iD, ControlCommand movement)
         {
             // TODO: write movement method
+        }
+
+        public void Update()
+        {
+
         }
 
         // note: we removed Reset method.
@@ -377,9 +384,9 @@ namespace GameModel
             growth = 12;
         }
 
-        public Snake(string Name, long iD)
+        public Snake(string Name, int iD)
         {
-            ID = (int)iD;
+            ID = iD;
             name = Name;
             body = new();   // remember to randomize
             dir = new();    // remember to randomize
