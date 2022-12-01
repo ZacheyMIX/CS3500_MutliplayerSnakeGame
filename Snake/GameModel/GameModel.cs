@@ -322,7 +322,7 @@ namespace GameModel
 
             // snake is facing left or right
             // so we are checking if this is a valid up or down input
-            if (snakes[iD].Direction == left || snakes[iD].Direction == right)
+            if (snakes[iD].Direction.Equals(left) || snakes[iD].Direction.Equals(right))
             {
                 if (movement.moving == "up")
                     snakes[iD].Turn(up);
@@ -333,7 +333,7 @@ namespace GameModel
 
             // snake is facing up or down
             // so we are checking if this is a valid left or right input
-            if (snakes[iD].Direction == up || snakes[iD].Direction == down)
+            else if (snakes[iD].Direction.Equals(up) || snakes[iD].Direction.Equals(down))
             {
                 if (movement.moving == "left")
                     snakes[iD].Turn(left);
@@ -462,7 +462,7 @@ namespace GameModel
             body.Add(tail);
 
             // normalize direction
-            dir = (head - tail);
+            dir = tail - head;
             dir.Normalize();
         }
 
