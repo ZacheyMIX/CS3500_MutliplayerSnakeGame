@@ -226,7 +226,7 @@ namespace Server
                     if (Movement is null)
                         continue;
 
-                    zeWorld.MoveSnake((int)state.ID, Movement);  // still need to implement this ServerWorld method
+                    zeWorld.MoveSnake((int)state.ID, Movement);
 
                     state.RemoveData(0, p.Length);
                 }
