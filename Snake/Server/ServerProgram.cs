@@ -298,10 +298,26 @@ namespace Server
 
             // add new objects back in
 
-            // move each snake
-            foreach(Snake s in zeWorld.Snakes.Values)
-                s.Move(settings.UniverseSize);
-     
+            lock (zeWorld)
+            {
+                // move each snake
+                foreach (Snake s in zeWorld.Snakes.Values)
+                {
+                    s.Move(settings.UniverseSize);
+                    
+                }
+            }
+
+            lock (clients)
+            {
+                foreach(SocketState client in clients.Values)
+                {
+                    foreach (Snake s in zeWorld.Snakes.Values)
+                    {
+                        SerializeAndSend(s, client);
+                    }
+                }
+            }
         }
     }
 
