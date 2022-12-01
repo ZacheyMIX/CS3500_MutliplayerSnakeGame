@@ -88,7 +88,8 @@ namespace Server
         {
             if (state.ErrorOccurred)
             {
-                Console.WriteLine("Error connecting user ID " + state.ID);
+                Console.WriteLine("Error connecting client ID " + state.ID);
+                RemoveClient(state.ID);
                 return;
             }
 
@@ -109,6 +110,7 @@ namespace Server
         {
             if (state.ErrorOccurred)
             {
+                Console.WriteLine("Error finishing handshake with client ID " + state.ID);
                 RemoveClient(state.ID);
                 return;
             }
@@ -124,13 +126,6 @@ namespace Server
 
             // in this last case we have a full message ending with a terminator character
             // that we can use as a name
-
-            if (state.ErrorOccurred)
-            {
-                Console.WriteLine("Error finishing handshake with user ID " + state.ID);
-                RemoveClient(state.ID);
-                return;
-            }
 
             // add client state to set of connections
             // locks for race conditions etc
@@ -161,6 +156,17 @@ namespace Server
                     SerializeAndSend(wall, state);
             }
 
+            if (state.ErrorOccurred)
+            {
+                Console.WriteLine("Error finishing handshake with client ID " + state.ID);
+                RemoveClient(state.ID);
+                return;
+            }
+
+            // messaged was processed correctly so we can remove it
+            state.RemoveData(0, totalData.Length);
+
+
             // resume client receive loop with whichever delegate is valid at this point
             Networking.GetData(state);
         }
@@ -173,6 +179,7 @@ namespace Server
         {
             if (state.ErrorOccurred)
             {
+                Console.WriteLine("Error receiving data from client ID " + state.ID);
                 RemoveClient(state.ID);
                 return;
             }
@@ -205,9 +212,9 @@ namespace Server
                     if (p.Length == 0)
                         continue;
 
-                    // terminator string wasn't included, so this message is corrupt
+                    // terminator string wasn't included
                     if (p[p.Length - 1] != '\n')
-                        break;
+                        continue;
 
                     ControlCommand? Movement = JsonConvert.DeserializeObject<ControlCommand>(p);
 
