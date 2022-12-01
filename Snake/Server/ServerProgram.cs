@@ -226,7 +226,7 @@ namespace Server
                     if (Movement is null)
                         continue;
 
-                    zeWorld.MoveSnake(state.ID, Movement);  // still need to implement this ServerWorld method
+                    zeWorld.MoveSnake((int)state.ID, Movement);  // still need to implement this ServerWorld method
 
                     state.RemoveData(0, p.Length);
                 }
@@ -283,6 +283,14 @@ namespace Server
         private void Update()
         {
             IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => (!snake.alive || snake.dc)).Select(snake => snake.ID);
+            IEnumerable<int> powerToRemove = zeWorld.Powerups.Values.Where(powerup => (powerup.died)).Select(powerup => powerup.ID);
+            foreach (int i in playersToRemove)
+                zeWorld.Snakes.Remove(i);
+            foreach(int i in powerToRemove)
+                zeWorld.Powerups.Remove(i);
+
+            // add new objects back in
+
      
         }
     }
