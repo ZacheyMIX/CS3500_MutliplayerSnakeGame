@@ -59,8 +59,7 @@ namespace Server
             server.Run();     // main update loop
             // Sleep to prevent program from closing.
             // this thread is done, but other threads are still working.
-            Console.Read();
-            
+            server.Run();     // main update loop
         }
 
         /// <summary>
@@ -246,7 +245,8 @@ namespace Server
                 return;
 
             string toSendString = JsonConvert.SerializeObject(obj) + "\n";
-            Networking.Send(socket.TheSocket, toSendString);
+            if (Networking.Send(socket.TheSocket, toSendString))
+                Console.WriteLine("successfully sent to client");
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace Server
                 while (watch.ElapsedMilliseconds < MSPerFrame)
                 { /* empty loop body */ }
 
-                Console.WriteLine("FPS: " + watch.ElapsedMilliseconds);
+                //Console.WriteLine("FPS: " + watch.ElapsedMilliseconds);
 
                 watch.Restart();
 
@@ -290,12 +290,14 @@ namespace Server
         /// </summary>
         private void Update()
         {
+            
             IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => (!snake.alive || snake.dc)).Select(snake => snake.ID);
             IEnumerable<int> powerToRemove = zeWorld.Powerups.Values.Where(powerup => (powerup.died)).Select(powerup => powerup.ID);
             foreach (int i in playersToRemove)
                 zeWorld.Snakes.Remove(i);
             foreach (int i in powerToRemove)
                 zeWorld.Powerups.Remove(i);
+            
 
             // add new objects back in
 

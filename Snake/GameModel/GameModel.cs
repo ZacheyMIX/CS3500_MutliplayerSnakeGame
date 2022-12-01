@@ -442,15 +442,17 @@ namespace GameModel
 
         public Snake(string Name, int iD, Vector2D head, Vector2D tail)
         {
+            // note: this is the state of our snake on its first frame on the server
+
             ID = iD;
             name = Name;
             body = new();   // remember to randomize
             dir = new();    // remember to randomize
             score = 0;
             died = false;
-            alive = false;
+            alive = true;
             dc = false;
-            join = false;
+            join = true;
             explode = new();
             speed = 3;
             growth = 12;
