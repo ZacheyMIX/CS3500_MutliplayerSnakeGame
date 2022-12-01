@@ -226,7 +226,7 @@ namespace Server
                     if (Movement is null)
                         continue;
 
-                    zeWorld.MoveSnake(state.ID, Movement);  // still need to implement this ServerWorld method
+                    zeWorld.MoveSnake((int)state.ID, Movement);  // still need to implement this ServerWorld method
 
                     state.RemoveData(0, p.Length);
                 }
@@ -260,6 +260,10 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// runs the server. a majority of the processing time should be spent in here from our program
+        /// and our 
+        /// </summary>
         public void Run()
         {
             // Start a new timer to control the frame rate
@@ -278,8 +282,9 @@ namespace Server
             }
         }
 
-        //TODO: Method for handling input from user. Direction, etc.
-        //TODO: Method for handling updates every frame loop
+        /// <summary>
+        /// method for communicating updates to the world
+        /// </summary>
         private void Update()
         {
             IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => (!snake.alive || snake.dc)).Select(snake => snake.ID);
