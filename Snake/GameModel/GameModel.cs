@@ -214,6 +214,11 @@ namespace GameModel
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
 
+        /// <summary>
+        /// used in random events like spawning positions
+        /// </summary>
+        Random random;
+
 
         ////////////////////////////
         // SERVER SIDE DATA MEMBERS
@@ -229,6 +234,7 @@ namespace GameModel
             snakes = new();
             walls = new();
             powerups = new();
+            random = new();
         }
 
         /// <summary>
@@ -240,6 +246,7 @@ namespace GameModel
             walls = ListOWalls;
             powerups = new();
             WorldSize = worldSize;
+            random = new();
         }
 
 
@@ -257,7 +264,15 @@ namespace GameModel
             // add a new snake on connection that has name field and ID field provided.
             if (!snakes.ContainsKey(ID))
             {
-                snakes.Add(ID, new Snake(playerName, ID));
+                // construct head randomly and then create tail
+                Vector2D head = new(random.Next(-WorldSize, WorldSize), random.Next(-WorldSize, WorldSize));
+                Vector2D tail = new(head.X-120, head.Y);
+                // where 12 is the length of newborn snakes in world units
+
+                snakes.Add(ID, new Snake(playerName, ID, head, tail));
+
+                // TODO: check to ensure snakes don't spawn on walls
+
                 return true;
             }
             return false;
@@ -290,12 +305,13 @@ namespace GameModel
             return;
         }
 
+        /// <summary>
+        /// moves snake along in the game world
+        /// </summary>
+        /// <param name="iD"> ID of the snake to move </param>
+        /// <param name="movement"> </param>
         public void MoveSnake(int iD, ControlCommand movement)
         {
-            //left: <-1,0>
-            //up: <0,-1>
-            //right: <1,0>
-            //down: <0,1>
             Vector2D left = new(-1, 0);
             Vector2D right = new(1, 0);
             Vector2D up = new(0, -1);
@@ -325,11 +341,6 @@ namespace GameModel
                 if (movement.moving == "right")
                     snakes[iD].Turn(right);
             }
-
-        }
-
-        public void Update()
-        {
 
         }
 
@@ -429,7 +440,7 @@ namespace GameModel
             growth = 12;
         }
 
-        public Snake(string Name, int iD)
+        public Snake(string Name, int iD, Vector2D head, Vector2D tail)
         {
             ID = iD;
             name = Name;
@@ -443,6 +454,14 @@ namespace GameModel
             explode = new();
             speed = 3;
             growth = 12;
+
+            // specify snake coordinates
+            body.Add(head);
+            body.Add(tail);
+
+            // normalize direction
+            dir = (head - tail);
+            dir.Normalize();
         }
 
         /// <summary>
@@ -450,7 +469,8 @@ namespace GameModel
         /// </summary>
         public void Turn(Vector2D newdir)
         {
-            
+            body.Add(body[body.Count - 1]); // adds new body segment at last place before turn
+            dir = newdir;                   // changes body direction
         }
 
         /// <summary>
