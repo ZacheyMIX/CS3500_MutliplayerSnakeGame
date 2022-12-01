@@ -207,7 +207,7 @@ namespace GameModel
         /// <summary>
         /// Field to make snakes dictionary accessible to the outside
         /// </summary>
-        public Dictionary<int, Snake> Snakes { get { return Snakes; } }
+        public Dictionary<int, Snake> Snakes { get { return snakes; } }
 
         /// <summary>
         /// Field ot makes powerups dictionary accessible to the outside

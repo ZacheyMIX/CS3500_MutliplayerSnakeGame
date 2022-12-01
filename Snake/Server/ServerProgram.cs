@@ -56,10 +56,11 @@ namespace Server
 
             server.StartServer();
 
+            server.Run();     // main update loop
             // Sleep to prevent program from closing.
             // this thread is done, but other threads are still working.
             Console.Read();
-            server.Run();     // main update loop
+            
         }
 
         /// <summary>
@@ -293,7 +294,7 @@ namespace Server
             IEnumerable<int> powerToRemove = zeWorld.Powerups.Values.Where(powerup => (powerup.died)).Select(powerup => powerup.ID);
             foreach (int i in playersToRemove)
                 zeWorld.Snakes.Remove(i);
-            foreach(int i in powerToRemove)
+            foreach (int i in powerToRemove)
                 zeWorld.Powerups.Remove(i);
 
             // add new objects back in
