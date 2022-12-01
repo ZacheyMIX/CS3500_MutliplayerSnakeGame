@@ -12,6 +12,7 @@ namespace Server
         private Dictionary<long, SocketState> clients;
         private ServerWorld zeWorld;
         public GameSettings settings;
+        private int MSPerFrame;
         static void Main(string[] args)
         {
             GameServer server = new();
@@ -51,13 +52,14 @@ namespace Server
             server.settings = settings;
 
             server.zeWorld = new ServerWorld(settings.UniverseSize, settings.Walls);
+            server.MSPerFrame = settings.MSPerFrame;
 
             server.StartServer();
 
             // Sleep to prevent program from closing.
             // this thread is done, but other threads are still working.
             Console.Read();
-            //server.Run();     // main update loop
+            server.Run();     // main update loop
         }
 
         /// <summary>
@@ -134,9 +136,10 @@ namespace Server
                 clients.Add(state.ID, state);
             }
 
-            // add client snake to model
+            // add client information to model
             lock (zeWorld)
             {
+                //Checks if a snake can be added into the client
                 if (!zeWorld.AddSnake(Regex.Replace(totalData, @"\t|\n|\r", ""), state.ID))
                     RemoveClient(state.ID);
 
@@ -255,6 +258,34 @@ namespace Server
             {
                 clients.Remove(id);
             }
+        }
+
+        public void Run()
+        {
+            // Start a new timer to control the frame rate
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+
+            while (true)
+            {
+                // wait until the next frame
+                while (watch.ElapsedMilliseconds < MSPerFrame)
+                { /* empty loop body */ }
+
+                watch.Restart();
+
+                Update();
+
+                //ServerUpdate?.Invoke(ze.Players.Values, zeWorld.Powerups.Values);
+
+            }
+        }
+
+        //TODO: Method for handling input from user. Direction, etc.
+        //TODO: Method for handling updates every frame loop
+        public void Update()
+        {
+
         }
     }
 
