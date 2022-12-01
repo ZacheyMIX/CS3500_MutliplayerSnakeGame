@@ -471,8 +471,8 @@ namespace GameModel
         /// </summary>
         public void Turn(Vector2D newdir)
         {
-            body.Add(body[body.Count - 1]); // adds new body segment at last place before turn
-            dir = newdir;                   // changes body direction
+            body.Add(new Vector2D(body[body.Count-1].X, body[body.Count-1].Y)); // adds new body segment at last place before turn
+            dir = newdir;                                                       // changes body direction
         }
 
         /// <summary>
