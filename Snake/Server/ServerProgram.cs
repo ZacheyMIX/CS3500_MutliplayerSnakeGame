@@ -276,6 +276,8 @@ namespace Server
                 while (watch.ElapsedMilliseconds < MSPerFrame)
                 { /* empty loop body */ }
 
+                Console.WriteLine("FPS: " + watch.ElapsedMilliseconds);
+
                 watch.Restart();
 
                 Update();
@@ -296,6 +298,9 @@ namespace Server
 
             // add new objects back in
 
+            // move each snake
+            foreach(Snake s in zeWorld.Snakes.Values)
+                s.Move(settings.UniverseSize);
      
         }
     }

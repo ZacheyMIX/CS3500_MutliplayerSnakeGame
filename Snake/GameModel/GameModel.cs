@@ -351,9 +351,9 @@ namespace GameModel
         [JsonProperty(PropertyName = "name")]
         public readonly string name;
         /// <summary>
-        /// A list<Vector2D> representing th eentire body of the snake.
+        /// A list<Vector2D> representing the entire body of the snake.
         /// Each point in this list represent one vertex of the snakes body where consecutive 
-        /// veritices make up a straiht segment ofthe body. The frst point of the list give the 
+        /// veritices make up a straight segment of the body. The first point of the list give the 
         /// location of the snake tail, and the last gives the location of the snakes head.
         /// </summary>
         [JsonProperty(PropertyName = "body")]
@@ -450,17 +450,35 @@ namespace GameModel
         /// </summary>
         public void Turn(Vector2D newdir)
         {
-            dir = newdir;
+            
         }
 
-        // REMEMBER TO REMOVE
-        private void Speed()
+        /// <summary>
+        /// moves snake its predetermined distance every frame
+        /// </summary>
+        /// <param name="worldSize"> used to compute crossing the border </param>
+        public void Move(int worldSize)
         {
-            speed++;
-            growth++;
+            //add to head, tail
+            //remove tail if it catches up to next portion
+            body[body.Count - 1].X += speed * dir.X;
+            body[body.Count - 1].Y += speed * dir.Y;
+
+            body[0].X += speed * dir.X;
+            body[0].Y += speed * dir.Y;
+
+            if (body[0] == body[1])
+                body.Remove(body[0]);
         }
 
-
+        /// <summary>
+        /// method used for growing a snake after picking up a powerup
+        /// </summary>
+        public void Grow()
+        {
+            body[0].X -= growth * dir.X;
+            body[0].Y -= growth * dir.Y;
+        }
     }
 
     [DataContract (Namespace = "")]
