@@ -204,7 +204,15 @@ namespace GameModel
         /// </summary>
         public List<Wall> Walls { get { return walls; } }
 
+        /// <summary>
+        /// Field to make snakes dictionary accessible to the outside
+        /// </summary>
         public Dictionary<int, Snake> Snakes { get { return Snakes; } }
+
+        /// <summary>
+        /// Field ot makes powerups dictionary accessible to the outside
+        /// </summary>
+        public Dictionary<int, Powerup> Powerups { get { return powerups; } }
 
 
         ////////////////////////////
