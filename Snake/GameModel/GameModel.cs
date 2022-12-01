@@ -486,11 +486,15 @@ namespace GameModel
             body[body.Count - 1].X += speed * dir.X;
             body[body.Count - 1].Y += speed * dir.Y;
 
-            body[0].X += speed * dir.X;
-            body[0].Y += speed * dir.Y;
 
-            if (body[0] == body[1])
-                body.Remove(body[0]);
+
+                if (body[0] == body[1])
+                {
+                    body.Remove(body[0]);
+                    body[0].X += speed * dir.X;
+                    body[0].Y += speed * dir.Y;
+                }
+                
         }
 
         /// <summary>
