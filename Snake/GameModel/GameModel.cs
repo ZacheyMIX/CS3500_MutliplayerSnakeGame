@@ -284,7 +284,40 @@ namespace GameModel
 
         public void MoveSnake(int iD, ControlCommand movement)
         {
-            // TODO: write movement method
+            //left: <-1,0>
+            //up: <0,-1>
+            //right: <1,0>
+            //down: <0,1>
+            Vector2D left = new(-1, 0);
+            Vector2D right = new(1, 0);
+            Vector2D up = new(0, -1);
+            Vector2D down = new(0, 1);
+
+            if (!snakes.ContainsKey(iD))
+                return;
+
+            // snake is facing left or right
+            // so we are checking if this is a valid up or down input
+            if (snakes[iD].Direction == left || snakes[iD].Direction == right)
+            {
+                if (movement.moving == "up")
+                    snakes[iD].Turn(up);
+
+                if (movement.moving == "down")
+                    snakes[iD].Turn(down);
+            }
+
+            // snake is facing up or down
+            // so we are checking if this is a valid left or right input
+            if (snakes[iD].Direction == up || snakes[iD].Direction == down)
+            {
+                if (movement.moving == "left")
+                    snakes[iD].Turn(left);
+
+                if (movement.moving == "right")
+                    snakes[iD].Turn(right);
+            }
+
         }
 
         public void Update()
@@ -321,7 +354,11 @@ namespace GameModel
         /// Represents snakes orientation, will always be axis aligned
         /// </summary>
         [JsonProperty(PropertyName = "dir")]
-        public readonly Vector2D dir;
+        private Vector2D dir;
+        /// <summary>
+        /// allows for reading private dir member outside this object
+        /// </summary>
+        public Vector2D Direction { get { return dir; } }
         /// <summary>
         /// Represents the players score
         /// </summary>
@@ -398,6 +435,14 @@ namespace GameModel
             explode = new();
             speed = 3;
             growth = 12;
+        }
+
+        /// <summary>
+        /// turns snake in direction specified by newdir
+        /// </summary>
+        public void Turn(Vector2D newdir)
+        {
+            dir = newdir;
         }
 
         // REMEMBER TO REMOVE
