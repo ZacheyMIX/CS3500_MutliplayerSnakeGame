@@ -244,7 +244,7 @@ namespace Server
             if (obj is not Snake && obj is not Wall && obj is not Powerup)
                 return;
 
-            string toSendString = JsonConvert.SerializeObject(obj) + "\n";
+            string toSendString = JsonConvert.SerializeObject(obj) + "\n";  // collection was modified error thrown here
             if (Networking.Send(socket.TheSocket, toSendString))
                 Console.WriteLine("successfully sent to client");
         }
