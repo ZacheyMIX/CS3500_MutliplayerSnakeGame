@@ -157,6 +157,8 @@ namespace Server
 
 
                 // send Walls information to the client
+                foreach (Wall wall in zeWorld.Walls)
+                    SerializeAndSend(wall, state);
             }
 
             // resume client receive loop with whichever delegate is valid at this point

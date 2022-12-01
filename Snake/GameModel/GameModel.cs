@@ -199,6 +199,12 @@ namespace GameModel
         private int WorldSize;
 
 
+        /// <summary>
+        /// Field to make walls list accessible to the outside
+        /// </summary>
+        public List<Wall> Walls { get { return walls; } }
+
+
         ////////////////////////////
         // SERVER SIDE DATA MEMBERS
         ////////////////////////////
@@ -245,17 +251,6 @@ namespace GameModel
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Updates walls dictionary with given wall object
-        /// Walls are never removed
-        /// should be used at server initialization when reading XML file
-        /// </summary>
-        /// <param name="newObj"></param>
-        public void SetWalls(List<Wall> newWalls)
-        {
-            walls = newWalls;
         }
 
         /// <summary>
