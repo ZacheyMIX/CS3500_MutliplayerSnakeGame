@@ -140,7 +140,7 @@ namespace Server
             lock (zeWorld)
             {
                 //Checks if a snake can be added into the client
-                if (!zeWorld.AddSnake(Regex.Replace(totalData, @"\t|\n|\r", ""), state.ID))
+                if (!zeWorld.AddSnake(Regex.Replace(totalData, @"\t|\n|\r", ""), (int)state.ID))
                     RemoveClient(state.ID);
 
                 // PS9 FAQ states to first send then add state to client set
@@ -275,17 +275,7 @@ namespace Server
                 watch.Restart();
 
                 Update();
-
-                //ServerUpdate?.Invoke(ze.Players.Values, zeWorld.Powerups.Values);
-
             }
-        }
-
-        //TODO: Method for handling input from user. Direction, etc.
-        //TODO: Method for handling updates every frame loop
-        public void Update()
-        {
-
         }
     }
 
