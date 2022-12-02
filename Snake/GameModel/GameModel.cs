@@ -493,9 +493,6 @@ namespace GameModel
             Vector2D tempDirection = body[1] - body[0];
             tempDirection.Normalize();
 
-            Console.WriteLine(body[0]);
-            Console.WriteLine(body[1]);
-
             body[0].X += tempDirection.X * speed;
             body[0].Y += tempDirection.Y * speed;
 

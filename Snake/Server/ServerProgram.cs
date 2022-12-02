@@ -297,9 +297,11 @@ namespace Server
                 zeWorld.Snakes.Remove(i);
             foreach (int i in powerToRemove)
                 zeWorld.Powerups.Remove(i);
-            
 
-            // add new objects back in
+
+            // update objects and send them to each client
+
+            string snakeSend = "";
 
             lock (zeWorld)
             {
@@ -307,7 +309,7 @@ namespace Server
                 foreach (Snake s in zeWorld.Snakes.Values)
                 {
                     s.Move(settings.UniverseSize);
-                    
+                    snakeSend += JsonConvert.SerializeObject(s) + "\n";
                 }
             }
 
@@ -315,10 +317,13 @@ namespace Server
             {
                 foreach(SocketState client in clients.Values)
                 {
+                    /*
                     foreach (Snake s in zeWorld.Snakes.Values)
                     {
                         SerializeAndSend(s, client);
                     }
+                    */
+                    Networking.Send(client.TheSocket, snakeSend);
                 }
             }
         }
