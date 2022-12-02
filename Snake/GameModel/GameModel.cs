@@ -483,13 +483,24 @@ namespace GameModel
         {
             //add to head, tail
             //remove tail if it catches up to next portion
+
+            // update head
             body[body.Count - 1].X += speed * dir.X;
             body[body.Count - 1].Y += speed * dir.Y;
 
-            body[0].X += speed * dir.X;
-            body[0].Y += speed * dir.Y;
+            // update tail
+            // tail should gravitate towards next body vector
+            Vector2D tempDirection = body[1] - body[0];
+            tempDirection.Normalize();
 
-            if (body[0] == body[1])
+            Console.WriteLine(body[0]);
+            Console.WriteLine(body[1]);
+
+            body[0].X += tempDirection.X * speed;
+            body[0].Y += tempDirection.Y * speed;
+
+            // remove last portion if tail catches up to or is greater than next portion of body
+            if (body[0].Equals(body[1]))
                 body.Remove(body[0]);
         }
 
