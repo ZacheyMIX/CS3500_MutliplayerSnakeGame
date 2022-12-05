@@ -317,12 +317,6 @@ namespace Server
             {
                 foreach(SocketState client in clients.Values)
                 {
-                    /*
-                    foreach (Snake s in zeWorld.Snakes.Values)
-                    {
-                        SerializeAndSend(s, client);
-                    }
-                    */
                     Networking.Send(client.TheSocket, snakeSend);
                 }
             }
