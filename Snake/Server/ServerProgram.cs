@@ -313,9 +313,11 @@ namespace Server
                 foreach (Snake s in zeWorld.Snakes.Values)
                 {
                     if (!s.alive)
-                        continue;
+                        s.incrementDeathCounter();
 
                     s.Move(settings.UniverseSize);
+                    s.incrementTurnCounter();
+                    
                     snakeSend += JsonConvert.SerializeObject(s) + "\n";
                 }
             }

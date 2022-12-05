@@ -426,6 +426,24 @@ namespace GameModel
 
         private Vector2D Head { get { return body[body.Count-1]; } }
 
+        /// <summary>
+        /// Snake should only be able to turn again once this turn counter is greater than or equal to
+        /// speed * frames
+        /// </summary>
+
+        private int turnCounter;
+
+        /// <summary>
+        /// Snake should respawn once deathCounter == set respawn rate.
+        /// Invoked by controller.
+        /// </summary>
+        private int deathCounter;
+
+        /// <summary>
+        /// represents width of snake
+        /// </summary>
+        private int width;
+
         public readonly Explosion explode;
         /// <summary>
         /// Snake object constructor. Since the client only ever deserializes objects, we only need the default constructor.
@@ -452,8 +470,7 @@ namespace GameModel
 
             ID = iD;
             name = Name;
-            body = new();   // remember to randomize
-            dir = new();    // remember to randomize
+            body = new();
             score = 0;
             died = false;
             alive = true;
@@ -470,6 +487,13 @@ namespace GameModel
             // normalize direction
             dir = tail - head;
             dir.Normalize();
+
+            // set width of snake
+            width = 10; // 10 game units
+
+            // set counters
+            deathCounter = 0;
+            turnCounter = 0;
         }
 
         /// <summary>
@@ -477,8 +501,13 @@ namespace GameModel
         /// </summary>
         public void Turn(Vector2D newdir)
         {
+            // not enough time has passed to be able to turn again
+            if (turnCounter * speed < width)
+                return;
+
             body.Add(new Vector2D(Head.X, Head.Y)); // adds new body segment at last place before turn
             dir = newdir;                           // changes body direction
+            turnCounter = 0;                        // reset turn counter
         }
 
         /// <summary>
@@ -487,6 +516,10 @@ namespace GameModel
         /// <param name="worldSize"> used to compute crossing the border </param>
         public void Move(int worldSize)
         {
+            // should not be invoked if the snake is dead
+            if (!alive)
+                return;
+
             //add to head, tail
             //remove tail if it catches up to next portion
 
@@ -525,6 +558,22 @@ namespace GameModel
             dc = true;
             alive = false;
             died = true;
+        }
+
+        /// <summary>
+        /// Helps set counter for turn timing
+        /// </summary>
+        public void incrementTurnCounter()
+        {
+            turnCounter++;
+        }
+
+        /// <summary>
+        /// Helps set counter for death timing
+        /// </summary>
+        public void incrementDeathCounter()
+        {
+            deathCounter++;
         }
     }
 
