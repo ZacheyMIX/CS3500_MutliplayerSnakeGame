@@ -38,15 +38,18 @@
 ### PS9/Server Notes
 
 ## What works:
+- settings.xml is read properly. Note that this only is checked in the program executable's own directory, or exactly two directories above it.
 - Client can connect
-- thing two
+- Handshake works as designed
+- Snakes move and are displayed correctly
 
 ## What doesn't work:
-- thing three
-- thing four
+- dead snakes will not send
 
 ## Things we tried to remember in development:
 - What steps there are on the connection handshake and in which order
+- Vector logic, especially with turning.
 
 ## Noteworthy design decisions:
 - Server class and program are within the same file, ServerProgram.cs
+- settings.xml only is checked in the program executable's own directory, or exactly two directories above it.
