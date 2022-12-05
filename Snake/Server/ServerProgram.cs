@@ -297,6 +297,7 @@ namespace Server
             // update objects and send them to each client
 
             string snakeSend = "";
+            string powerSend = "";
 
             lock (zeWorld)
             {
@@ -310,6 +311,11 @@ namespace Server
                     s.incrementTurnCounter();
                     
                     snakeSend += JsonConvert.SerializeObject(s) + "\n";
+                }
+
+                foreach(Powerup p in zeWorld.Powerups.Values)
+                {
+                    powerSend += JsonConvert.SerializeObject(p) + "\n";
                 }
             }
 
