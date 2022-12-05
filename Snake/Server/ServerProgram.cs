@@ -349,6 +349,21 @@ namespace Server
         [DataMember(Name = "UniverseSize")]
         internal int UniverseSize;
 
+        [DataMember(Name = "SnakeSpeed")]
+        internal int SnakeSpeed;
+
+        [DataMember(Name = "SnakeLength")]
+        internal int SnakeLength;       // how long a newborn snake is
+
+        [DataMember(Name = "SnakeGrowth")]
+        internal int SnakeGrowth;
+
+        [DataMember(Name = "MaxPowers")]
+        internal int MaxPowers;
+
+        [DataMember(Name = "PowersDelay")]
+        internal int PowersDelay;
+
         [DataMember(Name = "Walls")]
         internal List<Wall> Walls;
 
@@ -359,6 +374,13 @@ namespace Server
             RespawnRate = 0;
             UniverseSize = 0;
             MSPerFrame = 0;
+
+            // default settings for a server without these fields in its settings.xml file
+            SnakeSpeed = 3;
+            SnakeLength = 120;
+            SnakeGrowth = 12;
+            MaxPowers = 20;
+            PowersDelay = 20;
         }
     }
 
