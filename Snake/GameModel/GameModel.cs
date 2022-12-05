@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SnakeGame;
+using System;
 using System.Runtime.Serialization;
 
 namespace GameModel
@@ -265,11 +266,16 @@ namespace GameModel
             if (!snakes.ContainsKey(ID))
             {
                 // construct head randomly and then create tail
-                Vector2D head = new(random.Next(-WorldSize/2, WorldSize/2), random.Next(-WorldSize/2, WorldSize/2));
-                Vector2D tail = new(head.X-120, head.Y);
+                Snake newSnake = new Snake(playerName, ID);
+
+                Vector2D head = new(random.Next(-WorldSize / 2 + 75, WorldSize / 2 - 75),
+                    random.Next(-WorldSize / 2 + 75, WorldSize / 2 - 75));
+                Vector2D tail = new(head.X - 120, head.Y);
+
+                newSnake.Spawn(head, tail);
                 // where 12 is the length of newborn snakes in world units
 
-                snakes.Add(ID, new Snake(playerName, ID, head, tail));
+                snakes.Add(ID, newSnake);
 
                 // TODO: check to ensure snakes don't spawn on walls
 
@@ -464,7 +470,7 @@ namespace GameModel
             growth = 12;
         }
 
-        public Snake(string Name, int iD, Vector2D head, Vector2D tail)
+        public Snake(string Name, int iD)
         {
             // note: this is the state of our snake on its first frame on the server
 
@@ -473,20 +479,14 @@ namespace GameModel
             body = new();
             score = 0;
             died = false;
-            alive = true;
+            alive = false;
             dc = false;
             join = true;
             explode = new();
             speed = 3;
             growth = 12;
-
-            // specify snake coordinates
-            body.Add(head);
-            body.Add(tail);
-
-            // normalize direction
-            dir = tail - head;
-            dir.Normalize();
+            dir = new();
+            body = new();
 
             // set width of snake
             width = 10; // 10 game units
@@ -494,6 +494,26 @@ namespace GameModel
             // set counters
             deathCounter = 0;
             turnCounter = 0;
+        }
+
+        /// <summary>
+        /// Spawns this snake on the specified vectors head and tail
+        /// use this after snake join and snake respawn
+        /// </summary>
+        public void Spawn(Vector2D head, Vector2D tail)
+        {
+            // don't respawn again if already alive
+            if (alive)
+                return;
+
+            body.Add(head);
+            body.Add(tail);
+
+            // normalize direction
+            dir = tail - head;
+            dir.Normalize();
+
+            alive = true;
         }
 
         /// <summary>
