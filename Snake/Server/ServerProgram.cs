@@ -259,6 +259,10 @@ namespace Server
             {
                 clients.Remove(id);
             }
+
+            // set dc and dead to true for next update frame
+            // should we be putting this in a lock?
+            zeWorld.Snakes[(int)id].Disconnect();
         }
 
         /// <summary>
@@ -291,7 +295,7 @@ namespace Server
         private void Update()
         {
             
-            IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => (!snake.alive || snake.dc)).Select(snake => snake.ID);
+            IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => snake.dc).Select(snake => snake.ID);
             IEnumerable<int> powerToRemove = zeWorld.Powerups.Values.Where(powerup => (powerup.died)).Select(powerup => powerup.ID);
             foreach (int i in playersToRemove)
                 zeWorld.Snakes.Remove(i);
@@ -308,6 +312,9 @@ namespace Server
                 // move each snake
                 foreach (Snake s in zeWorld.Snakes.Values)
                 {
+                    if (!s.alive)
+                        continue;
+
                     s.Move(settings.UniverseSize);
                     snakeSend += JsonConvert.SerializeObject(s) + "\n";
                 }

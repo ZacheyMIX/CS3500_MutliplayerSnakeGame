@@ -265,7 +265,7 @@ namespace GameModel
             if (!snakes.ContainsKey(ID))
             {
                 // construct head randomly and then create tail
-                Vector2D head = new(random.Next(-WorldSize, WorldSize), random.Next(-WorldSize, WorldSize));
+                Vector2D head = new(random.Next(-WorldSize/2, WorldSize/2), random.Next(-WorldSize/2, WorldSize/2));
                 Vector2D tail = new(head.X-120, head.Y);
                 // where 12 is the length of newborn snakes in world units
 
@@ -387,17 +387,17 @@ namespace GameModel
         /// A bool indicaticating the snake died within a certain frame.
         /// </summary>
         [JsonProperty(PropertyName = "died")]
-        public readonly bool died;
+        public bool died;
         /// <summary>
         /// A bool indicating whether the snake is alive or dead
         /// </summary>
         [JsonProperty(PropertyName = "alive")]
-        public readonly bool alive;
+        public bool alive;
         /// <summary>
         /// A bool indicating wheter the player disconected on that frame
         /// </summary>
         [JsonProperty(PropertyName = "dc")]
-        public readonly bool dc;
+        public bool dc;
         /// <summary>
         /// A bool indicating whether the player joined on this frame.
         /// </summary>
@@ -471,6 +471,8 @@ namespace GameModel
         /// </summary>
         public void Turn(Vector2D newdir)
         {
+            // TODO: add a counter to prevent 180 collisions on self after turning twice
+            // something like preventing the snake from turning again until its a full body width away
             body.Add(new Vector2D(body[body.Count-1].X, body[body.Count-1].Y)); // adds new body segment at last place before turn
             dir = newdir;                                                       // changes body direction
         }
@@ -508,6 +510,17 @@ namespace GameModel
         {
             body[0].X -= growth * dir.X;
             body[0].Y -= growth * dir.Y;
+        }
+
+        /// <summary>
+        /// changes snake to be representative of disconnecting from server
+        /// to be invoked whenever a client is disconnected
+        /// </summary>
+        public void Disconnect()
+        {
+            dc = true;
+            alive = false;
+            died = true;
         }
     }
 
