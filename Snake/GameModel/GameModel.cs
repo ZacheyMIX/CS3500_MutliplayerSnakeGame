@@ -420,6 +420,12 @@ namespace GameModel
         /// </summary>
         private int growth;
 
+        /// <summary>
+        /// used for convenience when referencing the head of our snake
+        /// </summary>
+
+        private Vector2D Head { get { return body[body.Count-1]; } }
+
         public readonly Explosion explode;
         /// <summary>
         /// Snake object constructor. Since the client only ever deserializes objects, we only need the default constructor.
@@ -471,10 +477,8 @@ namespace GameModel
         /// </summary>
         public void Turn(Vector2D newdir)
         {
-            // TODO: add a counter to prevent 180 collisions on self after turning twice
-            // something like preventing the snake from turning again until its a full body width away
-            body.Add(new Vector2D(body[body.Count-1].X, body[body.Count-1].Y)); // adds new body segment at last place before turn
-            dir = newdir;                                                       // changes body direction
+            body.Add(new Vector2D(Head.X, Head.Y)); // adds new body segment at last place before turn
+            dir = newdir;                           // changes body direction
         }
 
         /// <summary>
@@ -487,8 +491,8 @@ namespace GameModel
             //remove tail if it catches up to next portion
 
             // update head
-            body[body.Count - 1].X += speed * dir.X;
-            body[body.Count - 1].Y += speed * dir.Y;
+            Head.X += speed * dir.X;
+            Head.Y += speed * dir.Y;
 
             // update tail
             // tail should gravitate towards next body vector
