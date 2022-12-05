@@ -294,15 +294,6 @@ namespace Server
         /// </summary>
         private void Update()
         {
-            
-            IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => snake.dc).Select(snake => snake.ID);
-            IEnumerable<int> powerToRemove = zeWorld.Powerups.Values.Where(powerup => (powerup.died)).Select(powerup => powerup.ID);
-            foreach (int i in playersToRemove)
-                zeWorld.Snakes.Remove(i);
-            foreach (int i in powerToRemove)
-                zeWorld.Powerups.Remove(i);
-
-
             // update objects and send them to each client
 
             string snakeSend = "";
@@ -335,6 +326,13 @@ namespace Server
                     Networking.Send(client.TheSocket, snakeSend);
                 }
             }
+
+            IEnumerable<int> playersToRemove = zeWorld.Snakes.Values.Where(snake => snake.dc).Select(snake => snake.ID);
+            IEnumerable<int> powerToRemove = zeWorld.Powerups.Values.Where(powerup => (powerup.died)).Select(powerup => powerup.ID);
+            foreach (int i in playersToRemove)
+                zeWorld.Snakes.Remove(i);
+            foreach (int i in powerToRemove)
+                zeWorld.Powerups.Remove(i);
         }
     }
 
