@@ -53,3 +53,6 @@
 ## Noteworthy design decisions:
 - Server class and program are within the same file, ServerProgram.cs
 - settings.xml only is checked in the program executable's own directory, or exactly two directories above it.
+- Order of members in settings.xml should be left as they are. Otherwise refer to ordering within the GameSettings class.
+- Some settings can not be negative, or cannot be zero, or both. SnakeSpeed, SnakeLength, MaxPowers must be positive non-zero.
+PowersDelay and SnakeGrowth must not be negative.
