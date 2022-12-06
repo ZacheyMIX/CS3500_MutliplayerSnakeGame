@@ -248,6 +248,11 @@ namespace GameModel
         private int RespawnRate;
 
         /// <summary>
+        /// represents how many frames it takes to spawn a new powerup
+        /// </summary>
+        private int PowersDelay;
+
+        /// <summary>
         /// represents the most recent ID starting at 0
         /// </summary>
         private int PowerIds = 0;
@@ -282,6 +287,7 @@ namespace GameModel
             SnakeGrowth = (int)settings.SnakeGrowth!;
             MaxPowers = (int)settings.MaxPowers!;
             RespawnRate = settings.RespawnRate;
+            PowersDelay = settings.PowersDelay;
         }
 
 
@@ -795,19 +801,18 @@ namespace GameModel
         /// Checks if this snake collides with wall in parameter
         /// kills snake if this is a valid collision
         /// </summary>
-        public void CheckWallCollision(Wall wall)
+        public bool CheckWallCollision(Wall wall)
         {
             // walls are 50x50 square units
             // if head falls within region of wall, snake dies.
-            if ((Head.X <= wall.p1.X + 25 && Head.X >= wall.p2.X - 25) && 
-                (Head.Y <= wall.p1.Y + 25 || Head.Y >= wall.p2.Y - 25))
-                die();
+            return (Head.X <= wall.p1.X + 25 && Head.X >= wall.p2.X - 25) && 
+                (Head.Y <= wall.p1.Y + 25 || Head.Y >= wall.p2.Y - 25);
         }
 
         /// <summary>
         /// Snake has collided into something.
         /// </summary>
-        private void die()
+        public void die()
         {
             died = true;
             alive = false;

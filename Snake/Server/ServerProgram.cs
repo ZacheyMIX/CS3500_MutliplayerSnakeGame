@@ -330,7 +330,12 @@ namespace Server
                 foreach(Snake s in zeWorld.Snakes.Values)
                 {
                     foreach (Wall wall in zeWorld.Walls)
-                        s.CheckWallCollision(wall);
+                    {
+                        if (s.CheckWallCollision(wall))
+                        {
+                            s.die();
+                        }
+                    }
                 }
                 */
             }
