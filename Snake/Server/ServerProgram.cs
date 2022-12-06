@@ -304,11 +304,16 @@ namespace Server
                 foreach (Snake s in zeWorld.Snakes.Values)
                 {
                     if (!s.alive)
+                    {
                         s.incrementDeathCounter();
+                        zeWorld.CheckForRespawn(s);
+                    }
 
-                    if (!s.Move(settings.UniverseSize))
-                        s.incrementDeathCounter();
-                    s.incrementTurnCounter();
+                    else
+                    {
+                        s.Move(settings.UniverseSize);
+                        s.incrementTurnCounter();
+                    }
                     
                     snakeSend += JsonConvert.SerializeObject(s) + "\n";
                 }
@@ -317,6 +322,14 @@ namespace Server
                 {
                     powerSend += JsonConvert.SerializeObject(p) + "\n";
                 }
+                /*
+                // check for collisions
+                foreach(Snake s in zeWorld.Snakes.Values)
+                {
+                    foreach (Wall wall in zeWorld.Walls)
+                        s.CheckWallCollision(wall);
+                }
+                */
             }
 
             lock (clients)

@@ -243,6 +243,11 @@ namespace GameModel
         private int MaxPowers;
 
         /// <summary>
+        /// represents how many frames it takes to respawn a snake
+        /// </summary>
+        private int RespawnRate;
+
+        /// <summary>
         /// Default constructor for serverside World class.
         /// Different XML settings may require parameter constructors,
         /// but this default should work with default settings.
@@ -271,6 +276,7 @@ namespace GameModel
             SnakeLength = (int)settings.SnakeLength!;
             SnakeGrowth = (int)settings.SnakeGrowth!;
             MaxPowers = (int)settings.MaxPowers!;
+            RespawnRate = settings.RespawnRate;
         }
 
 
@@ -370,7 +376,19 @@ namespace GameModel
 
         }
 
-        // note: we removed Reset method.
+        /// <summary>
+        /// checks if snake should respawn by now.
+        /// spawns the snake if so.
+        /// </summary>
+        /// <param name="snake"> snake that may need to be respawned </param>
+        public void CheckForRespawn(Snake snake)
+        {
+            // if snake is alive, we shouldn't respawn it
+            if (snake.alive)
+                return;
+            if (snake.DeathCounter == RespawnRate)
+                snake.Spawn(random, WorldSize);
+        }
     }
 
     [JsonObject(MemberSerialization.OptIn)]
@@ -408,7 +426,7 @@ namespace GameModel
         /// Represents the players score
         /// </summary>
         [JsonProperty(PropertyName = "score")]
-        public readonly int score;
+        public int score;
         /// <summary>
         /// A bool indicaticating the snake died within a certain frame.
         /// </summary>
@@ -464,6 +482,11 @@ namespace GameModel
         /// Invoked by controller.
         /// </summary>
         private int deathCounter;
+
+        /// <summary>
+        /// allows for deathCounter to be read from outside
+        /// </summary>
+        public int DeathCounter { get { return deathCounter; } }
 
         /// <summary>
         /// Snake should stop growing/not grow when this counter is >= growth member.
@@ -677,22 +700,22 @@ namespace GameModel
                 if (body[0].X <= -worldSize / 2)    // left border
                 {
                     body.Remove(body[0]);   // removes tail
-                    //body.Remove(body[0]);   // removes border body portion
+                    body.Remove(body[0]);   // removes border body portion
                 }
                 else if (body[0].X >= worldSize / 2)// right border
                 {
                     body.Remove(body[0]);
-                    //body.Remove(body[0]);
+                    body.Remove(body[0]);
                 }
                 else if (body[0].Y <= -worldSize / 2)// top border
                 {
                     body.Remove(body[0]);
-                    //body.Remove(body[0]);
+                    body.Remove(body[0]);
                 }
                 else if (body[0].Y >= worldSize / 2)// bottom border
                 {
                     body.Remove(body[0]);
-                    //body.Remove(body[0]);
+                    body.Remove(body[0]);
                 }
             }
 
@@ -706,6 +729,7 @@ namespace GameModel
         public void Grow()
         {
             growthCounter = 0;
+            score++;
         }
 
         /// <summary>
@@ -733,7 +757,32 @@ namespace GameModel
         public void incrementDeathCounter()
         {
             deathCounter++;
+            died = false;
         }
+
+        /// <summary>
+        /// Checks if this snake collides with wall in parameter
+        /// kills snake if this is a valid collision
+        /// </summary>
+        public void CheckWallCollision(Wall wall)
+        {
+            // walls are 50x50 square units
+            // if head falls within region of wall, snake dies.
+            if ((Head.X <= wall.p1.X + 25 && Head.X >= wall.p2.X - 25) && 
+                (Head.Y <= wall.p1.Y + 25 || Head.Y >= wall.p2.Y - 25))
+                die();
+        }
+
+        /// <summary>
+        /// Snake has collided into something.
+        /// </summary>
+        private void die()
+        {
+            died = true;
+            alive = false;
+            deathCounter = 0;
+        }
+
     }
 
     [DataContract (Namespace = "")]
@@ -911,6 +960,23 @@ namespace GameModel
                 PowersDelay = 20;
             if (UniverseSize < SnakeLength)
                 UniverseSize = (int)SnakeLength * 17;
+
+            // check if wall positions are valid
+            foreach (Wall wall in Walls)
+            {
+                // checks if positions are too low
+                if (wall.p1.X < -UniverseSize / 2 || wall.p1.Y < -UniverseSize / 2)
+                    Walls.Remove(wall);
+                else if (wall.p2.X < -UniverseSize / 2 || wall.p2.Y < -UniverseSize / 2)
+                    Walls.Remove(wall);
+
+                // checks if positions are too high
+                else if (wall.p1.X > UniverseSize / 2 || wall.p1.Y > UniverseSize / 2)
+                    Walls.Remove(wall);
+                else if (wall.p2.X > UniverseSize / 2 || wall.p2.Y > UniverseSize / 2)
+                    Walls.Remove(wall);
+            }
+
         }
 
     }
