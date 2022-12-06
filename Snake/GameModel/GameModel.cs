@@ -180,7 +180,7 @@ namespace GameModel
 
     public class ServerWorld
     {
-        // NOTE THAT ALL SETTINGS ATTRIBUTES ARE STORED IN THE PROGRAM'S GAMESETTINGS INSTANCE
+        // NOTE THAT ALL SETTINGS ATTRIBUTES ARE SET IN THE PROGRAM'S GAMESETTINGS INSTANCE
 
         /// <summary>
         /// integer ID numbers to Snake objects.
@@ -287,7 +287,7 @@ namespace GameModel
             SnakeGrowth = (int)settings.SnakeGrowth!;
             MaxPowers = (int)settings.MaxPowers!;
             RespawnRate = settings.RespawnRate;
-            PowersDelay = settings.PowersDelay;
+            PowersDelay = (int)settings.PowersDelay!;
         }
 
 
