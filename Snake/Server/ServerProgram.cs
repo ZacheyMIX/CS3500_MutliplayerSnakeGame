@@ -323,14 +323,7 @@ namespace Server
                 foreach(Powerup p in zeWorld.Powerups.Values)
                 {
 
-                    if (p.Death is 20)
-                        zeWorld.Powerups.Remove(p.ID);
-                    if (!p.died)
-                        p.IncrementDeathTimer();
-
                     powerSend += JsonConvert.SerializeObject(p) + "\n";
-
-
                 }
                 /*
                 // check for collisions
