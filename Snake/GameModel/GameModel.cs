@@ -348,18 +348,30 @@ namespace GameModel
             return;
         }
 
+        /// <summary>
+        /// Method that adds a new powerup to the world and increments the ID everytime to create a new ID for each Powerup
+        /// </summary>
+        /// <returns></returns>
         public bool AddPower()
         {
             Random random = new Random();
-            if (!powerups.ContainsKey(PowerIds) && powerups.Count <= MaxPowers && random.Next(20) == 3)
+            if (!powerups.ContainsKey(PowerIds) && powerups.Count < MaxPowers && random.Next(PowersDelay * 5) == 3)
             {
-                Powerup newPowerup = new Powerup();
+                Powerup newPowerup = new Powerup(PowerIds);
                 newPowerup.SpawnPower(WorldSize);
                 powerups.Add(PowerIds, newPowerup);
                 PowerIds++;
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Removes the current powerup when called
+        /// </summary>
+        public void RemovePower()
+        {
+
         }
 
         /// <summary>
@@ -862,15 +874,6 @@ namespace GameModel
         [JsonProperty(PropertyName = "died")]
         public readonly bool died;
 
-        /// <summary>
-        /// Creates a timer to count to the death time of powerups
-        /// </summary>
-        private int DeathTimer;
-
-        /// <summary>
-        /// Accessability for the death timer
-        /// </summary>
-        public int Death { get { return DeathTimer; } }
 
         /// <summary>
         /// Powerup object constructor. Since the client only ever deserializes objects, we only need the default constructor.
@@ -880,16 +883,16 @@ namespace GameModel
             ID = 0;
             loc = new();
             died = false;
-            DeathTimer = 0;
         }
 
         /// <summary>
-        /// Death timer for the power up that gets called every frame
+        /// Cutsom Powerup object constructor. Since the client only ever deserializes objects, we only need the default constructor.
         /// </summary>
-        public void IncrementDeathTimer()
+        public Powerup(int ID)
         {
-            DeathTimer++;
-
+            this.ID = ID;
+            loc = new();
+            died = false;
         }
 
         /// <summary>
@@ -899,8 +902,8 @@ namespace GameModel
         public void SpawnPower(int WorldSize)
         {
             Random random = new Random();
-            loc = new(random.Next(-WorldSize / 4, WorldSize / 4),
-                random.Next(-WorldSize / 4, WorldSize / 4));
+            loc = new(random.Next(-WorldSize / 3, WorldSize / 3),
+                random.Next(-WorldSize / 3, WorldSize / 3));
         }
 
     }
