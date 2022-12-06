@@ -306,7 +306,8 @@ namespace Server
                     if (!s.alive)
                         s.incrementDeathCounter();
 
-                    s.Move(settings.UniverseSize);
+                    if (!s.Move(settings.UniverseSize))
+                        s.incrementDeathCounter();
                     s.incrementTurnCounter();
                     
                     snakeSend += JsonConvert.SerializeObject(s) + "\n";
