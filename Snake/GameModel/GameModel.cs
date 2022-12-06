@@ -551,13 +551,22 @@ namespace GameModel
             // don't respawn again if already alive
             if (alive)
                 return;
+            Vector2D head, tail;
 
-            Vector2D head = new(random.Next(-WorldSize / 4, WorldSize / 4),
+
+            head = new(random.Next(-WorldSize / 4, WorldSize / 4),
                 random.Next(-WorldSize / 4, WorldSize / 4));
 
-            // write a randomizer for directions
-            // one for adding length to X, adding length to Y, and subtracting length from Y
-            Vector2D tail = new(head.X - length, head.Y);
+            int randomDir = random.Next(4); // randomizes whatever direction we spawn in
+
+            if (randomDir == 0)
+                tail = new(head.X - length, head.Y);
+            else if (randomDir == 1)
+                tail = new(head.X + length, head.Y);
+            else if (randomDir == 2)
+                tail = new(head.X, head.Y - length);
+            else // randomDir == 3
+                tail = new(head.X, head.Y + length);
 
             body.Add(head);
             body.Add(tail);
