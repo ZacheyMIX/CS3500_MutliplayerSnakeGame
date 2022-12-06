@@ -1012,21 +1012,21 @@ namespace GameModel
             if (UniverseSize < SnakeLength)
                 UniverseSize = (int)SnakeLength * 17;
 
-            // check if wall positions are valid
-            foreach (Wall wall in Walls)
-            {
-                // checks if positions are too low
-                if (wall.p1.X < -UniverseSize / 2 || wall.p1.Y < -UniverseSize / 2)
-                    Walls.Remove(wall);
-                else if (wall.p2.X < -UniverseSize / 2 || wall.p2.Y < -UniverseSize / 2)
-                    Walls.Remove(wall);
+            //// check if wall positions are valid
+            //foreach (Wall wall in Walls)
+            //{
+            //    // checks if positions are too low
+            //    if (wall.p1.X < -UniverseSize / 2 || wall.p1.Y < -UniverseSize / 2)
+            //        Walls.Remove(wall);
+            //    else if (wall.p2.X < -UniverseSize / 2 || wall.p2.Y < -UniverseSize / 2)
+            //        Walls.Remove(wall);
 
-                // checks if positions are too high
-                else if (wall.p1.X > UniverseSize / 2 || wall.p1.Y > UniverseSize / 2)
-                    Walls.Remove(wall);
-                else if (wall.p2.X > UniverseSize / 2 || wall.p2.Y > UniverseSize / 2)
-                    Walls.Remove(wall);
-            }
+            //    // checks if positions are too high
+            //    else if (wall.p1.X > UniverseSize / 2 || wall.p1.Y > UniverseSize / 2)
+            //        Walls.Remove(wall);
+            //    else if (wall.p2.X > UniverseSize / 2 || wall.p2.Y > UniverseSize / 2)
+            //        Walls.Remove(wall);
+            //}
 
         }
 
