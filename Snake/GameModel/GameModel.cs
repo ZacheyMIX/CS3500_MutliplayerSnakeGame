@@ -248,6 +248,11 @@ namespace GameModel
         private int RespawnRate;
 
         /// <summary>
+        /// represents how many frames it takes to spawn a new powerup
+        /// </summary>
+        private int PowersDelay;
+
+        /// <summary>
         /// Default constructor for serverside World class.
         /// Different XML settings may require parameter constructors,
         /// but this default should work with default settings.
@@ -277,6 +282,7 @@ namespace GameModel
             SnakeGrowth = (int)settings.SnakeGrowth!;
             MaxPowers = (int)settings.MaxPowers!;
             RespawnRate = settings.RespawnRate;
+            PowersDelay = settings.PowersDelay;
         }
 
 
