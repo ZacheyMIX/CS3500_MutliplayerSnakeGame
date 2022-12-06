@@ -298,6 +298,8 @@ namespace Server
             string snakeSend = "";
             string powerSend = "";
 
+            zeWorld.AddPower();
+
             lock (zeWorld)
             {
                 // move each snake
@@ -314,7 +316,15 @@ namespace Server
 
                 foreach(Powerup p in zeWorld.Powerups.Values)
                 {
+
+                    if (p.Death is 20)
+                        zeWorld.Powerups.Remove(p.ID);
+                    if (!p.died)
+                        p.IncrementDeathTimer();
+
                     powerSend += JsonConvert.SerializeObject(p) + "\n";
+
+
                 }
             }
 
@@ -323,6 +333,7 @@ namespace Server
                 foreach(SocketState client in clients.Values)
                 {
                     Networking.Send(client.TheSocket, snakeSend);
+                    Networking.Send(client.TheSocket, powerSend);
                 }
             }
 

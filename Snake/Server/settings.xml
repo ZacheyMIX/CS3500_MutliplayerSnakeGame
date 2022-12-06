@@ -3,7 +3,7 @@
 	<FramesPerShot>80</FramesPerShot>	<!-- doesn't mean anything with our standard rules -->
 	<MSPerFrame>17</MSPerFrame>			<!-- how many milliseconds are between each frame -->
 	<RespawnRate>300</RespawnRate>		<!-- how many frames must lapse before a snake can respawn -->
-	<UniverseSize>2000</UniverseSize>	<!-- how many units tall and wide the world is -->
+	<UniverseSize>500</UniverseSize>	<!-- how many units tall and wide the world is -->
 	<PowersDelay>20</PowersDelay>		<!-- max number of frames before next powerup spawns -->
 	<MaxPowers>20</MaxPowers>			<!-- how many powerups can be in the world at one time -->
 	<SnakeSpeed>3</SnakeSpeed>			<!-- how many world units a snake moves in one frame -->
