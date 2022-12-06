@@ -44,7 +44,7 @@
 - Snakes move and are displayed correctly
 
 ## What doesn't work:
-- dead snakes will not send
+- snakes sometimes stretch across the entire screen when crossing the border.
 
 ## Things we tried to remember in development:
 - What steps there are on the connection handshake and in which order
@@ -56,3 +56,4 @@
 - Order of members in settings.xml should be left as they are. Otherwise refer to ordering within the GameSettings class.
 - Some settings can not be negative, or cannot be zero, or both. SnakeSpeed, SnakeLength, MaxPowers must be positive non-zero.
 PowersDelay and SnakeGrowth must not be negative.
+- There is no restrictions on where Walls may be positioned. We leave it up to the user to choose positions of walls wisely based on their world size.
