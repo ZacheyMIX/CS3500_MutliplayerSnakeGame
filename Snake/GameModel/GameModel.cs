@@ -253,6 +253,11 @@ namespace GameModel
         private int PowersDelay;
 
         /// <summary>
+        /// represents the most recent ID starting at 0
+        /// </summary>
+        private int PowerIds = 0;
+
+        /// <summary>
         /// Default constructor for serverside World class.
         /// Different XML settings may require parameter constructors,
         /// but this default should work with default settings.
@@ -341,6 +346,20 @@ namespace GameModel
 
             powerups.Add(newPwp.ID, newPwp);
             return;
+        }
+
+        public bool AddPower()
+        {
+            Random random = new Random();
+            if (!powerups.ContainsKey(PowerIds) && powerups.Count <= MaxPowers && random.Next(20) == 3)
+            {
+                Powerup newPowerup = new Powerup();
+                newPowerup.SpawnPower(WorldSize);
+                powerups.Add(PowerIds, newPowerup);
+                PowerIds++;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -706,22 +725,22 @@ namespace GameModel
                 if (body[0].X <= -worldSize / 2)    // left border
                 {
                     body.Remove(body[0]);   // removes tail
-                    body.Remove(body[0]);   // removes border body portion
+                    //body.Remove(body[0]);   // removes border body portion
                 }
                 else if (body[0].X >= worldSize / 2)// right border
                 {
                     body.Remove(body[0]);
-                    body.Remove(body[0]);
+                   //body.Remove(body[0]);
                 }
                 else if (body[0].Y <= -worldSize / 2)// top border
                 {
                     body.Remove(body[0]);
-                    body.Remove(body[0]);
+                   //body.Remove(body[0]);
                 }
                 else if (body[0].Y >= worldSize / 2)// bottom border
                 {
                     body.Remove(body[0]);
-                    body.Remove(body[0]);
+                  //body.Remove(body[0]);
                 }
             }
 
@@ -835,13 +854,24 @@ namespace GameModel
         /// Represents the location of the powerup
         /// </summary>
         [JsonProperty(PropertyName = "loc")]
-        public readonly Vector2D loc;
+        public Vector2D loc;
 
         /// <summary>
         /// A bool indicates whether the powerup has died or has been consumed.
         /// </summary>
         [JsonProperty(PropertyName = "died")]
         public readonly bool died;
+
+        /// <summary>
+        /// Creates a timer to count to the death time of powerups
+        /// </summary>
+        private int DeathTimer;
+
+        /// <summary>
+        /// Accessability for the death timer
+        /// </summary>
+        public int Death { get { return DeathTimer; } }
+
         /// <summary>
         /// Powerup object constructor. Since the client only ever deserializes objects, we only need the default constructor.
         /// </summary>
@@ -850,6 +880,27 @@ namespace GameModel
             ID = 0;
             loc = new();
             died = false;
+            DeathTimer = 0;
+        }
+
+        /// <summary>
+        /// Death timer for the power up that gets called every frame
+        /// </summary>
+        public void IncrementDeathTimer()
+        {
+            DeathTimer++;
+
+        }
+
+        /// <summary>
+        /// Spawns powerup based on random point within the worldsize
+        /// </summary>
+        /// <param name="loc"></param>
+        public void SpawnPower(int WorldSize)
+        {
+            Random random = new Random();
+            loc = new(random.Next(-WorldSize / 4, WorldSize / 4),
+                random.Next(-WorldSize / 4, WorldSize / 4));
         }
 
     }
@@ -966,21 +1017,21 @@ namespace GameModel
             if (UniverseSize < SnakeLength)
                 UniverseSize = (int)SnakeLength * 17;
 
-            // check if wall positions are valid
-            foreach (Wall wall in Walls)
-            {
-                // checks if positions are too low
-                if (wall.p1.X < -UniverseSize / 2 || wall.p1.Y < -UniverseSize / 2)
-                    Walls.Remove(wall);
-                else if (wall.p2.X < -UniverseSize / 2 || wall.p2.Y < -UniverseSize / 2)
-                    Walls.Remove(wall);
+            //// check if wall positions are valid
+            //foreach (Wall wall in Walls)
+            //{
+            //    // checks if positions are too low
+            //    if (wall.p1.X < -UniverseSize / 2 || wall.p1.Y < -UniverseSize / 2)
+            //        Walls.Remove(wall);
+            //    else if (wall.p2.X < -UniverseSize / 2 || wall.p2.Y < -UniverseSize / 2)
+            //        Walls.Remove(wall);
 
-                // checks if positions are too high
-                else if (wall.p1.X > UniverseSize / 2 || wall.p1.Y > UniverseSize / 2)
-                    Walls.Remove(wall);
-                else if (wall.p2.X > UniverseSize / 2 || wall.p2.Y > UniverseSize / 2)
-                    Walls.Remove(wall);
-            }
+            //    // checks if positions are too high
+            //    else if (wall.p1.X > UniverseSize / 2 || wall.p1.Y > UniverseSize / 2)
+            //        Walls.Remove(wall);
+            //    else if (wall.p2.X > UniverseSize / 2 || wall.p2.Y > UniverseSize / 2)
+            //        Walls.Remove(wall);
+            //}
 
         }
 
