@@ -287,7 +287,7 @@ namespace GameModel
             SnakeGrowth = (int)settings.SnakeGrowth!;
             MaxPowers = (int)settings.MaxPowers!;
             RespawnRate = settings.RespawnRate;
-            PowersDelay = settings.PowersDelay;
+            PowersDelay = (int)settings.PowersDelay!;
         }
 
 
@@ -355,7 +355,7 @@ namespace GameModel
         public bool AddPower()
         {
             Random random = new Random();
-            if (!powerups.ContainsKey(PowerIds) && powerups.Count <= MaxPowers && random.Next(200) == 3)
+            if (!powerups.ContainsKey(PowerIds) && powerups.Count < MaxPowers && random.Next(PowersDelay * 5) == 3)
             {
                 Powerup newPowerup = new Powerup(PowerIds);
                 newPowerup.SpawnPower(WorldSize);
