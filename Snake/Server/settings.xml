@@ -1,14 +1,16 @@
 ﻿<GameSettings>
-	<FramesPerShot>80</FramesPerShot>
-	<MSPerFrame>17</MSPerFrame>
-	<RespawnRate>300</RespawnRate>
-	<UniverseSize>2000</UniverseSize>
-	<PowersDelay>20</PowersDelay>
-	<MaxPowers>20</MaxPowers>
-	<SnakeSpeed>3</SnakeSpeed>
-	<SnakeGrowth>12</SnakeGrowth>
-	<SnakeLength>120</SnakeLength>
+	<!-- NOTE THAT THESE ELEMENTS *MUST* BE IN THIS EXACT ORDER -->
+	<FramesPerShot>80</FramesPerShot>	<!-- doesn't mean anything with our standard rules -->
+	<MSPerFrame>17</MSPerFrame>			<!-- how many milliseconds are between each frame -->
+	<RespawnRate>300</RespawnRate>		<!-- how many frames must lapse before a snake can respawn -->
+	<UniverseSize>2000</UniverseSize>	<!-- how many units tall and wide the world is -->
+	<PowersDelay>20</PowersDelay>		<!-- max number of frames before next powerup spawns -->
+	<MaxPowers>20</MaxPowers>			<!-- how many powerups can be in the world at one time -->
+	<SnakeSpeed>3</SnakeSpeed>			<!-- how many world units a snake moves in one frame -->
+	<SnakeGrowth>12</SnakeGrowth>		<!-- how much a snake grows in units of frames of movement -->
+	<SnakeLength>120</SnakeLength>		<!-- how long a newborn snake is -->
 	
+	<!-- IN THE CASE OF ABSENSE OF WALLS, LEAVE THE WALLS ELEMENT PRESENT BUT EMPTY -->
 	<Walls>
 		<Wall>
 			<ID>0</ID>
