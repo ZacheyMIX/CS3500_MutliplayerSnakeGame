@@ -195,8 +195,9 @@ namespace GameModel
         /// </summary>
         private Dictionary<int, Powerup> powerups;
 
-        //public List<Wall> Walls { get { return walls; } }
-
+        /// <summary>
+        /// represents how large the world is
+        /// </summary>
         private int WorldSize;
 
 
@@ -220,10 +221,26 @@ namespace GameModel
         /// </summary>
         Random random;
 
+        /// <summary>
+        /// represents how many units a snake moves in one frame
+        /// </summary>
+        private int SnakeSpeed;
 
-        ////////////////////////////
-        // SERVER SIDE DATA MEMBERS
-        ////////////////////////////
+        /// <summary>
+        /// represents how many units long a snake is at spawn
+        /// </summary>
+        private int SnakeLength;
+
+        /// <summary>
+        /// represents how much a snake's length increases after obtaining a powerup
+        /// expressed in frames per movement
+        /// </summary>
+        private int SnakeGrowth;
+
+        /// <summary>
+        /// represents how many powerups can be present in the game at one time
+        /// </summary>
+        private int MaxPowers;
 
         /// <summary>
         /// Default constructor for serverside World class.
@@ -241,13 +258,19 @@ namespace GameModel
         /// <summary>
         /// Constructor built for existing settings
         /// </summary>
-        public ServerWorld(int worldSize, List<Wall> ListOWalls)
+        public ServerWorld(GameSettings settings)
         {
             snakes = new();
-            walls = ListOWalls;
             powerups = new();
-            WorldSize = worldSize;
             random = new();
+
+            // data members taken from settings object
+            WorldSize = settings.UniverseSize;
+            walls = settings.Walls;
+            SnakeSpeed = (int)settings.SnakeSpeed!;
+            SnakeLength = (int)settings.SnakeLength!;
+            SnakeGrowth = (int)settings.SnakeGrowth!;
+            MaxPowers = (int)settings.MaxPowers!;
         }
 
 
@@ -266,13 +289,10 @@ namespace GameModel
             if (!snakes.ContainsKey(ID))
             {
                 // construct head randomly and then create tail
-                Snake newSnake = new Snake(playerName, ID);
+                Snake newSnake = new Snake(playerName, ID, SnakeLength, SnakeGrowth, SnakeSpeed);
 
-                Vector2D head = new(random.Next(-WorldSize / 2 + 75, WorldSize / 2 - 75),
-                    random.Next(-WorldSize / 2 + 75, WorldSize / 2 - 75));
-                Vector2D tail = new(head.X - 120, head.Y);
 
-                newSnake.Spawn(head, tail);
+                newSnake.Spawn(random, WorldSize);
                 // where 12 is the length of newborn snakes in world units
 
                 snakes.Add(ID, newSnake);
@@ -446,11 +466,23 @@ namespace GameModel
         private int deathCounter;
 
         /// <summary>
+        /// Snake should stop growing/not grow when this counter is >= growth member.
+        /// Invoked by controller.
+        /// </summary>
+        private int growthCounter;
+
+        /// <summary>
         /// represents width of snake
         /// </summary>
         private int width;
 
+        /// <summary>
+        /// represents how long the snake is on respawn
+        /// </summary>
+        private int length;
+
         public readonly Explosion explode;
+
         /// <summary>
         /// Snake object constructor. Since the client only ever deserializes objects, we only need the default constructor.
         /// </summary>
@@ -470,7 +502,16 @@ namespace GameModel
             growth = 12;
         }
 
-        public Snake(string Name, int iD)
+        /// <summary>
+        /// Serverside snake constructor. Used when a new snake enters the game.
+        /// </summary>
+        /// <param name="Name"> name of the snake as a string </param>
+        /// <param name="iD"> ID of the snake as an integer </param>
+        /// <param name="len"> initial length of a snake as an integer</param>
+        /// <param name="grow"> how many frames worth of movement the snake grows after a powerup,
+        /// as an integer. </param>
+        /// <param name="spd"> how many units a snake moves in a frame </param>
+        public Snake(string Name, int iD, int len, int grow, int spd)
         {
             // note: this is the state of our snake on its first frame on the server
 
@@ -483,8 +524,7 @@ namespace GameModel
             dc = false;
             join = true;
             explode = new();
-            speed = 3;
-            growth = 12;
+            growth = grow;
             dir = new();
             body = new();
 
@@ -494,17 +534,30 @@ namespace GameModel
             // set counters
             deathCounter = 0;
             turnCounter = 0;
+            growthCounter = growth + 1;
+
+            // settings set by settings.xml
+            length = len;
+            speed = spd;
+            growth = grow;
         }
 
         /// <summary>
         /// Spawns this snake on the specified vectors head and tail
         /// use this after snake join and snake respawn
         /// </summary>
-        public void Spawn(Vector2D head, Vector2D tail)
+        public void Spawn(Random random, int WorldSize)
         {
             // don't respawn again if already alive
             if (alive)
                 return;
+
+            Vector2D head = new(random.Next(-WorldSize / 4, WorldSize / 4),
+                random.Next(-WorldSize / 4, WorldSize / 4));
+
+            // write a randomizer for directions
+            // one for adding length to X, adding length to Y, and subtracting length from Y
+            Vector2D tail = new(head.X - length, head.Y);
 
             body.Add(head);
             body.Add(tail);
@@ -534,11 +587,11 @@ namespace GameModel
         /// moves snake its predetermined distance every frame
         /// </summary>
         /// <param name="worldSize"> used to compute crossing the border </param>
-        public void Move(int worldSize)
+        public bool Move(int worldSize)
         {
             // should not be invoked if the snake is dead
             if (!alive)
-                return;
+                return false;
 
             //add to head, tail
             //remove tail if it catches up to next portion
@@ -547,26 +600,103 @@ namespace GameModel
             Head.X += speed * dir.X;
             Head.Y += speed * dir.Y;
 
-            // update tail
-            // tail should gravitate towards next body vector
-            Vector2D tempDirection = body[1] - body[0];
-            tempDirection.Normalize();
+            // check if head has crossed over the world boundary
 
-            body[0].X += tempDirection.X * speed;
-            body[0].Y += tempDirection.Y * speed;
+            if (Head.X < -worldSize / 2)
+            {
+                double headX = Head.X;  // used so that we don't lose track of original head position
+                body.Add(new Vector2D(-worldSize / 2, Head.Y));     // add first border
+                body.Add(new Vector2D(headX + worldSize, Head.Y));  // add second border
+                body.Add(new Vector2D(headX + worldSize, Head.Y));  // add head at second border
+            }
+            if (Head.X > worldSize / 2)
+            {
+                // same as before just different direction
+                double headX = Head.X;
+                body.Add(new Vector2D(worldSize / 2, Head.Y));
+                body.Add(new Vector2D(headX - worldSize, Head.Y));
+                body.Add(new Vector2D(headX - worldSize, Head.Y));
+            }
+            if (Head.Y < -worldSize / 2)
+            {
+                // same as before just on Y border
+                double headY = Head.Y;
+                body.Add(new Vector2D(Head.X, -worldSize / 2));
+                body.Add(new Vector2D(Head.X, headY + worldSize));
+                body.Add(new Vector2D(Head.X, headY + worldSize));
+            }
+            if (Head.Y > worldSize / 2)
+            {
+                // same as before just different direction
+                double headY = Head.Y;
+                body.Add(new Vector2D(Head.X, worldSize / 2));
+                body.Add(new Vector2D(Head.X, headY - worldSize));
+                body.Add(new Vector2D(Head.X, headY - worldSize));
+            }
 
-            // remove last portion if tail catches up to or is greater than next portion of body
-            if (body[0].Equals(body[1]))
-                body.Remove(body[0]);
+            // check if snake is growing before moving the tail
+            if (growthCounter <= growth)
+                growthCounter++;
+
+            else
+            {
+                // update tail
+                // tail should gravitate towards next body vector
+                Vector2D tempDirection = body[1] - body[0]; // throws here from invalid index
+                tempDirection.Normalize();
+
+                body[0].X += tempDirection.X * speed;
+                body[0].Y += tempDirection.Y * speed;
+
+                // remove last portion if tail catches up to or is further than next portion of body
+                if (body[0].Equals(body[1]))
+                    body.Remove(body[0]);
+                else if (tempDirection.Equals(new Vector2D(0, -1)) && body[0].Y < body[1].Y)
+                // tail is moving up and is further up than the next segment
+                    body.Remove(body[0]);
+                else if (tempDirection.Equals(new Vector2D(-1, 0)) && body[0].X < body[1].X)
+                // tail is moving left and is further left than the next segment
+                    body.Remove(body[0]);
+                else if (tempDirection.Equals(new Vector2D(0, 1)) && body[0].Y > body[1].Y)
+                    // tail is moving down and is further down than the next segment
+                    body.Remove(body[0]);
+                else if (tempDirection.Equals(new Vector2D(1, 0)) && body[0].X > body[1].X)
+                // tail is moving right and is further right than the next segment
+                    body.Remove(body[0]);
+
+                // if tail is on border we should remove it
+                if (body[0].X <= -worldSize / 2)    // left border
+                {
+                    body.Remove(body[0]);   // removes tail
+                    body.Remove(body[0]);   // removes border body portion
+                }
+                else if (body[0].X >= worldSize / 2)// right border
+                {
+                    body.Remove(body[0]);
+                    body.Remove(body[0]);
+                }
+                else if (body[0].Y <= -worldSize / 2)// top border
+                {
+                    body.Remove(body[0]);
+                    body.Remove(body[0]);
+                }
+                else if (body[0].Y >= worldSize / 2)// bottom border
+                {
+                    body.Remove(body[0]);
+                    body.Remove(body[0]);
+                }
+            }
+
+            // movement completed successfully
+            return true;
         }
 
         /// <summary>
-        /// method used for growing a snake after picking up a powerup
+        /// method used for setting the snake up to grow after a powerup has been picked up
         /// </summary>
         public void Grow()
         {
-            body[0].X -= growth * dir.X;
-            body[0].Y -= growth * dir.Y;
+            growthCounter = 0;
         }
 
         /// <summary>
@@ -695,6 +825,83 @@ namespace GameModel
         {
             moving = direction;
         }
+    }
+
+    /// <summary>
+    /// Used as a kind of helper class on Server construct to read provided settings.xml file
+    /// </summary>
+    [DataContract(Namespace = "")]
+    public class GameSettings
+    {
+        // note that this doesn't do anything.
+        [DataMember(Name = "FramesPerShot", Order = 0)]
+        public int FramesPerShot;
+
+        // note that all following nullable data members are not included in legacy settings.
+        // therefore, we need our OnDeserialize method to make these work.
+
+        [DataMember(Name = "MSPerFrame", Order = 1)]
+        public int MSPerFrame;
+
+        [DataMember(Name = "RespawnRate", Order = 2)]
+        public int RespawnRate;
+
+        [DataMember(Name = "UniverseSize", Order = 3)]
+        public int UniverseSize;
+
+        [DataMember(Name = "PowersDelay", Order = 4)]
+        public int? PowersDelay;
+
+        [DataMember(Name = "MaxPowers", Order = 5)]
+        public int? MaxPowers;
+
+        [DataMember(Name = "SnakeSpeed", Order = 6)]
+        public int? SnakeSpeed;
+
+        [DataMember(Name = "SnakeGrowth", Order = 7)]
+        public int? SnakeGrowth;
+
+        [DataMember(Name = "SnakeLength", Order = 8)]
+        public int? SnakeLength;
+
+
+        [DataMember(Name = "Walls", Order = 9)]
+        public List<Wall> Walls;
+
+        public GameSettings()
+        {
+            Walls = new();
+            FramesPerShot = 0;
+            RespawnRate = 0;
+            UniverseSize = 0;
+            MSPerFrame = 0;
+
+            // default settings for a server without these fields in its settings.xml file
+            SnakeSpeed = 3;
+            SnakeLength = 120;
+            SnakeGrowth = 12;
+            MaxPowers = 20;
+            PowersDelay = 20;
+        }
+
+        /// <summary>
+        /// sets fields to default settings if they're excluded from read file
+        /// </summary>
+        [OnDeserialized()]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            if (SnakeSpeed is null || SnakeSpeed <= 0)  // snake speed should not be negative
+                SnakeSpeed = 3;
+            if (SnakeLength is null || SnakeLength <= 0)// snake length should not be negative
+                SnakeLength = 120;
+            if (SnakeGrowth is null || SnakeGrowth < 0) // snake growth should not be negative but can be zero
+                SnakeGrowth = 12;
+            if (MaxPowers is null || MaxPowers <= 0)    // max powerups should not be negative
+                MaxPowers = 20;
+            if (PowersDelay is null || PowersDelay < 0) // powerup delay should not be negative but can be zero
+                PowersDelay = 20;
+        }
+
     }
 
 }

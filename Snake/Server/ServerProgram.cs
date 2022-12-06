@@ -43,7 +43,6 @@ namespace Server
             }
 
 
-
             // ensure settings are valid. stop program if not
             if (settings is null)
                 return;
@@ -51,7 +50,7 @@ namespace Server
             // make settings instance accessible by server methods
             server.settings = settings;
 
-            server.zeWorld = new ServerWorld(settings.UniverseSize, settings.Walls);
+            server.zeWorld = new ServerWorld(settings);
             server.MSPerFrame = settings.MSPerFrame;
 
             server.StartServer();
@@ -182,7 +181,7 @@ namespace Server
         {
             if (state.ErrorOccurred)
             {
-                Console.WriteLine("Error receiving data from client ID " + state.ID);
+                Console.WriteLine("Disconnect from client: " + state.ID);
                 RemoveClient(state.ID);
                 return;
             }
@@ -245,8 +244,8 @@ namespace Server
                 return;
 
             string toSendString = JsonConvert.SerializeObject(obj) + "\n";  // collection was modified error thrown here
-            if (Networking.Send(socket.TheSocket, toSendString))
-                Console.WriteLine("successfully sent to client");
+            while (!Networking.Send(socket.TheSocket, toSendString))
+            { /* mine for bitcoin */ }
         }
 
         /// <summary>
@@ -330,59 +329,7 @@ namespace Server
         }
     }
 
-    /// <summary>
-    /// Used as a kind of helper class on Server construct to read provided settings.xml file
-    /// </summary>
-    [DataContract(Namespace = "")]
-    internal class GameSettings
-    {
-        // note that this doesn't do anything.
-        [DataMember(Name = "FramesPerShot")]
-        internal int FramesPerShot;
 
-        [DataMember(Name = "MSPerFrame")]
-        internal int MSPerFrame;
-
-        [DataMember(Name = "RespawnRate")]
-        internal int RespawnRate;
-
-        [DataMember(Name = "UniverseSize")]
-        internal int UniverseSize;
-
-        [DataMember(Name = "SnakeSpeed")]
-        internal int SnakeSpeed;
-
-        [DataMember(Name = "SnakeLength")]
-        internal int SnakeLength;       // how long a newborn snake is
-
-        [DataMember(Name = "SnakeGrowth")]
-        internal int SnakeGrowth;
-
-        [DataMember(Name = "MaxPowers")]
-        internal int MaxPowers;
-
-        [DataMember(Name = "PowersDelay")]
-        internal int PowersDelay;
-
-        [DataMember(Name = "Walls")]
-        internal List<Wall> Walls;
-
-        public GameSettings()
-        {
-            Walls = new();
-            FramesPerShot = 0;
-            RespawnRate = 0;
-            UniverseSize = 0;
-            MSPerFrame = 0;
-
-            // default settings for a server without these fields in its settings.xml file
-            SnakeSpeed = 3;
-            SnakeLength = 120;
-            SnakeGrowth = 12;
-            MaxPowers = 20;
-            PowersDelay = 20;
-        }
-    }
 
 
 }
