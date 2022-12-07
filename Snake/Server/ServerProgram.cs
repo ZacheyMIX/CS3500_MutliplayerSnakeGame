@@ -26,20 +26,29 @@ namespace Server
             xmlsettings.IgnoreWhitespace = true;
 
             try
-            {
-                using (XmlReader reader = XmlReader.Create("settings.xml", xmlsettings))
+            {   // try to find settings.xml
+                try
                 {
-                    DataContractSerializer ser = new DataContractSerializer(typeof(GameSettings));
-                    settings = (GameSettings?)ser.ReadObject(reader);
+                    using (XmlReader reader = XmlReader.Create("settings.xml", xmlsettings))
+                    {
+                        DataContractSerializer ser = new DataContractSerializer(typeof(GameSettings));
+                        settings = (GameSettings?)ser.ReadObject(reader);
+                    }
+                }
+                catch
+                {
+                    using (XmlReader reader = XmlReader.Create("../../../settings.xml", xmlsettings))
+                    {
+                        DataContractSerializer ser = new DataContractSerializer(typeof(GameSettings));
+                        settings = (GameSettings?)ser.ReadObject(reader);
+                    }
                 }
             }
+
             catch
-            {
-                using (XmlReader reader = XmlReader.Create("../../../settings.xml", xmlsettings))
-                {
-                    DataContractSerializer ser = new DataContractSerializer(typeof(GameSettings));
-                    settings = (GameSettings?)ser.ReadObject(reader);
-                }
+            { // file was not found and the server should not start
+                Console.WriteLine("file settings.xml not found. Did you put it in the right spot?");
+                settings = null;    // so that settings is not unassigned
             }
 
 
@@ -128,13 +137,6 @@ namespace Server
             // in this last case we have a full message ending with a terminator character
             // that we can use as a name
 
-            // add client state to set of connections
-            // locks for race conditions etc
-            lock (clients)
-            {
-                clients.Add(state.ID, state);
-            }
-
             // add client information to model
             lock (zeWorld)
             {
@@ -146,7 +148,7 @@ namespace Server
                 // is important because we need to ensure the client gets handshake info FIRST
                 // and there are other threads broadcasting everything to all clients.
                 Networking.Send(state.TheSocket,
-                    state.ID.ToString() + "\n"      // send client ID
+                    state.ID + "\n"                 // send client ID
                 + settings.UniverseSize + "\n");    // and then worldsize
 
                 state.OnNetworkAction = ReceiveData;
@@ -165,6 +167,13 @@ namespace Server
                 return;
             }
 
+            // add client state to set of connections
+            // locks for race conditions etc
+            lock (clients)
+            {
+                clients.Add(state.ID, state);
+            }
+
             // messaged was processed correctly so we can remove it
             state.RemoveData(0, totalData.Length);
 
@@ -181,7 +190,7 @@ namespace Server
         {
             if (state.ErrorOccurred)
             {
-                Console.WriteLine("Disconnect from client: " + state.ID);
+                Console.WriteLine("Client " + state.ID + " disconnected");
                 RemoveClient(state.ID);
                 return;
             }
@@ -255,13 +264,12 @@ namespace Server
         {
             Console.WriteLine("Client " + id + " disconnected");
             lock (clients)
-            {
                 clients.Remove(id);
-            }
 
             // set dc and dead to true for next update frame
-            // should we be putting this in a lock?
-            zeWorld.Snakes[(int)id].Disconnect();
+            if (zeWorld.Snakes.ContainsKey((int)id))
+                lock (zeWorld)
+                    zeWorld.Snakes[(int)id].Disconnect();
         }
 
         /// <summary>
@@ -305,6 +313,8 @@ namespace Server
                 // move each snake
                 foreach (Snake s in zeWorld.Snakes.Values)
                 {
+                    snakeSend += JsonConvert.SerializeObject(s) + "\n";
+
                     if (!s.alive)
                     {
                         s.incrementDeathCounter();
@@ -317,7 +327,6 @@ namespace Server
                         s.incrementTurnCounter();
                     }
                     
-                    snakeSend += JsonConvert.SerializeObject(s) + "\n";
                 }
 
                 foreach(Powerup p in zeWorld.Powerups.Values)
@@ -325,7 +334,7 @@ namespace Server
 
                     powerSend += JsonConvert.SerializeObject(p) + "\n";
                 }
-                /*
+                
                 // check for collisions
                 foreach(Snake s in zeWorld.Snakes.Values)
                 {
@@ -337,7 +346,7 @@ namespace Server
                         }
                     }
                 }
-                */
+
             }
 
             lock (clients)
@@ -357,8 +366,6 @@ namespace Server
                 zeWorld.Powerups.Remove(i);
         }
     }
-
-
 
 
 }
