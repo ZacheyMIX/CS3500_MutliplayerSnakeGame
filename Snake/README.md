@@ -44,6 +44,7 @@
 - Snakes move and are displayed correctly
 - Powerups spawn randomly and are displayed correctly with a maximum value of MaxPowers
 - Snakes die and respawn after colliding with walls
+- Snakes can pick up powerups, which results in the powerup "dying", the snake growing, and the snake's score going up.
 
 ### What doesn't work:
 - snakes sometimes stretch across the entire screen when crossing the border.
@@ -61,4 +62,6 @@
 - Order of members in settings.xml should be left as they are. Otherwise refer to ordering within the GameSettings class.
 - Some settings can not be negative, or cannot be zero, or both. SnakeSpeed, SnakeLength, MaxPowers must be positive non-zero.
 PowersDelay and SnakeGrowth must not be negative.
-- There is no restrictions on where Walls may be positioned. We leave it up to the user to choose positions of walls wisely based on their world size.
+- There is no restrictions on where Walls may be positioned.
+We leave it up to the user to choose positions of walls wisely based on their world size.
+- Removing dead or disconnected objects after sending their dead state to the client.
