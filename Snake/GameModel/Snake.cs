@@ -462,9 +462,8 @@ namespace GameModel
 
         /// <summary>
         /// Checks collision between snake and powerups
+        /// returns true if a snake collides with a powerup
         /// </summary>
-        /// <param name="power"></param>
-        /// <returns></returns>
         public bool CheckPowerCollision(Powerup power)
         {
             int snakeWidth = 5;
