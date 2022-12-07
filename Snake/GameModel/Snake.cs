@@ -409,7 +409,6 @@ namespace GameModel
         /// </summary>
         public bool CheckWallCollision(Wall wall)
         {
-            // TODO: fix issue with snake spawning around wall
             int snakeWidth = 5; // width from middle to one side
             int wallWidth = 25; // width from middle to one side
             // walls are 50x50 square units
@@ -459,6 +458,32 @@ namespace GameModel
                 (body[1].Y - snakeWidth < wall.p1.Y + wallWidth);
             return firstWallCheck || secondWallCheck;
 
+        }
+
+        /// <summary>
+        /// Checks collision between snake and powerups
+        /// </summary>
+        /// <param name="power"></param>
+        /// <returns></returns>
+        public bool CheckPowerCollision(Powerup power)
+        {
+            int snakeWidth = 5;
+            int powerWidth = 8;
+
+            foreach(Vector2D segment in body)
+            {
+
+                if (
+                        (segment.X + snakeWidth > power.loc.X - powerWidth) &&    // snake overlaps powerup left side
+                        (segment.X - snakeWidth < power.loc.X + powerWidth) &&    // snake overlaps powerup right side
+                        (segment.Y + snakeWidth > power.loc.Y - powerWidth) &&    // snake overlaps powerup top side
+                        (segment.Y - snakeWidth < power.loc.Y + powerWidth)       // snake overlaps powerup bottom side
+                    )
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
