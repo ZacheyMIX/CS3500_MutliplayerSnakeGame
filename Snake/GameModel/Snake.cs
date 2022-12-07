@@ -240,7 +240,7 @@ namespace GameModel
                         break;
                 }
             }
-
+            score = 0;
             alive = true;
         }
 
