@@ -499,16 +499,27 @@ namespace GameModel
         /// Spawns powerup based on random point within the worldsize
         /// </summary>
         /// <param name="loc"></param>
-        public void SpawnPower(int WorldSize, List<Wall> wall)
+        public void SpawnPower(int WorldSize, List<Wall> walls)
         {
             Random random = new Random();
-            foreach(Wall w in wall)
-            if (!CheckWallCollision(wall))
+            bool invalidSpawnPoint = true;
+
+            while (invalidSpawnPoint)
             {
                 loc = new(random.Next(-WorldSize / 3, WorldSize / 3),
                 random.Next(-WorldSize / 3, WorldSize / 3));
+
+                // check if this collides with any wall
+                if (walls.Count == 0)
+                    break;
+
+                foreach (Wall wall in walls)
+                {
+                    invalidSpawnPoint = CheckWallCollision(wall);
+                    if (invalidSpawnPoint)
+                        break;
+                }
             }
-            
         }
 
         public void die()
