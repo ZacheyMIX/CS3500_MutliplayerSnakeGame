@@ -348,15 +348,6 @@ namespace Server
                             s.Grow();
                         }
                     }
-
-                    foreach (Powerup p in zeWorld.Powerups.Values)
-                    {
-                        if (s.CheckPowerCollision(p))
-                        {
-                            p.die();
-                            s.Grow();
-                        }
-                    }
                 }
 
                 foreach (Powerup p in zeWorld.Powerups.Values)

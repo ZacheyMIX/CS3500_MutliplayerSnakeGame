@@ -502,12 +502,6 @@ namespace GameModel
         public void SpawnPower(int WorldSize, List<Wall> wall)
         {
             Random random = new Random();
-            foreach(Wall w in wall)
-            if (!CheckWallCollision(wall))
-            {
-                loc = new(random.Next(-WorldSize / 3, WorldSize / 3),
-                random.Next(-WorldSize / 3, WorldSize / 3));
-            }
             
         }
 
@@ -522,21 +516,21 @@ namespace GameModel
         /// </summary>
         public bool CheckWallCollision(Wall wall)
         {
-            int snakeWidth = 8; // width from middle to one side
+            int powerWidth = 10; // width from middle to one side
             int wallWidth = 25; // width from middle to one side
                                 // walls are 50x50 square units
                                 // if head falls within region of wall, snake dies.
                                 // no gap must be present between any of the 4 sides of the rectangles
             return (
-                (loc.X + snakeWidth > wall.p1.X - wallWidth) &&    // snake overlaps wall left side
-                (loc.X - snakeWidth < wall.p2.X + wallWidth) &&    // snake overlaps wall right side
-                (loc.Y + snakeWidth > wall.p1.Y - wallWidth) &&    // snake overlaps wall top side
-                (loc.Y - snakeWidth < wall.p2.Y + wallWidth) ||    // snake overlaps wall bottom side
+                (loc.X + powerWidth > wall.p1.X - wallWidth) &&    // snake overlaps wall left side
+                (loc.X - powerWidth < wall.p2.X + wallWidth) &&    // snake overlaps wall right side
+                (loc.Y + powerWidth > wall.p1.Y - wallWidth) &&    // snake overlaps wall top side
+                (loc.Y - powerWidth < wall.p2.Y + wallWidth) ||    // snake overlaps wall bottom side
                                                                    // some walls may have different positional order. This ensures that both checks are valid.
-                (loc.X + snakeWidth > wall.p2.X - wallWidth) &&    // snake overlaps wall left side
-                (loc.X - snakeWidth < wall.p1.X + wallWidth) &&    // snake overlaps wall right side
-                (loc.Y + snakeWidth > wall.p2.Y - wallWidth) &&    // snake overlaps wall top side
-                (loc.Y - snakeWidth < wall.p1.Y + wallWidth)       // snake overlaps wall bottom side
+                (loc.X + powerWidth > wall.p2.X - wallWidth) &&    // snake overlaps wall left side
+                (loc.X - powerWidth < wall.p1.X + wallWidth) &&    // snake overlaps wall right side
+                (loc.Y + powerWidth > wall.p2.Y - wallWidth) &&    // snake overlaps wall top side
+                (loc.Y - powerWidth < wall.p1.Y + wallWidth)       // snake overlaps wall bottom side
             );
 
         }
