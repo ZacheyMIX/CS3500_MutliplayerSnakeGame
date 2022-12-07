@@ -340,6 +340,14 @@ namespace Server
                         }
                     }
 
+                    foreach (Snake snake in zeWorld.Snakes.Values)
+                    {
+                        if (s.CheckSnakeCollision(snake))
+                        {
+                            s.die();
+                        }
+                    }
+
                     foreach (Powerup p in zeWorld.Powerups.Values)
                     {
                         if (s.CheckPowerCollision(p))

@@ -177,7 +177,6 @@ public static class Networking
             // Didn't find any IPV4 addresses
             if (!foundIPV4)
             {
-                // TODO: Indicate an error to the user, as specified in the documentation
                 NetworkErrorOccurred(toCall,
                     "Could not find applicable IPV4 address.", null);
                 return; // end loop
@@ -192,7 +191,6 @@ public static class Networking
             }
             catch (Exception e)
             {
-                // TODO: Indicate an error to the user, as specified in the documentation
                 NetworkErrorOccurred(toCall,
                     "Host name is not a valid IP address.\n" + e.ToString(), null);
                 return; // end loop

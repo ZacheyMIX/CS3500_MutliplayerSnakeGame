@@ -314,8 +314,6 @@ namespace GameModel
 
                 snakes.Add(ID, newSnake);
 
-                // TODO: check to ensure snakes don't spawn on walls
-
                 return true;
             }
             return false;
@@ -543,7 +541,7 @@ namespace GameModel
                 (loc.X - powerWidth < wall.p2.X + wallWidth) &&    // snake overlaps wall right side
                 (loc.Y + powerWidth > wall.p1.Y - wallWidth) &&    // snake overlaps wall top side
                 (loc.Y - powerWidth < wall.p2.Y + wallWidth) ||    // snake overlaps wall bottom side
-                                                                   // some walls may have different positional order. This ensures that both checks are valid.
+                // some walls may have different positional order. This ensures that both checks are valid.
                 (loc.X + powerWidth > wall.p2.X - wallWidth) &&    // snake overlaps wall left side
                 (loc.X - powerWidth < wall.p1.X + wallWidth) &&    // snake overlaps wall right side
                 (loc.Y + powerWidth > wall.p2.Y - wallWidth) &&    // snake overlaps wall top side
