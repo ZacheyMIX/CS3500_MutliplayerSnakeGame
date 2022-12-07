@@ -1,9 +1,9 @@
 # Parkstrikers Snake Client
 #### Written by Ashton Hunt and Zachery Blomquist as part of CS3500, University of Utah, Fall 2022
 
-### PS8/Client Notes
+## PS8/Client Notes
 
-## What works:
+### What works:
 - Our client can connect to and be accepted by servers
 - Our client can send messages and data over the network appropriately
 - Network errors are accomodated for
@@ -12,13 +12,13 @@
 - Visual representations including snakes, walls, powerups, images, views, explosions etc
 - Sufficiently high framerate regardless of playercount or connection source
 
-## What doesn't work:
+### What doesn't work:
 - Possibly unaccounted for errors
 
-## What we still have to do:
+### What we still have to do:
 - Get everything that doesn't work working
 
-## Things we tried to remember in development:
+### Things we tried to remember in development:
 - Keeping the model passive
 - Install JSON only in projects that use JSON
 - Keep networking calls in relevant controller projects only
@@ -27,7 +27,7 @@
 - Gracefully handling weird cases like snakes dying on our same join etc
 - Snakes wrapping around the map in a successful and visually intuitive way
 
-## Noteworthy design decisions:
+### Noteworthy design decisions:
 - ClientModel's Update method takes in JObjects instead of strings. This leaves the JSON parsing duties up to GameController
 - Client IDs are stored within the ClientModel
 - A client is given an option to reconnect to the server or to fully disconnect from a server given networking errors
@@ -35,22 +35,27 @@
 - Added a class for explosions as to simulate a gif by rotating through loaded images at a high speed. Also utilizes !alive rather than dead.
 
 
-### PS9/Server Notes
+## PS9/Server Notes
 
-## What works:
+### What works:
 - settings.xml is read properly. Note that this only is checked in the program executable's own directory, or exactly two directories above it.
 - Client can connect
 - Handshake works as designed
 - Snakes move and are displayed correctly
+- Powerups spawn randomly and are displayed correctly with a maximum value of MaxPowers
+- Snakes die and respawn after colliding with walls
 
-## What doesn't work:
+### What doesn't work:
 - snakes sometimes stretch across the entire screen when crossing the border.
+- We still need to work on collisions with other snakes, own snake, and grabbing powerups.
+- powerups spawn on walls. We need to add a new collision detector for walls and powerups.
 
-## Things we tried to remember in development:
+### Things we tried to remember in development:
 - What steps there are on the connection handshake and in which order
 - Vector logic, especially with turning.
+- collisions logic as overlapping areas = collision
 
-## Noteworthy design decisions:
+### Noteworthy design decisions:
 - Server class and program are within the same file, ServerProgram.cs
 - settings.xml only is checked in the program executable's own directory, or exactly two directories above it.
 - Order of members in settings.xml should be left as they are. Otherwise refer to ordering within the GameSettings class.
