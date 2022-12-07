@@ -367,14 +367,6 @@ namespace GameModel
         }
 
         /// <summary>
-        /// Removes the current powerup when called
-        /// </summary>
-        public void RemovePower()
-        {
-
-        }
-
-        /// <summary>
         /// moves snake along in the game world
         /// </summary>
         /// <param name="iD"> ID of the snake to move </param>
@@ -480,7 +472,7 @@ namespace GameModel
         /// A bool indicates whether the powerup has died or has been consumed.
         /// </summary>
         [JsonProperty(PropertyName = "died")]
-        public readonly bool died;
+        public bool died;
 
 
         /// <summary>
@@ -512,6 +504,11 @@ namespace GameModel
             Random random = new Random();
             loc = new(random.Next(-WorldSize / 3, WorldSize / 3),
                 random.Next(-WorldSize / 3, WorldSize / 3));
+        }
+
+        public void die()
+        {
+            died = true;
         }
 
     }

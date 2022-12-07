@@ -328,12 +328,6 @@ namespace Server
                     }
                     
                 }
-
-                foreach(Powerup p in zeWorld.Powerups.Values)
-                {
-
-                    powerSend += JsonConvert.SerializeObject(p) + "\n";
-                }
                 
                 // check for collisions
                 foreach(Snake s in zeWorld.Snakes.Values)
@@ -345,6 +339,20 @@ namespace Server
                             s.die();
                         }
                     }
+
+                    foreach (Powerup p in zeWorld.Powerups.Values)
+                    {
+                        if (s.CheckPowerCollision(p))
+                        {
+                            p.die();
+                            s.Grow();
+                        }
+                    }
+                }
+
+                foreach (Powerup p in zeWorld.Powerups.Values)
+                {
+                    powerSend += JsonConvert.SerializeObject(p) + "\n";
                 }
 
             }
