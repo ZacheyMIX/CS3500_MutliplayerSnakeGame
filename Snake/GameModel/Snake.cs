@@ -195,7 +195,7 @@ namespace GameModel
         /// Spawns this snake on a random position using random parameter
         /// use this after snake join and snake respawn
         /// </summary>
-        public void Spawn(Random random, int WorldSize, List<Wall> walls)
+        public void Spawn(Random random, int WorldSize, List<Wall> walls, Dictionary<int, Snake> snakes)
         {
             // don't respawn again if already alive
             if (alive)
@@ -236,6 +236,18 @@ namespace GameModel
                 foreach (Wall wall in walls)
                 {
                     invalidSpawnPoint = SpawnedOnAWall(wall);
+                    if (invalidSpawnPoint)
+                        break;
+                }
+
+                // don't proceed to check for invalid spawns on snakes if wall spawn is invalid
+                if (invalidSpawnPoint)
+                    continue;
+
+                // check if we spawned on top of any snakes
+                foreach (Snake s in snakes.Values)
+                {
+                    invalidSpawnPoint = CheckSnakeCollision(s);
                     if (invalidSpawnPoint)
                         break;
                 }

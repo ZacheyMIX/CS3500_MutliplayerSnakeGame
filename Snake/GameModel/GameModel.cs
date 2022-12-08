@@ -309,7 +309,7 @@ namespace GameModel
                 Snake newSnake = new Snake(playerName, ID, SnakeLength, SnakeGrowth, SnakeSpeed);
 
 
-                newSnake.Spawn(random, WorldSize, walls);
+                newSnake.Spawn(random, WorldSize, walls, snakes);
                 // where 12 is the length of newborn snakes in world units
 
                 snakes.Add(ID, newSnake);
@@ -414,7 +414,7 @@ namespace GameModel
             if (snake.alive)
                 return;
             if (snake.DeathCounter >= RespawnRate)
-                snake.Spawn(random, WorldSize, walls);
+                snake.Spawn(random, WorldSize, walls, snakes);
         }
     }
 
