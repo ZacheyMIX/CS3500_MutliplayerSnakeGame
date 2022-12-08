@@ -368,7 +368,7 @@ namespace GameModel
             if (!powerups.ContainsKey(PowerIds) && powerups.Count < MaxPowers && random.Next(PowersDelay * 5) == 3)
             {
                 Powerup newPowerup = new Powerup(PowerIds);
-                newPowerup.SpawnPower(WorldSize, Walls);
+                newPowerup.SpawnPower(WorldSize, Walls, Snakes);
                 powerups.Add(PowerIds, newPowerup);
                 PowerIds++;
                 return true;
@@ -509,7 +509,7 @@ namespace GameModel
         /// Spawns powerup based on random point within the worldsize
         /// </summary>
         /// <param name="loc"></param>
-        public void SpawnPower(int WorldSize, List<Wall> walls)
+        public void SpawnPower(int WorldSize, List<Wall> walls, Dictionary<int, Snake> snakes)
         {
             Random random = new Random();
             bool invalidSpawnPoint = true;
@@ -529,6 +529,12 @@ namespace GameModel
                     if (invalidSpawnPoint)
                         break;
                 }
+                foreach (Snake s in snakes.Values)
+                {
+                    invalidSpawnPoint = CheckSnakeCollision(s);
+                    if (invalidSpawnPoint)
+                        break;
+                }
             }
         }
 
@@ -545,20 +551,50 @@ namespace GameModel
         {
             int powerWidth = 10; // width from middle to one side
             int wallWidth = 25; // width from middle to one side
-                                // walls are 50x50 square units
-                                // if head falls within region of wall, snake dies.
-                                // no gap must be present between any of the 4 sides of the rectangles
+
             return (
                 (loc.X + powerWidth > wall.p1.X - wallWidth) &&    // snake overlaps wall left side
                 (loc.X - powerWidth < wall.p2.X + wallWidth) &&    // snake overlaps wall right side
                 (loc.Y + powerWidth > wall.p1.Y - wallWidth) &&    // snake overlaps wall top side
                 (loc.Y - powerWidth < wall.p2.Y + wallWidth) ||    // snake overlaps wall bottom side
-                // some walls may have different positional order. This ensures that both checks are valid.
+                // some snakes may have different positional order. This ensures that both checks are valid.
                 (loc.X + powerWidth > wall.p2.X - wallWidth) &&    // snake overlaps wall left side
                 (loc.X - powerWidth < wall.p1.X + wallWidth) &&    // snake overlaps wall right side
                 (loc.Y + powerWidth > wall.p2.Y - wallWidth) &&    // snake overlaps wall top side
                 (loc.Y - powerWidth < wall.p1.Y + wallWidth)       // snake overlaps wall bottom side
             );
+
+        }
+
+        /// <summary>
+        /// Checks if this powerup collides with snake in parameter
+        /// returns true if this powerup collides with a snake
+        /// </summary>
+        public bool CheckSnakeCollision(Snake snake)
+        {
+            int snakeWidth = 5;
+            int powerWidth = 10;
+
+            // go through each snake portion and then return true if we collide with any rectangle described
+            // collides only if the powerup overlaps with that part.
+            for (int i = 0; i < snake.body.Count - 1; i++)
+            {
+                // check first if our head's X overlaps with the body portion
+                if
+                ((loc.X + powerWidth > snake.body[i].X - snakeWidth) &&      // snake overlaps portion left side
+                (loc.X - powerWidth < snake.body[i + 1].X + snakeWidth) &&    // snake overlaps portion right side
+                (loc.Y + powerWidth > snake.body[i].Y - snakeWidth) &&      // snake overlaps portion top side
+                (loc.Y - powerWidth < snake.body[i + 1].Y + snakeWidth) ||    // snake overlaps portion bottom side
+                // some snakes may have different positional order. This ensures that both checks are valid.
+                (loc.X + powerWidth > snake.body[i + 1].X - snakeWidth) &&    // snake overlaps portion left side
+                (loc.X - powerWidth < snake.body[i].X + snakeWidth) &&      // snake overlaps portion right side
+                (loc.Y + powerWidth > snake.body[i + 1].Y - snakeWidth) &&    // snake overlaps portion top side
+                (loc.Y - powerWidth < snake.body[i].Y + snakeWidth))         // snake overlaps portion bottom side
+                {
+                    return true;
+                }
+            }
+            return false;
 
         }
 
