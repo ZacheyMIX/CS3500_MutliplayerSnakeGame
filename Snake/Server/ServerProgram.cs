@@ -342,9 +342,9 @@ namespace Server
 
                     foreach (Snake snake in zeWorld.Snakes.Values)
                     {
-                        if (s.CheckSnakeCollision(snake))
+                        if (s.CheckSnakeCollision(snake, settings.UniverseSize))
                         {
-                            if(s.ID == snake.ID && s.CheckSelfCollision())
+                            if(s.ID == snake.ID && s.CheckSelfCollision(settings.UniverseSize))
                                 s.die();
                             else
                             {
