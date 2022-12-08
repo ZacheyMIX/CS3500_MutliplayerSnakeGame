@@ -329,7 +329,7 @@ namespace GameModel
             {
                 // update tail
                 // tail should gravitate towards next body vector
-                Vector2D tempDirection = body[1] - body[0]; // throws here from invalid index
+                Vector2D tempDirection = body[1] - body[0];
                 tempDirection.Normalize();
 
                 body[0].X += tempDirection.X * speed;
