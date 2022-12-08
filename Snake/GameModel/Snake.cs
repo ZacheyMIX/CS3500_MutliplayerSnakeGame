@@ -247,7 +247,7 @@ namespace GameModel
                 // check if we spawned on top of any snakes
                 foreach (Snake s in snakes.Values)
                 {
-                    invalidSpawnPoint = CheckSnakeCollision(s);
+                    invalidSpawnPoint = CheckSnakeCollision(s, WorldSize);
                     if (invalidSpawnPoint)
                         break;
                 }
@@ -289,14 +289,14 @@ namespace GameModel
 
             // check if head has crossed over the world boundary
 
-            if (Head.X < -worldSize / 2)
+            if (Head.X <= -worldSize / 2)   // left boundary
             {
                 double headX = Head.X;  // used so that we don't lose track of original head position
                 body.Add(new Vector2D(-worldSize / 2, Head.Y));     // add first border
                 body.Add(new Vector2D(headX + worldSize, Head.Y));  // add second border
                 body.Add(new Vector2D(headX + worldSize, Head.Y));  // add head at second border
             }
-            if (Head.X > worldSize / 2)
+            if (Head.X >= worldSize / 2)    // right boundary
             {
                 // same as before just different direction
                 double headX = Head.X;
@@ -304,7 +304,7 @@ namespace GameModel
                 body.Add(new Vector2D(headX - worldSize, Head.Y));
                 body.Add(new Vector2D(headX - worldSize, Head.Y));
             }
-            if (Head.Y < -worldSize / 2)
+            if (Head.Y <= -worldSize / 2)   // top boundary
             {
                 // same as before just on Y border
                 double headY = Head.Y;
@@ -312,7 +312,7 @@ namespace GameModel
                 body.Add(new Vector2D(Head.X, headY + worldSize));
                 body.Add(new Vector2D(Head.X, headY + worldSize));
             }
-            if (Head.Y > worldSize / 2)
+            if (Head.Y >= worldSize / 2)    // bottom boundary
             {
                 // same as before just different direction
                 double headY = Head.Y;
@@ -352,24 +352,20 @@ namespace GameModel
                     body.Remove(body[0]);
 
                 // if tail is on border we should remove it
-                if (body[0].X <= -worldSize / 2)    // left border
+                while (body[0].X <= -worldSize / 2)    // left border
                 {
-                    body.Remove(body[0]);   // removes tail
-                    body.Remove(body[0]);   // removes border body portion
+                    body.Remove(body[0]);   // removes tail and other portions until valid
                 }
-                else if (body[0].X >= worldSize / 2)// right border
+                while (body[0].X >= worldSize / 2)     // right border
                 {
-                    body.Remove(body[0]);
                     body.Remove(body[0]);
                 }
-                else if (body[0].Y <= -worldSize / 2)// top border
+                while (body[0].Y <= -worldSize / 2)    // top border
                 {
-                    body.Remove(body[0]);
                     body.Remove(body[0]);
                 }
-                else if (body[0].Y >= worldSize / 2)// bottom border
+                while (body[0].Y >= worldSize / 2)     // bottom border
                 {
-                    body.Remove(body[0]);
                     body.Remove(body[0]);
                 }
             }
@@ -510,10 +506,10 @@ namespace GameModel
         /// Checks for collisions with every snake in the game.
         /// Redirects to CheckSelfCollision if the snake given is this snake.
         /// </summary>
-        public bool CheckSnakeCollision(Snake snake)
+        public bool CheckSnakeCollision(Snake snake, int worldSize)
         {
             if (snake.ID == ID)
-                return CheckSelfCollision();
+                return CheckSelfCollision(worldSize);
             if (!snake.alive)   // can't collide with a dead snake
                 return false;
 
@@ -544,26 +540,49 @@ namespace GameModel
         /// <summary>
         /// checks if snake collides with itself
         /// </summary>
-        public bool CheckSelfCollision()
+        public bool CheckSelfCollision(int worldSize)
         {
             int snakeWidth = 5;
+            Vector2D segmentDirection;
+            bool ignoreSegment = true;    // null if it hasn't been set yet
 
             for (int i = 0; i < body.Count - 3; i++)
             {
-                    // check if our head overlaps with the body portion
-                    if
-                   ((Head.X + snakeWidth > body[i].X - snakeWidth) &&        // snake overlaps portion left side
-                    (Head.X - snakeWidth < body[i + 1].X + snakeWidth) &&    // snake overlaps portion right side
-                    (Head.Y + snakeWidth > body[i].Y - snakeWidth) &&        // snake overlaps portion top side
-                    (Head.Y - snakeWidth < body[i + 1].Y + snakeWidth) ||    // snake overlaps portion bottom side
-                    // some walls may have different positional order. This ensures that both checks are valid.
-                    (Head.X + snakeWidth > body[i + 1].X - snakeWidth) &&    // snake overlaps portion left side
-                    (Head.X - snakeWidth < body[i].X + snakeWidth) &&        // snake overlaps portion right side
-                    (Head.Y + snakeWidth > body[i + 1].Y - snakeWidth) &&    // snake overlaps portion top side
-                    (Head.Y - snakeWidth < body[i].Y + snakeWidth))          // snake overlaps portion bottom side
-                    {
-                        return true;
-                    }
+                segmentDirection = body[i + 1] - body[i];
+                segmentDirection.Normalize();
+                if (ignoreSegment)
+                {
+                    ignoreSegment = !segmentDirection.Equals(dir * -1);
+                    // this segment is the first segment to be going the other way than our snake's direction
+                }
+
+                // don't check if you're moving parallel
+                if (segmentDirection.Equals(dir) || segmentDirection.Equals(dir * -1))
+                    continue;
+
+                if (body[i].X <= -worldSize / 2 || body[i+1].X <= -worldSize / 2)   // left boundary
+                    continue;
+                if (body[i].X >= worldSize / 2 || body[i+1].X >= worldSize / 2)    // right boundary
+                    continue;
+                if (body[i].Y <= -worldSize / 2 || body[i+1].Y <= -worldSize / 2)   // top boundary
+                    continue;
+                if (body[i].Y >= worldSize / 2 || body[i+1].Y >= worldSize / 2)    // bottom boundary
+                    continue;
+
+                // check if our head overlaps with the body portion
+                if
+                ((Head.X + snakeWidth > body[i].X - snakeWidth) &&        // snake overlaps portion left side
+                (Head.X - snakeWidth < body[i + 1].X + snakeWidth) &&    // snake overlaps portion right side
+                (Head.Y + snakeWidth > body[i].Y - snakeWidth) &&        // snake overlaps portion top side
+                (Head.Y - snakeWidth < body[i + 1].Y + snakeWidth) ||    // snake overlaps portion bottom side
+                // some walls may have different positional order. This ensures that both checks are valid.
+                (Head.X + snakeWidth > body[i + 1].X - snakeWidth) &&    // snake overlaps portion left side
+                (Head.X - snakeWidth < body[i].X + snakeWidth) &&        // snake overlaps portion right side
+                (Head.Y + snakeWidth > body[i + 1].Y - snakeWidth) &&    // snake overlaps portion top side
+                (Head.Y - snakeWidth < body[i].Y + snakeWidth))          // snake overlaps portion bottom side
+                {
+                    return true;
+                }
             }
 
             return false;
