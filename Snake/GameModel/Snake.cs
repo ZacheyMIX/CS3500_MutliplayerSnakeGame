@@ -355,22 +355,22 @@ namespace GameModel
                 if (body[0].X <= -worldSize / 2)    // left border
                 {
                     body.Remove(body[0]);   // removes tail
-                    //body.Remove(body[0]);   // removes border body portion
+                    body.Remove(body[0]);   // removes border body portion
                 }
                 else if (body[0].X >= worldSize / 2)// right border
                 {
                     body.Remove(body[0]);
-                    //body.Remove(body[0]);
+                    body.Remove(body[0]);
                 }
                 else if (body[0].Y <= -worldSize / 2)// top border
                 {
                     body.Remove(body[0]);
-                    //body.Remove(body[0]);
+                    body.Remove(body[0]);
                 }
                 else if (body[0].Y >= worldSize / 2)// bottom border
                 {
                     body.Remove(body[0]);
-                    //body.Remove(body[0]);
+                    body.Remove(body[0]);
                 }
             }
 
@@ -514,6 +514,8 @@ namespace GameModel
         {
             if (snake.ID == ID)
                 return CheckSelfCollision();
+            if (!snake.alive)   // can't collide with a dead snake
+                return false;
 
             int snakeWidth = 5;
 
