@@ -525,7 +525,7 @@ namespace GameModel
                 (Head.X - snakeWidth < snake.body[i+1].X + snakeWidth) &&    // snake overlaps portion right side
                 (Head.Y + snakeWidth > snake.body[i].Y - snakeWidth) &&      // snake overlaps portion top side
                 (Head.Y - snakeWidth < snake.body[i+1].Y + snakeWidth) ||    // snake overlaps portion bottom side
-                // some walls may have different positional order. This ensures that both checks are valid.
+                // some snakes may have different positional order. This ensures that both checks are valid.
                 (Head.X + snakeWidth > snake.body[i+1].X - snakeWidth) &&    // snake overlaps portion left side
                 (Head.X - snakeWidth < snake.body[i].X + snakeWidth) &&      // snake overlaps portion right side
                 (Head.Y + snakeWidth > snake.body[i+1].Y - snakeWidth) &&    // snake overlaps portion top side
