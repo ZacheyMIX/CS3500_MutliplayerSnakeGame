@@ -45,11 +45,10 @@
 - Powerups spawn randomly and are displayed correctly with a maximum value of MaxPowers
 - Snakes die and respawn after colliding with walls
 - Snakes can pick up powerups, which results in the powerup "dying", the snake growing, and the snake's score going up.
+- snakes can crash into themselves.
 
 ### What doesn't work:
 - snakes sometimes stretch across the entire screen when crossing the border.
-- We still need to work on collisions with other snakes, own snake, and grabbing powerups.
-- powerups spawn on walls. We need to add a new collision detector for walls and powerups.
 
 ### Things we tried to remember in development:
 - What steps there are on the connection handshake and in which order
