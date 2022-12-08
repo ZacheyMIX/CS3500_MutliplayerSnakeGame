@@ -64,3 +64,6 @@ PowersDelay and SnakeGrowth must not be negative.
 - There is no restrictions on where Walls may be positioned.
 We leave it up to the user to choose positions of walls wisely based on their world size.
 - Removing dead or disconnected objects after sending their dead state to the client.
+
+### Additional features:
+- BattleRoyal switch in settings.xml. If set to true, snakes gain points and grow when killing other snakes.
