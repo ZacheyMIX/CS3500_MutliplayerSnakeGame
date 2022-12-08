@@ -46,9 +46,11 @@
 - Snakes die and respawn after colliding with walls
 - Snakes can pick up powerups, which results in the powerup "dying", the snake growing, and the snake's score going up.
 - snakes can crash into themselves.
+- snakes don't collide into themselves while crossing the border and then turning, unlike the provided server.
 
 ### What doesn't work:
 - snakes sometimes stretch across the entire screen when crossing the border.
+This is specifically related to the head crossing and resolves itself once the tail crosses.
 
 ### Things we tried to remember in development:
 - What steps there are on the connection handshake and in which order
