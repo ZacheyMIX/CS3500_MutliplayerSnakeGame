@@ -344,7 +344,15 @@ namespace Server
                     {
                         if (s.CheckSnakeCollision(snake))
                         {
-                            s.die();
+                            if(s.ID == snake.ID && s.CheckSelfCollision())
+                                s.die();
+                            else
+                            {
+                                if (s.alive is true && zeWorld.BattleRoyale is true)
+                                    snake.Grow();
+                                s.die();
+                                
+                            }
                         }
                     }
 

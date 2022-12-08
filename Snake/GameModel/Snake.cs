@@ -542,7 +542,7 @@ namespace GameModel
         /// <summary>
         /// checks if snake collides with itself
         /// </summary>
-        private bool CheckSelfCollision()
+        public bool CheckSelfCollision()
         {
             int snakeWidth = 5;
 
