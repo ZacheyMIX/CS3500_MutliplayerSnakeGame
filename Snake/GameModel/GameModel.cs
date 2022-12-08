@@ -212,10 +212,13 @@ namespace GameModel
         public Dictionary<int, Snake> Snakes { get { return snakes; } }
 
         /// <summary>
-        /// Field ot makes powerups dictionary accessible to the outside
+        /// Field that makes powerups dictionary accessible to the outside
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
 
+        /// <summary>
+        /// Field that makes GameMode accessible to the outside
+        /// </summary>
         public bool BattleRoyale { get { return GameMode; } }
 
         /// <summary>
@@ -675,9 +678,8 @@ namespace GameModel
                 PowersDelay = 20;
             if (UniverseSize < SnakeLength)
                 UniverseSize = (int)SnakeLength * 17;
-            if (BattleRoyale != true)
+            if (BattleRoyale != true) 
                 BattleRoyale = false;
-
         }
 
     }
