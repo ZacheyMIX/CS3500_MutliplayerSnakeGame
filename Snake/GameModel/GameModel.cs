@@ -522,7 +522,7 @@ namespace GameModel
         /// </summary>
         public bool CheckWallCollision(Wall wall)
         {
-            int powerWidth = 10; // width from middle to one side
+            int powerWidth = 32; // width from middle to one side
             int wallWidth = 25; // width from middle to one side
 
             return (
