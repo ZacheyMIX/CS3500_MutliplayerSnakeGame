@@ -292,7 +292,6 @@ namespace GameModel
             if (Head.X <= -worldSize / 2)   // left boundary
             {
                 double headX = Head.X;  // used so that we don't lose track of original head position
-                body.Add(new Vector2D(-worldSize / 2, Head.Y));     // add first border
                 body.Add(new Vector2D(headX + worldSize, Head.Y));  // add second border
                 body.Add(new Vector2D(headX + worldSize, Head.Y));  // add head at second border
             }
@@ -300,7 +299,6 @@ namespace GameModel
             {
                 // same as before just different direction
                 double headX = Head.X;
-                body.Add(new Vector2D(worldSize / 2, Head.Y));
                 body.Add(new Vector2D(headX - worldSize, Head.Y));
                 body.Add(new Vector2D(headX - worldSize, Head.Y));
             }
@@ -308,7 +306,6 @@ namespace GameModel
             {
                 // same as before just on Y border
                 double headY = Head.Y;
-                body.Add(new Vector2D(Head.X, -worldSize / 2));
                 body.Add(new Vector2D(Head.X, headY + worldSize));
                 body.Add(new Vector2D(Head.X, headY + worldSize));
             }
@@ -316,7 +313,6 @@ namespace GameModel
             {
                 // same as before just different direction
                 double headY = Head.Y;
-                body.Add(new Vector2D(Head.X, worldSize / 2));
                 body.Add(new Vector2D(Head.X, headY - worldSize));
                 body.Add(new Vector2D(Head.X, headY - worldSize));
             }
