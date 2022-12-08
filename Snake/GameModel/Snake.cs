@@ -235,7 +235,7 @@ namespace GameModel
                 // check if there's some overlap with any wall on the map
                 foreach (Wall wall in walls)
                 {
-                    invalidSpawnPoint = CheckWallCollision(wall);
+                    invalidSpawnPoint = SpawnedOnAWall(wall);
                     if (invalidSpawnPoint)
                         break;
                 }
@@ -437,9 +437,19 @@ namespace GameModel
                     return true;
                 }
             }
+            return false;
+        }
 
-            // finally checks if snake was spawned on top of a wall
-
+        /// <summary>
+        /// used to verify snake's spawn position.
+        /// returns true if current spawn position is on a wall,
+        /// and false if not.
+        /// </summary>
+        private bool SpawnedOnAWall(Wall wall)
+        {
+            // much more than normal so we have more room to move when we spawn
+            int snakeWidth = 10;
+            int wallWidth = 100;
             // snake goes from snake's head X - snakeWidth to snake tail's head X + snakeWidth
             // and from snake's head Y - snakeWidth to snake tail's Y + snakeWidth
             // check the reverse as well in case of spawning in reverse
@@ -457,7 +467,6 @@ namespace GameModel
                 (body[0].Y + snakeWidth > wall.p2.Y - wallWidth) &&
                 (body[1].Y - snakeWidth < wall.p1.Y + wallWidth);
             return firstWallCheck || secondWallCheck;
-
         }
 
         /// <summary>
