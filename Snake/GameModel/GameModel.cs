@@ -502,6 +502,11 @@ namespace GameModel
                     if (invalidSpawnPoint)
                         break;
                 }
+
+                // don't check snakes if wall is invalid
+                if (invalidSpawnPoint)
+                    continue;
+
                 foreach (Snake s in snakes.Values)
                 {
                     invalidSpawnPoint = CheckSnakeCollision(s);
