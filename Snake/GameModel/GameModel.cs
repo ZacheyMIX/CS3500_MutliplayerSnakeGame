@@ -216,6 +216,8 @@ namespace GameModel
         /// </summary>
         public Dictionary<int, Powerup> Powerups { get { return powerups; } }
 
+        public bool BattleRoyale { get { return GameMode; } }
+
         /// <summary>
         /// used in random events like spawning positions
         /// </summary>
@@ -258,6 +260,11 @@ namespace GameModel
         private int PowerIds = 0;
 
         /// <summary>
+        /// represents the special game mode
+        /// </summary>
+        private bool GameMode;
+
+        /// <summary>
         /// Default constructor for serverside World class.
         /// Different XML settings may require parameter constructors,
         /// but this default should work with default settings.
@@ -268,6 +275,7 @@ namespace GameModel
             walls = new();
             powerups = new();
             random = new();
+            GameMode = false;
         }
 
         /// <summary>
@@ -288,6 +296,7 @@ namespace GameModel
             MaxPowers = (int)settings.MaxPowers!;
             RespawnRate = settings.RespawnRate;
             PowersDelay = (int)settings.PowersDelay!;
+            GameMode = settings.BattleRoyale;
         }
 
 
@@ -625,8 +634,10 @@ namespace GameModel
         [DataMember(Name = "SnakeLength", Order = 8)]
         public int? SnakeLength;
 
+        [DataMember(Name = "BattleRoyale", Order = 9)]
+        public bool BattleRoyale;
 
-        [DataMember(Name = "Walls", Order = 9)]
+        [DataMember(Name = "Walls", Order = 10)]
         public List<Wall> Walls;
 
         public GameSettings()
@@ -643,6 +654,7 @@ namespace GameModel
             SnakeGrowth = 12;
             MaxPowers = 20;
             PowersDelay = 20;
+            BattleRoyale = false;
         }
 
         /// <summary>
@@ -663,6 +675,8 @@ namespace GameModel
                 PowersDelay = 20;
             if (UniverseSize < SnakeLength)
                 UniverseSize = (int)SnakeLength * 17;
+            if (BattleRoyale != true)
+                BattleRoyale = false;
 
         }
 
