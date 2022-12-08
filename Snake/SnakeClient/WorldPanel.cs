@@ -180,22 +180,22 @@ public class WorldPanel : IDrawable
     private bool borderSwitch(Snake s, ICanvas canvas, int i)
     {
         //Snake enters right border
-        if (s.body[i].GetX() >= 975 && s.body[i - 1].GetX() <= -975)
+        if (s.body[i].GetX() >= world.WorldSize / 2.5 && s.body[i - 1].GetX() <= -world.WorldSize / 2.5)
         {
             return true;
         }
         //Snake enters left border
-        if (s.body[i].GetX() <= -975 && s.body[i - 1].GetX() >= 975)
+        if (s.body[i].GetX() <= -world.WorldSize / 2.5 && s.body[i - 1].GetX() >= world.WorldSize / 2.5)
         {
             return true;
         }
         //Snake enters upper border
-        if (s.body[i].GetY() >= 975 && s.body[i - 1].GetY() <= -975)
+        if (s.body[i].GetY() >= world.WorldSize / 2.5 && s.body[i - 1].GetY() <= -world.WorldSize / 2.5)
         {
             return true;
         }
         //Snake enters lower border
-        if (s.body[i].GetY() <= -975 && s.body[i - 1].GetY() >= 975)
+        if (s.body[i].GetY() <= -world.WorldSize/ 2.5 && s.body[i - 1].GetY() >= world.WorldSize / 2.5)
         {
             return true;
         }
