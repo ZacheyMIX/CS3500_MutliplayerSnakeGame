@@ -523,52 +523,26 @@ namespace GameModel
         /// </summary>
         private bool CheckSelfCollision()
         {
-            //if (turnCounter < speed * 100)
-            //    return false;
-
             int snakeWidth = 5;
 
-            // go through each snake portion and then return true if we collide with any rectangle described
-            // collides only if this snake's head overlaps with that part.
-            // keep dir field in mind
-
-            //Vector2D segmentDirection;
-            //for (int i = 0; i < body.Count - 1; i++)
-            //{
-            //    segmentDirection = new Vector2D(body[i].X - body[i+1].X, body[i].Y - body[i+1].Y);
-            //    if (dir.Equals(segmentDirection * -1))
-            //    {
-
-            //    }
-            //}
-
-
-            bool ignoreSegment = true;  // will not check for collisions until this is false
-            Vector2D segmentDir;        // represents direction of each segment
-            for (int i = body.Count - 1; i > 0; i--)
+            for (int i = 0; i < body.Count - 3; i++)
             {
-                // see if we've gotten to the segment that goes the other way yet
-                segmentDir = body[i] - body[i - 1];
-                segmentDir.Normalize();
-                ignoreSegment = !dir.Equals(segmentDir * -1);
-                if (ignoreSegment)
-                    continue;
-
-                // check first if our head's X overlaps with the body portion
-                if
-               ((Head.X + snakeWidth > body[i].X - snakeWidth) &&      // snake overlaps portion left side
-                (Head.X - snakeWidth < body[i - 1].X + snakeWidth) &&    // snake overlaps portion right side
-                (Head.Y + snakeWidth > body[i].Y - snakeWidth) &&      // snake overlaps portion top side
-                (Head.Y - snakeWidth < body[i - 1].Y + snakeWidth) ||    // snake overlaps portion bottom side
-                // some walls may have different positional order. This ensures that both checks are valid.
-                (Head.X + snakeWidth > body[i - 1].X - snakeWidth) &&    // snake overlaps portion left side
-                (Head.X - snakeWidth < body[i].X + snakeWidth) &&      // snake overlaps portion right side
-                (Head.Y + snakeWidth > body[i - 1].Y - snakeWidth) &&    // snake overlaps portion top side
-                (Head.Y - snakeWidth < body[i].Y + snakeWidth))         // snake overlaps portion bottom side
-                {
-                    return true;
-                }
+                    // check if our head overlaps with the body portion
+                    if
+                   ((Head.X + snakeWidth > body[i].X - snakeWidth) &&        // snake overlaps portion left side
+                    (Head.X - snakeWidth < body[i + 1].X + snakeWidth) &&    // snake overlaps portion right side
+                    (Head.Y + snakeWidth > body[i].Y - snakeWidth) &&        // snake overlaps portion top side
+                    (Head.Y - snakeWidth < body[i + 1].Y + snakeWidth) ||    // snake overlaps portion bottom side
+                    // some walls may have different positional order. This ensures that both checks are valid.
+                    (Head.X + snakeWidth > body[i + 1].X - snakeWidth) &&    // snake overlaps portion left side
+                    (Head.X - snakeWidth < body[i].X + snakeWidth) &&        // snake overlaps portion right side
+                    (Head.Y + snakeWidth > body[i + 1].Y - snakeWidth) &&    // snake overlaps portion top side
+                    (Head.Y - snakeWidth < body[i].Y + snakeWidth))          // snake overlaps portion bottom side
+                    {
+                        return true;
+                    }
             }
+
             return false;
         }
 
