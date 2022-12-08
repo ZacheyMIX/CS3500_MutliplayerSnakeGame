@@ -332,33 +332,6 @@ namespace GameModel
         }
 
         /// <summary>
-        /// Updates powerups dictionary with given nullable Powerup object
-        /// Powerups are removed after being eaten
-        /// </summary>
-        /// <param name="newObj"></param>
-        public void UpdatePowerups(Powerup? newPwp)
-        {
-            // Whenever a new JSON string regarding a powerup is received,
-            // method checks if that ID is already in powerup data structure.
-            // if it is, it's removed temporarily.
-            // if the JSON string is sent because that powerup died,
-            // the powerup is not added back to the data structure.
-            // otherwise the powerup is added.
-
-            if (!(newPwp is Powerup))   // if newPwp is not a Powerup
-                return; // shouldn't happen but just in case
-
-            if (powerups.ContainsKey(newPwp.ID))
-                powerups.Remove(newPwp.ID);
-
-            if (newPwp.died)
-                return;
-
-            powerups.Add(newPwp.ID, newPwp);
-            return;
-        }
-
-        /// <summary>
         /// Method that adds a new powerup to the world and increments the ID everytime to create a new ID for each Powerup
         /// </summary>
         /// <returns></returns>
